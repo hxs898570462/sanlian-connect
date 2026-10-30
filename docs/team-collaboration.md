@@ -1,5 +1,7 @@
 # Sanlian Connect 小组合作文档
 
+最新进度：GitHub main 已上传部署适配，Render 共享站已创建，本机原数据已迁入 Neon 并重新连接核对；负责人已确认原账号登录、管理后台和本人报名在线上正常。详细证据见 [迁移记录](postgres-to-neon.md)。下方初始准备清单保留为操作参考，以此处进度为准；完整多人流程及实际代理链仍待验收。
+
 编写日期：2026-10-30（Asia/Hong_Kong）
 
 适用工程：`D:\XJTLU\ENT\sanlian-connect`。当前技术栈为 HTML / CSS / 原生 JavaScript、Node.js / Express、PostgreSQL。原 SQLite 数据已备份并迁入本地 PostgreSQL；详见 postgresql.md。本文件是合作约定与部署准备说明，不代表仓库或共享网站已经建立。
