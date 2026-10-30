@@ -7,6 +7,7 @@ import { projectRoot } from './db.js';
 import { hashPassword,verifyPassword,publicUser,createSession,sessionMiddleware } from './auth.js';
 import { registerAdminRoutes } from './admin.js';
 import { activitySelect,privateRegistrations,lockActivity,enrollmentCount } from './queries.js';
+import { httpConfig } from './config.js';
 
 export const fail=(status,message)=>{const error=new Error(message);error.status=status;throw error;};
 const text=(v,min,max,label)=>{
@@ -18,14 +19,22 @@ const isoDate=v=>{
 };
 const validatePhone=v=>{const phone=text(v,7,24,'联系电话');if(!/^\+?[\d ()-]{7,24}$/.test(phone)||phone.replace(/\D/g,'').length<7)fail(400,'联系电话格式不正确');return phone;};
 
-export function createApp(db,{sessionCookie='sanlian_session'}={}) {
+export function createApp(db,{sessionCookie='sanlian_session',http=httpConfig()}={}) {
  const app=express();app.disable('x-powered-by');
- app.use(helmet({contentSecurityPolicy:{directives:{'upgrade-insecure-requests':null}},strictTransportSecurity:process.env.NODE_ENV==='production'}));
+ app.set('trust proxy',http.proxyHops);
+ app.use(helmet({contentSecurityPolicy:{directives:{'upgrade-insecure-requests':http.production?[]:null}},strictTransportSecurity:http.production}));
  app.use((req,res,next)=>{
-  if(!['localhost','127.0.0.1','[::1]','::1'].includes(req.hostname))return res.status(403).json({error:'本地开发服务仅接受本机地址'});
+  // Validate the actual Host, never the client-supplied X-Forwarded-Host.
+  const authority=req.get('host')?.toLowerCase();
+  let url;try{url=new URL('http://'+authority);}catch{return res.status(403).json({error:'网站地址无效'});}
+  if(url.host!==authority||url.username||url.password||url.pathname!=='/'||url.search||url.hash)
+   return res.status(403).json({error:'网站地址无效'});
+  if(http.origin?authority!==new URL(http.origin).host:!['localhost','127.0.0.1','[::1]'].includes(url.hostname))
+   return res.status(403).json({error:'该网站地址未获允许'});
   if(!['GET','HEAD','OPTIONS'].includes(req.method)){
    const origin=req.get('origin');
-   if(req.get('x-requested-with')!=='sanlian'||(origin&&origin!==`${req.protocol}://${req.get('host')}`))return res.status(403).json({error:'请求来源无效，请刷新页面后重试'});
+   const expected=http.origin||`http://${authority}`;
+   if(req.get('x-requested-with')!=='sanlian'||(http.production&&!origin)||(origin&&origin!==expected))return res.status(403).json({error:'请求来源无效，请刷新页面后重试'});
   }next();
  });
  app.use(express.json({limit:'32kb'}));
@@ -40,14 +49,14 @@ export function createApp(db,{sessionCookie='sanlian_session'}={}) {
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))fail(400,'邮箱格式不正确');
   const password=body.password;if(typeof password!=='string'||password.length<12||password.length>128)fail(400,'密码长度需为 12–128 个字符');return {email,password};
  };
- app.get('/api/health',async(req,res)=>{await db.get('SELECT 1');res.json({status:'ok',storage:'postgresql',mode:'local'});});
+ app.get('/api/health',async(req,res)=>{await db.get('SELECT 1');res.json({status:'ok',storage:'postgresql',mode:http.production?'hosted':'local'});});
  app.get('/api/auth/me',(req,res)=>res.json({user:publicUser(req.user)}));
  app.post('/api/auth/register',authLimit,async(req,res)=>{
   const {email,password}=credentials(req.body||{}),name=text(req.body.name,1,60,'称呼'),hash=await hashPassword(password),id=randomUUID();
   const user=await db.transaction(async tx=>{
    const u=await tx.get('INSERT INTO users(id,email,name,password_hash,created_at) VALUES($1,$2,$3,$4,$5) RETURNING *',[id,email,name,hash,new Date().toISOString()]);
    if(req.sessionHash)await tx.run('DELETE FROM sessions WHERE token_hash=$1',[req.sessionHash]);
-   await createSession(tx,id,res,sessionCookie);return u;
+   await createSession(tx,id,res,sessionCookie,{secure:http.production});return u;
   });
   res.status(201).json({user:publicUser(user)});
  });
@@ -59,7 +68,7 @@ export function createApp(db,{sessionCookie='sanlian_session'}={}) {
    if(!current||current.password_hash!==candidate.password_hash)fail(401,'账号已变化，请重新登录');
    if(!current.is_active)fail(403,'账号已停用，请联系管理员');
    if(req.sessionHash)await tx.run('DELETE FROM sessions WHERE token_hash=$1',[req.sessionHash]);
-   await createSession(tx,current.id,res,sessionCookie);return current;
+   await createSession(tx,current.id,res,sessionCookie,{secure:http.production});return current;
   });res.json({user:publicUser(user)});
  });
  app.post('/api/auth/logout',async(req,res)=>{

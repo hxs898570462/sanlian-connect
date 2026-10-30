@@ -14,11 +14,11 @@ export async function verifyPassword(password, hash) {
   return key.length === buffer.length && timingSafeEqual(key, buffer);
 }
 export function publicUser(u) { return u ? { id:u.id, name:u.name, email:u.email, role:u.role } : null; }
-export async function createSession(db, userId, res, cookieName='sanlian_session') {
+export async function createSession(db, userId, res, cookieName='sanlian_session', {secure=process.env.NODE_ENV==='production'}={}) {
   const token = randomBytes(32).toString('hex');
   await db.run('DELETE FROM sessions WHERE expires_at < $1',[Date.now()]);
   await db.run('INSERT INTO sessions VALUES ($1,$2,$3)',[tokenHash(token), userId, Date.now()+7*86400000]);
-  res.cookie(cookieName, token, {httpOnly:true, sameSite:'lax', secure:process.env.NODE_ENV==='production', maxAge:7*86400000, path:'/'});
+  res.cookie(cookieName, token, {httpOnly:true, sameSite:'lax', secure, maxAge:7*86400000, path:'/'});
 }
 export function sessionMiddleware(db, cookieName='sanlian_session') {
   return async (req,res,next) => {

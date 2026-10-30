@@ -95,9 +95,9 @@ npm test
 
 ## 部署边界
 
-已完成 PostgreSQL 后端改造和本地验证；**尚未连接 Neon、上传 GitHub 或部署 Render**。免费部署路线仍为 Render Free + Neon Free。
+已完成 PostgreSQL 后端改造和本地验证；首次代码已上传 GitHub，用户已创建 Neon 项目。**尚未连接 Neon 或部署 Render**。免费部署路线为 Render Free + Neon Free。
 
-当前网页服务仍只监听本机，并检查本机 Host；共享网站上线前还需配置对外监听、明确域名、HTTPS/代理与来源校验，并完成线上验收。没有为了本地数据库改造而开放公网访问。
+已补齐 Render 部署配置：生产监听 0.0.0.0 和平台 PORT，使用明确的 HTTPS 网站地址校验 Host/Origin，开启 Secure Cookie。本地默认仍只监听 127.0.0.1。上线步骤、免费构建命令和验收边界见 [部署说明](docs/deployment.md)。这些代码与本机模拟代理测试不代表已连接 Neon 或已完成 Render 线上验收。
 
 正式备份使用 PostgreSQL 的 pg_dump / 平台导出工具；不要在服务运行时随意复制 PostgreSQL 数据目录。原 SQLite 文件与升级备份仅作为迁移前快照保留。
 

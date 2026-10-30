@@ -1,7 +1,8 @@
 import { createApp } from './app.js';
 import { openDatabase } from './db.js';
-const port=Number(process.env.PORT||3000);
+import { httpConfig } from './config.js';
+const http=httpConfig();
 const db=await openDatabase();
-const server=createApp(db).listen(port,'127.0.0.1',()=>console.log(`Sanlian Connect: http://localhost:${server.address().port}`));
+const server=createApp(db,{http}).listen(http.port,http.host,()=>console.log(`Sanlian Connect: ${http.origin||'http://localhost:'+server.address().port}`));
 function close(){server.close(async()=>{await db.close();process.exit(0);});}
 process.once('SIGINT',close);process.once('SIGTERM',close);

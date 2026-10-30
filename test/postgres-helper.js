@@ -3,7 +3,7 @@ import {randomUUID} from 'node:crypto';
 import {once} from 'node:events';
 import {openDatabase} from '../server/db.js';
 import {createApp} from '../server/app.js';
-export async function fixture({seed=true,servers=1}={}) {
+export async function fixture({seed=true,servers=1,appOptions={}}={}) {
  if(!process.env.TEST_DATABASE_URL)throw Error('通过 npm test 启动真实 PostgreSQL 测试服务');
  const admin=new pg.Pool({connectionString:process.env.TEST_DATABASE_URL});
  const name='sanlian_test_'+randomUUID().replaceAll('-','');
@@ -15,7 +15,7 @@ export async function fixture({seed=true,servers=1}={}) {
   for(let i=0;i<servers;i++){
    const instanceDb=i===0?db:await openDatabase(connectionString,{seed:false});
    if(i>0)otherPools.push(instanceDb);
-   const server=createApp(instanceDb).listen(0,'127.0.0.1');await once(server,'listening');listeners.push(server);
+   const server=createApp(instanceDb,appOptions).listen(0,'127.0.0.1');await once(server,'listening');listeners.push(server);
   }
  }
  async function stop(){
