@@ -1,0 +1,4402 @@
+{
+  "observedOn": "2026-10-30",
+  "timezone": "Asia/Hong_Kong",
+  "source": "Read-only Softr connector inspection; schema only, no user records exported.",
+  "applications": [
+    {
+      "id": "05e69ea2-6bed-4415-8bd9-74abac2d1ae4",
+      "name": "Sanlian App",
+      "workspaceId": "fa0b9a3a-69aa-4221-a59d-293a498d3dc7"
+    },
+    {
+      "id": "3d2144b4-9b5d-4780-b33e-300d6589f5e6",
+      "name": "Sanlian Connect for C",
+      "workspaceId": "fa0b9a3a-69aa-4221-a59d-293a498d3dc7"
+    },
+    {
+      "id": "95d89bae-9efe-48e1-b45f-7ec1f4c26ae3",
+      "name": "Untitled Application",
+      "workspaceId": "fa0b9a3a-69aa-4221-a59d-293a498d3dc7"
+    },
+    {
+      "id": "a49c05cc-576d-4433-87c8-a37126b2013b",
+      "name": "Copy Untitled Application",
+      "workspaceId": "fa0b9a3a-69aa-4221-a59d-293a498d3dc7"
+    },
+    {
+      "id": "b561651d-fd60-49ca-9036-046fdfdd09f6",
+      "name": "Sanlian Connect for B",
+      "workspaceId": "fa0b9a3a-69aa-4221-a59d-293a498d3dc7"
+    }
+  ],
+  "databases": [
+    {
+      "id": "18eecc0b-ceb8-46e9-9d20-acd1105ef3ef",
+      "name": "BookRecommendation",
+      "description": null,
+      "workspaceId": "fa0b9a3a-69aa-4221-a59d-293a498d3dc7",
+      "tablesCount": 2,
+      "createdAt": "2026-10-30T01:38:20.263Z",
+      "updatedAt": "2026-10-30T01:38:20.296Z",
+      "timezone": null,
+      "dateLocale": "en",
+      "numberLocale": null
+    },
+    {
+      "id": "11827b1c-5bea-4495-8061-a7690a6ad45d",
+      "name": "Untitled Database",
+      "description": null,
+      "workspaceId": "fa0b9a3a-69aa-4221-a59d-293a498d3dc7",
+      "tablesCount": 1,
+      "createdAt": "2026-10-16T03:49:56.719Z",
+      "updatedAt": "2026-10-16T03:49:56.719Z",
+      "timezone": null,
+      "dateLocale": "zh-CN",
+      "numberLocale": null
+    },
+    {
+      "id": "b470fd3f-0474-4cc4-a0e0-8fcbd39eb012",
+      "name": "Sanlian Connect",
+      "description": null,
+      "workspaceId": "fa0b9a3a-69aa-4221-a59d-293a498d3dc7",
+      "tablesCount": 10,
+      "createdAt": "2026-10-16T03:17:59.854Z",
+      "updatedAt": "2026-10-16T03:17:59.854Z",
+      "timezone": null,
+      "dateLocale": null,
+      "numberLocale": null
+    }
+  ],
+  "applicationC": {
+    "id": "3d2144b4-9b5d-4780-b33e-300d6589f5e6",
+    "name": "Sanlian Connect for C",
+    "description": null,
+    "workspaceId": "fa0b9a3a-69aa-4221-a59d-293a498d3dc7",
+    "applicationType": "REGULAR_APPLICATION",
+    "domain": null,
+    "subdomain": "alexis55244.softr.app",
+    "homePageId": "818a7f2c-39bb-4917-87c3-fe2e03ecf0d9",
+    "created": "2026-10-19T09:43:35.000Z",
+    "updated": "2026-10-30T01:37:29.000Z",
+    "published": "2026-10-30T01:29:54.000Z",
+    "emailSender": {
+      "signatureId": null,
+      "name": "Sanlian Connect for C",
+      "email": "alexis55244@softr.app",
+      "confirmed": true,
+      "isDefault": true,
+      "domainVerified": true,
+      "dnsRecords": {
+        "dkim": null,
+        "returnPath": null
+      }
+    },
+    "userSessions": {
+      "sessionExpiration": "90_DAYS",
+      "inactivityTimeout": "NEVER"
+    },
+    "login": {
+      "enabled": true,
+      "authenticationMethods": [
+        "EMAIL"
+      ],
+      "email": {
+        "loginMethods": [
+          "PASSWORD"
+        ],
+        "twoFactor": false,
+        "strongPasswords": true,
+        "codeExpiration": "5_MINUTES"
+      },
+      "signUp": {
+        "policy": "OPEN_TO_PUBLIC",
+        "allowedDomains": []
+      },
+      "authenticatorApp": {
+        "enabled": false,
+        "emailPairing": "OPTIONAL",
+        "googlePairing": "OPTIONAL",
+        "ssoPairing": "OPTIONAL"
+      },
+      "googleSettingsUrl": "https://studio.softr.io/applications/3d2144b4-9b5d-4780-b33e-300d6589f5e6/users-collection/users?tab=Authentication&openSetting=GOOGLE",
+      "ssoSettingsUrl": "https://studio.softr.io/applications/3d2144b4-9b5d-4780-b33e-300d6589f5e6/users-collection/users?tab=Authentication&openSetting=SSO",
+      "authenticatorAppSettingsUrl": "https://studio.softr.io/applications/3d2144b4-9b5d-4780-b33e-300d6589f5e6/users-collection/users?tab=Authentication&openSetting=AUTHENTICATOR_APP"
+    }
+  },
+  "pagesC": [
+    {
+      "id": "0fb3ef58-ad21-428f-8780-78435fd2d717",
+      "path": "/reset-password",
+      "name": "Reset password",
+      "enabled": true,
+      "type": "RESET_PASSWORD",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "20799e9d-d718-49cc-b08f-d15278ff46b3",
+      "path": "/wo-de-yu-yue",
+      "name": "我的预约",
+      "enabled": true,
+      "type": "USER",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "2aa69398-4167-4bdc-afdd-283e1f93dbdc",
+      "path": "/hui-yuan-xiang-qing",
+      "name": "会员详情",
+      "enabled": true,
+      "type": "USER",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "316ca634-0adb-41a1-9067-75d3a627b93e",
+      "path": "/fan-kui-ti-jiao-cheng-gong",
+      "name": "反馈提交成功",
+      "enabled": false,
+      "type": "USER",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "5162144c-c28b-42f6-ac59-d44ec09dace3",
+      "path": "/onboarding",
+      "name": "Onboarding flow",
+      "enabled": true,
+      "type": "ONBOARDING_FLOW",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "55421387-d2c6-43a6-aa39-cbab9af60470",
+      "path": "/account",
+      "name": "Account settings",
+      "enabled": true,
+      "type": "USER_ACCOUNT",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "818a7f2c-39bb-4917-87c3-fe2e03ecf0d9",
+      "path": "/",
+      "name": "Home",
+      "enabled": true,
+      "type": "USER",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "8dc90ced-83b5-4fe1-a602-79265690e4fd",
+      "path": "/huo-dong",
+      "name": "活动",
+      "enabled": true,
+      "type": "USER",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "8e2cd62b-bf78-44aa-a997-7648254d488e",
+      "path": "/404",
+      "name": "Page not found",
+      "enabled": true,
+      "type": "PAGE_NOT_FOUND",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "94dfb06d-1de7-4825-ac77-edaa5915967a",
+      "path": "/huo-dong-fan-kui-guan-li",
+      "name": "活动反馈管理",
+      "enabled": false,
+      "type": "USER",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "a1e1542c-5f64-4891-9e8d-a254daf8c2f2",
+      "path": "/huo-dong-fan-kui",
+      "name": "活动反馈",
+      "enabled": true,
+      "type": "USER",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "a28af0e1-d94e-454e-ab52-b4737652cd9a",
+      "path": "/forgot-password",
+      "name": "Forgot password",
+      "enabled": true,
+      "type": "FORGOT_PASSWORD",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "a69937e3-c233-4aeb-b8c4-218e3b4b975d",
+      "path": "/sign-up",
+      "name": "Sign up",
+      "enabled": true,
+      "type": "SIGN_UP",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "acc18603-a5cb-4740-a2ae-58d6e1294429",
+      "path": "/link-expired",
+      "name": "Link expired",
+      "enabled": true,
+      "type": "LINK_EXPIRED",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "ad528e19-81df-42e3-998f-4a8b1fb519d2",
+      "path": "/hui-yuan-lie-biao",
+      "name": "会员列表",
+      "enabled": true,
+      "type": "USER",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "b473ece7-c31a-4f74-8e8a-59cea30c30fd",
+      "path": "/401",
+      "name": "Permission denied",
+      "enabled": true,
+      "type": "PERMISSION_DENIED",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "f7aedc95-0a60-492a-9a16-8bb2d89a4e00",
+      "path": "/login",
+      "name": "Log in",
+      "enabled": true,
+      "type": "LOG_IN",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "fb16d59c-8096-4493-a5c9-47114afb6c1c",
+      "path": "/huo-dong-xiang-qing",
+      "name": "活动详情",
+      "enabled": true,
+      "type": "USER",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "fd18e353-7db5-459e-9a1c-8eebb7aedabb",
+      "path": "/c7cdf289-efa8-4e65-b64b-847b9b60db22",
+      "name": "9136419c-df18-45f2-8821-ed6fa6993b3a",
+      "enabled": true,
+      "type": "SHARED_BLOCKS",
+      "title": null,
+      "description": null
+    }
+  ],
+  "pagesB": [
+    {
+      "id": "0dca74c4-2776-4380-b11a-7f34007d7241",
+      "path": "/wo-de-yu-yue",
+      "name": "我的预约",
+      "enabled": true,
+      "type": "USER",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "190e3f35-b0e1-4841-82a3-0dc2c591929f",
+      "path": "/link-expired",
+      "name": "Link expired",
+      "enabled": true,
+      "type": "LINK_EXPIRED",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "29df44db-b827-4508-ba8f-fed389a96844",
+      "path": "/404",
+      "name": "Page not found",
+      "enabled": true,
+      "type": "PAGE_NOT_FOUND",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "339cbb99-a4f1-425d-8271-b0dc9cba56fe",
+      "path": "/huo-dong",
+      "name": "活动",
+      "enabled": true,
+      "type": "USER",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "34ebbca9-2cb9-46fe-bea0-31b851ff6d40",
+      "path": "/login",
+      "name": "Log in",
+      "enabled": true,
+      "type": "LOG_IN",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "37e8c90b-4679-4964-b513-03d24d6d7c2d",
+      "path": "/c7cdf289-efa8-4e65-b64b-847b9b60db22",
+      "name": "9136419c-df18-45f2-8821-ed6fa6993b3a",
+      "enabled": true,
+      "type": "SHARED_BLOCKS",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "52a0b7e2-c9a5-4716-b7c2-194c7b11a067",
+      "path": "/onboarding",
+      "name": "Onboarding flow",
+      "enabled": true,
+      "type": "ONBOARDING_FLOW",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "58ec8dfe-6946-496c-a9b8-154f61243f4d",
+      "path": "/sign-up",
+      "name": "Sign up",
+      "enabled": true,
+      "type": "SIGN_UP",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "6e443859-4d31-4534-a082-6a3f3a2fe507",
+      "path": "/huo-dong-xiang-qing",
+      "name": "活动详情",
+      "enabled": true,
+      "type": "USER",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "8b6fe849-4db5-4158-8e33-a3dec33e61d5",
+      "path": "/fan-kui-ti-jiao-cheng-gong",
+      "name": "反馈提交成功",
+      "enabled": false,
+      "type": "USER",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "9b9d3e94-6d97-4c2a-b60e-3d7ede705ac5",
+      "path": "/huo-dong-fan-kui",
+      "name": "活动反馈",
+      "enabled": true,
+      "type": "USER",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "baf699f7-360d-4e62-a810-659153cacbce",
+      "path": "/huo-dong-fan-kui-guan-li",
+      "name": "活动反馈管理",
+      "enabled": false,
+      "type": "USER",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "c67416f5-ac8c-43a4-8c7b-6b6a7dc51839",
+      "path": "/401",
+      "name": "Permission denied",
+      "enabled": true,
+      "type": "PERMISSION_DENIED",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "c85feb92-402f-4fd5-8ab4-3c78741872ca",
+      "path": "/account",
+      "name": "Account settings",
+      "enabled": true,
+      "type": "USER_ACCOUNT",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "c96fb4ff-cbf0-4bd4-b9cb-466c91ae1793",
+      "path": "/reset-password",
+      "name": "Reset password",
+      "enabled": true,
+      "type": "RESET_PASSWORD",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "ee934892-0097-41b5-9bb1-b40e48ad1bf5",
+      "path": "/",
+      "name": "Home",
+      "enabled": true,
+      "type": "USER",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "fe592d0b-8412-4511-b5a5-351186d9a2a0",
+      "path": "/forgot-password",
+      "name": "Forgot password",
+      "enabled": true,
+      "type": "FORGOT_PASSWORD",
+      "title": null,
+      "description": null
+    }
+  ],
+  "restrictions": [
+    {
+      "id": "06cdc026-0c9b-4814-b103-71c8be98b3a8",
+      "userGroups": [
+        {
+          "id": "203542f1-2f70-4d08-b360-8febd21be929",
+          "name": "All users"
+        }
+      ],
+      "datasource": {
+        "dataSource": {
+          "id": "3123ea6d-5e3e-4450-b385-e6d32acc1493",
+          "name": "Softr databases",
+          "type": "SOFTR_TABLES",
+          "capabilities": [
+            "DATA"
+          ]
+        },
+        "database": {
+          "id": "b470fd3f-0474-4cc4-a0e0-8fcbd39eb012",
+          "name": null
+        },
+        "schema": null,
+        "table": {
+          "id": "PuGg91ge2phIra",
+          "name": null
+        },
+        "resourceIdentifier": {
+          "tableId": "PuGg91ge2phIra",
+          "tablespaceId": "b470fd3f-0474-4cc4-a0e0-8fcbd39eb012"
+        }
+      },
+      "rules": [
+        {
+          "operation": "VIEW",
+          "effect": "ALLOW_ONLY",
+          "records": "MATCHING",
+          "condition": {
+            "logicalOperator": "AND",
+            "expressions": [
+              {
+                "subject": {
+                  "field": "c63tL",
+                  "type": "TEXT"
+                },
+                "operator": "IS_NOT_EMPTY",
+                "value": []
+              },
+              {
+                "subject": {
+                  "field": "c63tL",
+                  "type": "TEXT"
+                },
+                "operator": "IS",
+                "value": [
+                  "{USER:::EMAIL}"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "25f567ae-bcfb-4210-8b5c-bba73da94c4d",
+      "userGroups": [
+        {
+          "id": "203542f1-2f70-4d08-b360-8febd21be929",
+          "name": "All users"
+        }
+      ],
+      "datasource": {
+        "dataSource": {
+          "id": "3123ea6d-5e3e-4450-b385-e6d32acc1493",
+          "name": "Softr databases",
+          "type": "SOFTR_TABLES",
+          "capabilities": [
+            "DATA"
+          ]
+        },
+        "database": {
+          "id": "b470fd3f-0474-4cc4-a0e0-8fcbd39eb012",
+          "name": null
+        },
+        "schema": null,
+        "table": {
+          "id": "zEcammo3egufE9",
+          "name": null
+        },
+        "resourceIdentifier": {
+          "tableId": "zEcammo3egufE9",
+          "tablespaceId": "b470fd3f-0474-4cc4-a0e0-8fcbd39eb012"
+        }
+      },
+      "rules": [
+        {
+          "operation": "VIEW",
+          "effect": "ALLOW_ONLY",
+          "records": "MATCHING",
+          "condition": {
+            "logicalOperator": "AND",
+            "expressions": [
+              {
+                "subject": {
+                  "field": "4Iwjy",
+                  "type": "TEXT"
+                },
+                "operator": "IS_NOT_EMPTY",
+                "value": []
+              },
+              {
+                "subject": {
+                  "field": "4Iwjy",
+                  "type": "TEXT"
+                },
+                "operator": "IS",
+                "value": [
+                  "{USER:::EMAIL}"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "40719275-5e50-4e9a-94d9-2aa14364fa39",
+      "userGroups": [
+        {
+          "id": "203542f1-2f70-4d08-b360-8febd21be929",
+          "name": "All users"
+        }
+      ],
+      "datasource": {
+        "dataSource": {
+          "id": "3123ea6d-5e3e-4450-b385-e6d32acc1493",
+          "name": "Softr databases",
+          "type": "SOFTR_TABLES",
+          "capabilities": [
+            "DATA"
+          ]
+        },
+        "database": {
+          "id": "b470fd3f-0474-4cc4-a0e0-8fcbd39eb012",
+          "name": null
+        },
+        "schema": null,
+        "table": {
+          "id": "3MwTRjVkVcMm6z",
+          "name": null
+        },
+        "resourceIdentifier": {
+          "tableId": "3MwTRjVkVcMm6z",
+          "tablespaceId": "b470fd3f-0474-4cc4-a0e0-8fcbd39eb012"
+        }
+      },
+      "rules": [
+        {
+          "operation": "VIEW",
+          "effect": "ALLOW_ONLY",
+          "records": "MATCHING",
+          "condition": {
+            "logicalOperator": "AND",
+            "expressions": [
+              {
+                "subject": {
+                  "field": "u746y",
+                  "type": "TEXT"
+                },
+                "operator": "IS_NOT_EMPTY",
+                "value": []
+              },
+              {
+                "subject": {
+                  "field": "u746y",
+                  "type": "TEXT"
+                },
+                "operator": "IS",
+                "value": [
+                  "{USER:::EMAIL}"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "e1eee686-d664-4686-af63-93f4e01e7d7d",
+      "userGroups": [
+        {
+          "id": "203542f1-2f70-4d08-b360-8febd21be929",
+          "name": "All users"
+        }
+      ],
+      "datasource": {
+        "dataSource": {
+          "id": "3123ea6d-5e3e-4450-b385-e6d32acc1493",
+          "name": "Softr databases",
+          "type": "SOFTR_TABLES",
+          "capabilities": [
+            "DATA"
+          ]
+        },
+        "database": {
+          "id": "b470fd3f-0474-4cc4-a0e0-8fcbd39eb012",
+          "name": null
+        },
+        "schema": null,
+        "table": {
+          "id": "gyLDTF0J8GYwOz",
+          "name": null
+        },
+        "resourceIdentifier": {
+          "tableId": "gyLDTF0J8GYwOz",
+          "tablespaceId": "b470fd3f-0474-4cc4-a0e0-8fcbd39eb012"
+        }
+      },
+      "rules": [
+        {
+          "operation": "VIEW",
+          "effect": "ALLOW_ONLY",
+          "records": "MATCHING",
+          "condition": {
+            "logicalOperator": "AND",
+            "expressions": [
+              {
+                "subject": {
+                  "field": "Mm62W",
+                  "type": "TEXT"
+                },
+                "operator": "IS",
+                "value": [
+                  "c23b4811-2084-4c3d-821e-68de5974722e"
+                ]
+              },
+              {
+                "subject": {
+                  "field": "CkqG7",
+                  "type": "BOOLEAN"
+                },
+                "operator": "IS",
+                "value": [
+                  "false"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "id": "PuGg91ge2phIra",
+      "name": "Users",
+      "description": null,
+      "recordsCount": 17,
+      "createdAt": "2026-10-16T03:17:59.862Z",
+      "updatedAt": "2026-10-23T02:49:14.245Z",
+      "schema": {
+        "id": "PuGg91ge2phIra",
+        "name": "Users",
+        "description": null,
+        "defaultViewId": "KKj71fO7jnbJXY",
+        "primaryFieldId": "c63tL",
+        "fields": [
+          {
+            "id": "c63tL",
+            "name": "Email",
+            "description": null,
+            "type": "EMAIL",
+            "options": {},
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2025-05-12T12:20:35.000Z",
+            "updatedAt": "2025-05-12T12:20:35.000Z"
+          },
+          {
+            "id": "o0JWv",
+            "name": "Name",
+            "description": null,
+            "type": "SINGLE_LINE_TEXT",
+            "options": {
+              "minLength": 0,
+              "maxLength": 1024
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2025-05-12T12:14:35.000Z",
+            "updatedAt": "2025-05-12T12:14:35.000Z"
+          },
+          {
+            "id": "QH0S6",
+            "name": "Avatar",
+            "description": "",
+            "type": "ATTACHMENT",
+            "options": {
+              "showAs": "PREVIEW",
+              "inferredFileType": "IMAGE",
+              "enableFileLinkExpiration": true,
+              "fileLinkExpirationValue": 1,
+              "fileLinkExpirationUnit": "HOURS"
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-01-20T14:11:01.501Z",
+            "updatedAt": "2026-10-16T03:18:01.705Z"
+          },
+          {
+            "id": "z0b2k",
+            "name": "Role",
+            "description": "",
+            "type": "SELECT",
+            "options": {
+              "choices": [
+                {
+                  "id": "52186134-8cd4-46e5-b324-67476ccae0dd",
+                  "label": "staff",
+                  "color": "#8e4ec6"
+                },
+                {
+                  "id": "7de5481f-59a2-4ee8-a96a-e880fc5cefbf",
+                  "label": "guest",
+                  "color": "#f53878"
+                }
+              ],
+              "allowToAddNewChoice": true,
+              "multiColorMode": true,
+              "sorting": "CUSTOM",
+              "enforceOrder": false
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": {
+              "id": "7de5481f-59a2-4ee8-a96a-e880fc5cefbf",
+              "label": "guest"
+            },
+            "createdAt": "2026-02-23T18:31:00.854Z",
+            "updatedAt": "2026-10-23T02:49:14.245Z"
+          },
+          {
+            "id": "MdNtL",
+            "name": "registrations",
+            "description": "关联 registration（中文：该用户的报名记录）",
+            "type": "LINKED_RECORD",
+            "options": {
+              "linkedTableId": "zEcammo3egufE9",
+              "inverseLinkFieldId": "I25SP",
+              "viewId": null,
+              "sorting": null,
+              "filter": null,
+              "enforceOrder": false
+            },
+            "allowMultipleEntries": true,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:19:07.843Z",
+            "updatedAt": "2026-10-16T03:19:09.907Z"
+          },
+          {
+            "id": "VzSnO",
+            "name": "orders",
+            "description": "关联 _order（中文：该用户的饮品订单）",
+            "type": "LINKED_RECORD",
+            "options": {
+              "linkedTableId": "nHueZ6rEXbu0qA",
+              "inverseLinkFieldId": "irYgM",
+              "viewId": null,
+              "sorting": null,
+              "filter": null,
+              "enforceOrder": false
+            },
+            "allowMultipleEntries": true,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:19:13.546Z",
+            "updatedAt": "2026-10-16T03:19:14.720Z"
+          },
+          {
+            "id": "spUh3",
+            "name": "activities_created",
+            "description": "关联 activity（中文：该用户创建的活动）",
+            "type": "LINKED_RECORD",
+            "options": {
+              "linkedTableId": "gyLDTF0J8GYwOz",
+              "inverseLinkFieldId": "0GO25",
+              "viewId": null,
+              "sorting": null,
+              "filter": null,
+              "enforceOrder": false
+            },
+            "allowMultipleEntries": true,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:19:15.766Z",
+            "updatedAt": "2026-10-16T03:19:16.957Z"
+          },
+          {
+            "id": "rJadq",
+            "name": "activities_audited",
+            "description": "关联 activity（中文：该用户审核的活动）",
+            "type": "LINKED_RECORD",
+            "options": {
+              "linkedTableId": "gyLDTF0J8GYwOz",
+              "inverseLinkFieldId": "O2Dq2",
+              "viewId": null,
+              "sorting": null,
+              "filter": null,
+              "enforceOrder": false
+            },
+            "allowMultipleEntries": true,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:19:17.757Z",
+            "updatedAt": "2026-10-16T03:19:18.919Z"
+          },
+          {
+            "id": "RjJoS",
+            "name": "feedbacks_submitted",
+            "description": "关联 feedback（中文：该用户提交的反馈）",
+            "type": "LINKED_RECORD",
+            "options": {
+              "linkedTableId": "3MwTRjVkVcMm6z",
+              "inverseLinkFieldId": "QPpOM",
+              "viewId": null,
+              "sorting": null,
+              "filter": null,
+              "enforceOrder": false
+            },
+            "allowMultipleEntries": true,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:24:50.744Z",
+            "updatedAt": "2026-10-16T03:24:51.900Z"
+          },
+          {
+            "id": "gwPqL",
+            "name": "feedbacks_handled",
+            "description": "关联 feedback（中文：该用户处理的反馈）",
+            "type": "LINKED_RECORD",
+            "options": {
+              "linkedTableId": "3MwTRjVkVcMm6z",
+              "inverseLinkFieldId": "bryv2",
+              "viewId": null,
+              "sorting": null,
+              "filter": null,
+              "enforceOrder": false
+            },
+            "allowMultipleEntries": true,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:24:52.699Z",
+            "updatedAt": "2026-10-16T03:24:53.866Z"
+          },
+          {
+            "id": "v5Mvu",
+            "name": "operation_logs_acted",
+            "description": "关联 operation_log（中文：该用户执行的操作日志）",
+            "type": "LINKED_RECORD",
+            "options": {
+              "linkedTableId": "W9nD7HlW2yGcdR",
+              "inverseLinkFieldId": "I4bRf",
+              "viewId": null,
+              "sorting": null,
+              "filter": null,
+              "enforceOrder": false
+            },
+            "allowMultipleEntries": true,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:24:59.647Z",
+            "updatedAt": "2026-10-16T03:25:00.794Z"
+          },
+          {
+            "id": "TkMRB",
+            "name": "operation_logs_targeted",
+            "description": "关联 operation_log（中文：涉及该用户的操作日志）",
+            "type": "LINKED_RECORD",
+            "options": {
+              "linkedTableId": "W9nD7HlW2yGcdR",
+              "inverseLinkFieldId": "eJHGB",
+              "viewId": null,
+              "sorting": null,
+              "filter": null,
+              "enforceOrder": false
+            },
+            "allowMultipleEntries": true,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:25:03.571Z",
+            "updatedAt": "2026-10-16T03:25:04.726Z"
+          },
+          {
+            "id": "KWLtd",
+            "name": "enable_login",
+            "description": "控制是否同步为应用登录账号；示例记录关闭，新注册用户固定开启。",
+            "type": "CHECKBOX",
+            "options": {
+              "icon": "CHECK",
+              "color": "#386af5"
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-23T02:27:56.419Z",
+            "updatedAt": "2026-10-23T02:27:56.419Z"
+          }
+        ],
+        "createdAt": "2026-10-16T03:17:59.862Z",
+        "updatedAt": "2026-10-23T02:49:14.245Z"
+      }
+    },
+    {
+      "id": "gyLDTF0J8GYwOz",
+      "name": "activity",
+      "description": null,
+      "recordsCount": 8,
+      "createdAt": "2026-10-16T03:18:54.660Z",
+      "updatedAt": "2026-10-26T08:33:58.765Z",
+      "schema": {
+        "id": "gyLDTF0J8GYwOz",
+        "name": "activity",
+        "description": null,
+        "defaultViewId": "AyIIruOEuNtdjv",
+        "primaryFieldId": "v4zaF",
+        "fields": [
+          {
+            "id": "v4zaF",
+            "name": "Display Name",
+            "description": "活动显示名称（中文：用于展示的活动编号）",
+            "type": "FORMULA",
+            "options": {
+              "formula": "\"ACT-\" & {activity_id}",
+              "referencedFieldIds": [
+                "TmMJC"
+              ],
+              "returnedField": {
+                "type": "SINGLE_LINE_TEXT",
+                "options": {
+                  "minLength": 0,
+                  "maxLength": 1024
+                },
+                "aiOptions": {
+                  "aiFillable": false,
+                  "aiOnly": true,
+                  "allowWebSearch": false,
+                  "allowCreatingNewOptions": false,
+                  "aiModel": "openai-gpt-4-1",
+                  "prompt": "",
+                  "canBeTriggeredManually": true,
+                  "runWhenRecordIsCreated": true,
+                  "runWhenRecordIsUpdated": true,
+                  "runOnUpdateMode": "ANY_FIELD",
+                  "dependentFieldIds": [],
+                  "referencedFieldIds": null,
+                  "skipIfValueExists": true,
+                  "runFilter": null
+                }
+              },
+              "valid": true
+            },
+            "allowMultipleEntries": false,
+            "readonly": true,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:19:29.538Z",
+            "updatedAt": "2026-10-16T03:19:29.538Z"
+          },
+          {
+            "id": "TmMJC",
+            "name": "activity_id",
+            "description": "活动业务展示编号（中文：活动编号）",
+            "type": "AUTONUMBER",
+            "options": {
+              "counter": 9
+            },
+            "allowMultipleEntries": false,
+            "readonly": true,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:54.699Z",
+            "updatedAt": "2026-10-16T03:18:54.699Z"
+          },
+          {
+            "id": "J21Dd",
+            "name": "title",
+            "description": "活动标题（中文：活动标题；必填需后续配置）",
+            "type": "SINGLE_LINE_TEXT",
+            "options": {
+              "minLength": 0,
+              "maxLength": 1024
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:54.699Z",
+            "updatedAt": "2026-10-16T03:18:54.699Z"
+          },
+          {
+            "id": "oQYhR",
+            "name": "category",
+            "description": "活动分类（中文：活动分类；必填需后续配置）",
+            "type": "SELECT",
+            "options": {
+              "choices": [
+                {
+                  "id": "e8ddaa55-8cc3-42c5-a305-82d96b9be546",
+                  "label": "读书会",
+                  "color": "#386af5"
+                },
+                {
+                  "id": "af4302df-3999-4e48-8e34-3ac576e8ec5d",
+                  "label": "讲座",
+                  "color": "#8e4ec6"
+                },
+                {
+                  "id": "bf0ee5a8-ae0f-449a-9bf2-6b1325ad4bbc",
+                  "label": "新书分享",
+                  "color": "#cf3897"
+                },
+                {
+                  "id": "faee6391-913a-482b-82ce-38e233fc3a34",
+                  "label": "展览",
+                  "color": "#f53878"
+                },
+                {
+                  "id": "0484f140-9e8a-4052-bd87-92f2bac1b781",
+                  "label": "亲子",
+                  "color": "#d92626"
+                },
+                {
+                  "id": "33c2fe66-854d-4963-811d-cbf159f4c6b9",
+                  "label": "科普",
+                  "color": "#ef5f00"
+                },
+                {
+                  "id": "691c5240-4579-4cd2-867d-ccb739a043f0",
+                  "label": "德语文学",
+                  "color": "#fcac00"
+                },
+                {
+                  "id": "96639913-b753-4829-8977-ed1e5595293c",
+                  "label": "自然观察·观星",
+                  "color": "#ffe629"
+                }
+              ],
+              "allowToAddNewChoice": false,
+              "multiColorMode": true,
+              "sorting": "CUSTOM",
+              "enforceOrder": true
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:54.699Z",
+            "updatedAt": "2026-10-16T03:18:54.699Z"
+          },
+          {
+            "id": "sfLx7",
+            "name": "cover_url",
+            "description": "封面地址（中文：封面图片 URL）",
+            "type": "URL",
+            "options": {},
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:54.699Z",
+            "updatedAt": "2026-10-16T03:18:54.699Z"
+          },
+          {
+            "id": "VyyVw",
+            "name": "description",
+            "description": "活动流程、讲师、须知（中文：活动详情说明）",
+            "type": "LONG_TEXT",
+            "options": {
+              "type": "TEXT"
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:54.699Z",
+            "updatedAt": "2026-10-16T03:18:54.699Z"
+          },
+          {
+            "id": "hWeai",
+            "name": "start_time",
+            "description": "开始时间（中文：活动开始时间；必填需后续配置；业务口径 Asia/Shanghai/UTC+8 需后续统一设置）",
+            "type": "DATETIME",
+            "options": {
+              "precision": "DATETIME",
+              "useRelativeDatetimeFormat": false,
+              "timezoneType": "LOCAL",
+              "timezone": null
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:54.699Z",
+            "updatedAt": "2026-10-16T03:18:54.699Z"
+          },
+          {
+            "id": "JaspY",
+            "name": "end_time",
+            "description": "结束时间（中文：活动结束时间；可空；业务口径 Asia/Shanghai/UTC+8 需后续统一设置）",
+            "type": "DATETIME",
+            "options": {
+              "precision": "DATETIME",
+              "useRelativeDatetimeFormat": false,
+              "timezoneType": "LOCAL",
+              "timezone": null
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:54.699Z",
+            "updatedAt": "2026-10-16T03:18:54.699Z"
+          },
+          {
+            "id": "tOT7B",
+            "name": "location",
+            "description": "活动地点（中文：活动地点；必填需后续配置）",
+            "type": "SINGLE_LINE_TEXT",
+            "options": {
+              "minLength": 0,
+              "maxLength": 1024
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:54.699Z",
+            "updatedAt": "2026-10-16T03:18:54.699Z"
+          },
+          {
+            "id": "lgXhL",
+            "name": "capacity",
+            "description": "名额上限（中文：活动容量；默认 40；整数约束需后续配置）",
+            "type": "NUMBER",
+            "options": {
+              "precision": 0,
+              "min": 0,
+              "max": null,
+              "showThousandSeparator": false,
+              "thousandSeparatorLocale": "DEFAULT",
+              "largeNumberAbbreviation": "NONE",
+              "prefix": null,
+              "suffix": null
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": 40,
+            "createdAt": "2026-10-16T03:18:54.699Z",
+            "updatedAt": "2026-10-16T03:18:54.699Z"
+          },
+          {
+            "id": "ua2cx",
+            "name": "enrolled_count",
+            "description": "有效报名人数冗余计数（中文：已报名人数；默认 0；需与报名明细核对，不能仅靠此字段保证不超额；整数约束需后续配置）",
+            "type": "NUMBER",
+            "options": {
+              "precision": 0,
+              "min": 0,
+              "max": null,
+              "showThousandSeparator": false,
+              "thousandSeparatorLocale": "DEFAULT",
+              "largeNumberAbbreviation": "NONE",
+              "prefix": null,
+              "suffix": null
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": 0,
+            "createdAt": "2026-10-16T03:18:54.699Z",
+            "updatedAt": "2026-10-16T03:18:54.699Z"
+          },
+          {
+            "id": "kIrd9",
+            "name": "fee",
+            "description": "活动费用（中文：报名费用；币种 CNY；默认 0）",
+            "type": "CURRENCY",
+            "options": {
+              "precision": 2,
+              "min": 0,
+              "max": null,
+              "isoCode": "CNY",
+              "customSymbol": "CN¥",
+              "showAs": "SYMBOL",
+              "showThousandSeparator": true,
+              "thousandSeparatorLocale": "DEFAULT",
+              "largeNumberAbbreviation": "NONE",
+              "symbolOrCodePosition": "BEFORE"
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": 0,
+            "createdAt": "2026-10-16T03:18:54.699Z",
+            "updatedAt": "2026-10-16T03:18:54.699Z"
+          },
+          {
+            "id": "Mm62W",
+            "name": "publish_status",
+            "description": "发布状态（中文：活动发布状态；默认 0_草稿）",
+            "type": "SELECT",
+            "options": {
+              "choices": [
+                {
+                  "id": "2dcef434-aac7-453d-8996-561202973cf6",
+                  "label": "0_草稿",
+                  "color": "#386af5"
+                },
+                {
+                  "id": "8812bc98-510f-4103-b475-ddb0f43042dd",
+                  "label": "1_待门店审核",
+                  "color": "#8e4ec6"
+                },
+                {
+                  "id": "c23b4811-2084-4c3d-821e-68de5974722e",
+                  "label": "2_已发布",
+                  "color": "#cf3897"
+                },
+                {
+                  "id": "5742a9aa-6eba-4531-8206-24e785df0d49",
+                  "label": "3_已下线",
+                  "color": "#f53878"
+                }
+              ],
+              "allowToAddNewChoice": false,
+              "multiColorMode": true,
+              "sorting": "CUSTOM",
+              "enforceOrder": true
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": {
+              "id": "\"0_草稿\"",
+              "label": "\"0_草稿\""
+            },
+            "createdAt": "2026-10-16T03:18:54.699Z",
+            "updatedAt": "2026-10-16T03:18:54.699Z"
+          },
+          {
+            "id": "oEMs5",
+            "name": "audit_at",
+            "description": "审核时间（中文：审核通过/驳回时间；可空；业务口径 Asia/Shanghai/UTC+8 需后续统一设置）",
+            "type": "DATETIME",
+            "options": {
+              "precision": "DATETIME",
+              "useRelativeDatetimeFormat": false,
+              "timezoneType": "LOCAL",
+              "timezone": null
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:54.699Z",
+            "updatedAt": "2026-10-16T03:18:54.699Z"
+          },
+          {
+            "id": "2KhL3",
+            "name": "created_at",
+            "description": "创建时间（中文：记录创建时间）",
+            "type": "CREATED_AT",
+            "options": {
+              "precision": "DATETIME",
+              "useRelativeDatetimeFormat": false,
+              "timezoneType": "LOCAL",
+              "timezone": "DEFAULT"
+            },
+            "allowMultipleEntries": false,
+            "readonly": true,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:54.699Z",
+            "updatedAt": "2026-10-16T03:18:54.699Z"
+          },
+          {
+            "id": "au1Q8",
+            "name": "updated_at",
+            "description": "更新时间（中文：最后修改时间）",
+            "type": "UPDATED_AT",
+            "options": {
+              "precision": "DATETIME",
+              "useRelativeDatetimeFormat": false,
+              "timezoneType": "LOCAL",
+              "timezone": "DEFAULT",
+              "changePolicy": "ANY_EDITABLE_FIELD",
+              "specificFieldIds": []
+            },
+            "allowMultipleEntries": false,
+            "readonly": true,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:54.699Z",
+            "updatedAt": "2026-10-16T03:18:54.699Z"
+          },
+          {
+            "id": "hTQbl",
+            "name": "audit_reason",
+            "description": "审核驳回原因（中文：审核不通过原因）",
+            "type": "LONG_TEXT",
+            "options": {
+              "type": "TEXT"
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:54.699Z",
+            "updatedAt": "2026-10-16T03:18:54.699Z"
+          },
+          {
+            "id": "CkqG7",
+            "name": "is_deleted",
+            "description": "软删除标记（中文：是否已软删除；默认 false）",
+            "type": "CHECKBOX",
+            "options": {
+              "icon": "CHECK",
+              "color": "#386af5"
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": false,
+            "createdAt": "2026-10-16T03:18:54.699Z",
+            "updatedAt": "2026-10-16T03:18:54.699Z"
+          },
+          {
+            "id": "H1Dvf",
+            "name": "deleted_at",
+            "description": "删除时间（中文：软删除时间；可空；业务口径 Asia/Shanghai/UTC+8 需后续统一设置）",
+            "type": "DATETIME",
+            "options": {
+              "precision": "DATETIME",
+              "useRelativeDatetimeFormat": false,
+              "timezoneType": "LOCAL",
+              "timezone": null
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:54.699Z",
+            "updatedAt": "2026-10-16T03:18:54.699Z"
+          },
+          {
+            "id": "qXeo9",
+            "name": "registrations",
+            "description": "关联 registration（中文：该活动的报名记录）",
+            "type": "LINKED_RECORD",
+            "options": {
+              "linkedTableId": "zEcammo3egufE9",
+              "inverseLinkFieldId": "jyOQK",
+              "viewId": null,
+              "sorting": null,
+              "filter": null,
+              "enforceOrder": false
+            },
+            "allowMultipleEntries": true,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:19:10.767Z",
+            "updatedAt": "2026-10-16T03:19:12.469Z"
+          },
+          {
+            "id": "0GO25",
+            "name": "created_by",
+            "description": "关联 user（中文：创建活动的员工；单条关联；必填需后续配置；不要用系统 Created By 替代）",
+            "type": "LINKED_RECORD",
+            "options": {
+              "linkedTableId": "PuGg91ge2phIra",
+              "inverseLinkFieldId": "spUh3",
+              "viewId": null,
+              "sorting": null,
+              "filter": null,
+              "enforceOrder": false
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:19:15.746Z",
+            "updatedAt": "2026-10-16T03:19:15.746Z"
+          },
+          {
+            "id": "O2Dq2",
+            "name": "audit_by",
+            "description": "关联 user（中文：审核人；单条关联；可空；不要用系统 Created By 替代）",
+            "type": "LINKED_RECORD",
+            "options": {
+              "linkedTableId": "PuGg91ge2phIra",
+              "inverseLinkFieldId": "rJadq",
+              "viewId": null,
+              "sorting": null,
+              "filter": null,
+              "enforceOrder": false
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:19:17.740Z",
+            "updatedAt": "2026-10-16T03:19:17.740Z"
+          },
+          {
+            "id": "Eoza9",
+            "name": "operation_logs",
+            "description": "关联 operation_log（中文：该活动的操作日志）",
+            "type": "LINKED_RECORD",
+            "options": {
+              "linkedTableId": "W9nD7HlW2yGcdR",
+              "inverseLinkFieldId": "gWLBa",
+              "viewId": null,
+              "sorting": null,
+              "filter": null,
+              "enforceOrder": false
+            },
+            "allowMultipleEntries": true,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:25:01.592Z",
+            "updatedAt": "2026-10-16T03:25:02.772Z"
+          },
+          {
+            "id": "jxOdE",
+            "name": "activity_feedback",
+            "description": null,
+            "type": "LINKED_RECORD",
+            "options": {
+              "linkedTableId": "3MwTRjVkVcMm6z",
+              "inverseLinkFieldId": "FZyGi",
+              "viewId": null,
+              "sorting": null,
+              "filter": null,
+              "enforceOrder": false
+            },
+            "allowMultipleEntries": true,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-23T01:31:43.100Z",
+            "updatedAt": "2026-10-23T01:31:43.100Z"
+          }
+        ],
+        "createdAt": "2026-10-16T03:18:54.660Z",
+        "updatedAt": "2026-10-26T08:33:58.765Z"
+      }
+    },
+    {
+      "id": "zEcammo3egufE9",
+      "name": "registration",
+      "description": null,
+      "recordsCount": 32,
+      "createdAt": "2026-10-16T03:18:55.283Z",
+      "updatedAt": "2026-10-26T06:42:37.934Z",
+      "schema": {
+        "id": "zEcammo3egufE9",
+        "name": "registration",
+        "description": null,
+        "defaultViewId": "YpKc2PR8nsltEA",
+        "primaryFieldId": "wlAox",
+        "fields": [
+          {
+            "id": "wlAox",
+            "name": "Display Name",
+            "description": "报名显示名称（中文：用于展示的报名编号）",
+            "type": "FORMULA",
+            "options": {
+              "formula": "\"REG-\" & {reg_id}",
+              "referencedFieldIds": [
+                "3hyj9"
+              ],
+              "returnedField": {
+                "type": "SINGLE_LINE_TEXT",
+                "options": {
+                  "minLength": 0,
+                  "maxLength": 1024
+                },
+                "aiOptions": {
+                  "aiFillable": false,
+                  "aiOnly": true,
+                  "allowWebSearch": false,
+                  "allowCreatingNewOptions": false,
+                  "aiModel": "openai-gpt-4-1",
+                  "prompt": "",
+                  "canBeTriggeredManually": true,
+                  "runWhenRecordIsCreated": true,
+                  "runWhenRecordIsUpdated": true,
+                  "runOnUpdateMode": "ANY_FIELD",
+                  "dependentFieldIds": [],
+                  "referencedFieldIds": null,
+                  "skipIfValueExists": true,
+                  "runFilter": null
+                }
+              },
+              "valid": true
+            },
+            "allowMultipleEntries": false,
+            "readonly": true,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:19:30.643Z",
+            "updatedAt": "2026-10-16T03:19:30.643Z"
+          },
+          {
+            "id": "3hyj9",
+            "name": "reg_id",
+            "description": "报名业务展示编号（中文：报名编号）",
+            "type": "AUTONUMBER",
+            "options": {
+              "counter": 33
+            },
+            "allowMultipleEntries": false,
+            "readonly": true,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:55.326Z",
+            "updatedAt": "2026-10-16T03:18:55.326Z"
+          },
+          {
+            "id": "P3DK4",
+            "name": "attendee_name",
+            "description": "报名人姓名快照（中文：本次报名姓名；必填需后续配置）",
+            "type": "SINGLE_LINE_TEXT",
+            "options": {
+              "minLength": 0,
+              "maxLength": 1024
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:55.326Z",
+            "updatedAt": "2026-10-16T03:18:55.326Z"
+          },
+          {
+            "id": "L9aU1",
+            "name": "phone",
+            "description": "报名联系方式快照（中文：本次报名手机号；必填需后续配置；不使用 Lookup 替代）",
+            "type": "PHONE",
+            "options": {
+              "format": "INTERNATIONAL",
+              "countryCode": null
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:55.326Z",
+            "updatedAt": "2026-10-16T03:18:55.326Z"
+          },
+          {
+            "id": "vkP1d",
+            "name": "headcount",
+            "description": "人数（中文：报名人数；默认 1；待确认：名额按报名记录数还是实际到场人数计算；整数约束需后续配置）",
+            "type": "NUMBER",
+            "options": {
+              "precision": 0,
+              "min": 1,
+              "max": null,
+              "showThousandSeparator": false,
+              "thousandSeparatorLocale": "DEFAULT",
+              "largeNumberAbbreviation": "NONE",
+              "prefix": null,
+              "suffix": null
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": 1,
+            "createdAt": "2026-10-16T03:18:55.326Z",
+            "updatedAt": "2026-10-16T03:18:55.326Z"
+          },
+          {
+            "id": "DymKQ",
+            "name": "ticket_code",
+            "description": "随机核销码（中文：签到/核销码；必填且唯一需后续配置；需后续安全生成与唯一性校验）",
+            "type": "SINGLE_LINE_TEXT",
+            "options": {
+              "minLength": 0,
+              "maxLength": 1024
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:55.326Z",
+            "updatedAt": "2026-10-16T03:18:55.326Z"
+          },
+          {
+            "id": "wSGSq",
+            "name": "reg_status",
+            "description": "报名状态（中文：报名/取消/签到状态；默认 1_已报名）",
+            "type": "SELECT",
+            "options": {
+              "choices": [
+                {
+                  "id": "ee0e5f5d-43bf-4573-9950-fff1eeff1511",
+                  "label": "0_待确认",
+                  "color": "#fcac00"
+                },
+                {
+                  "id": "1ce20ecc-f2e3-4f45-8987-180af60ab00c",
+                  "label": "1_已报名",
+                  "color": "#386af5"
+                },
+                {
+                  "id": "25761145-c455-4710-8d4f-75a6d28db6f4",
+                  "label": "2_已取消",
+                  "color": "#8e4ec6"
+                },
+                {
+                  "id": "dce1ada2-3d08-4fd6-9707-e539a9f9eda7",
+                  "label": "3_已签到",
+                  "color": "#cf3897"
+                }
+              ],
+              "allowToAddNewChoice": false,
+              "multiColorMode": true,
+              "sorting": "CUSTOM",
+              "enforceOrder": true
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": {
+              "id": "ee0e5f5d-43bf-4573-9950-fff1eeff1511",
+              "label": "0_待确认"
+            },
+            "createdAt": "2026-10-16T03:18:55.326Z",
+            "updatedAt": "2026-10-23T02:49:45.455Z"
+          },
+          {
+            "id": "Rhhpg",
+            "name": "checked_in_at",
+            "description": "签到时间（中文：实际签到时间；可空；业务口径 Asia/Shanghai/UTC+8 需后续统一设置）",
+            "type": "DATETIME",
+            "options": {
+              "precision": "DATETIME",
+              "useRelativeDatetimeFormat": false,
+              "timezoneType": "LOCAL",
+              "timezone": null
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:55.326Z",
+            "updatedAt": "2026-10-16T03:18:55.326Z"
+          },
+          {
+            "id": "Z5odQ",
+            "name": "cancelled_at",
+            "description": "取消时间（中文：取消报名时间；可空；业务口径 Asia/Shanghai/UTC+8 需后续统一设置）",
+            "type": "DATETIME",
+            "options": {
+              "precision": "DATETIME",
+              "useRelativeDatetimeFormat": false,
+              "timezoneType": "LOCAL",
+              "timezone": null
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:55.326Z",
+            "updatedAt": "2026-10-16T03:18:55.326Z"
+          },
+          {
+            "id": "78zyq",
+            "name": "created_at",
+            "description": "创建时间（中文：记录创建时间）",
+            "type": "CREATED_AT",
+            "options": {
+              "precision": "DATETIME",
+              "useRelativeDatetimeFormat": false,
+              "timezoneType": "LOCAL",
+              "timezone": "DEFAULT"
+            },
+            "allowMultipleEntries": false,
+            "readonly": true,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:55.326Z",
+            "updatedAt": "2026-10-16T03:18:55.326Z"
+          },
+          {
+            "id": "kkBFT",
+            "name": "privacy_consent",
+            "description": "隐私同意（中文：是否同意隐私说明；默认 false）",
+            "type": "CHECKBOX",
+            "options": {
+              "icon": "CHECK",
+              "color": "#386af5"
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": false,
+            "createdAt": "2026-10-16T03:18:55.326Z",
+            "updatedAt": "2026-10-16T03:18:55.326Z"
+          },
+          {
+            "id": "UCQ0E",
+            "name": "privacy_consent_at",
+            "description": "隐私同意时间（中文：同意隐私说明的时间；可空；业务口径 Asia/Shanghai/UTC+8 需后续统一设置）",
+            "type": "DATETIME",
+            "options": {
+              "precision": "DATETIME",
+              "useRelativeDatetimeFormat": false,
+              "timezoneType": "LOCAL",
+              "timezone": null
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:55.326Z",
+            "updatedAt": "2026-10-16T03:18:55.326Z"
+          },
+          {
+            "id": "I25SP",
+            "name": "user_id",
+            "description": "关联 user（中文：报名用户；单条关联；可空；游客兼容设计）",
+            "type": "LINKED_RECORD",
+            "options": {
+              "linkedTableId": "PuGg91ge2phIra",
+              "inverseLinkFieldId": "MdNtL",
+              "viewId": null,
+              "sorting": null,
+              "filter": null,
+              "enforceOrder": false
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:19:07.823Z",
+            "updatedAt": "2026-10-16T03:19:07.823Z"
+          },
+          {
+            "id": "jyOQK",
+            "name": "activity_id",
+            "description": "关联 activity（中文：报名所属活动；单条关联；必填需后续配置）",
+            "type": "LINKED_RECORD",
+            "options": {
+              "linkedTableId": "gyLDTF0J8GYwOz",
+              "inverseLinkFieldId": "qXeo9",
+              "viewId": null,
+              "sorting": null,
+              "filter": null,
+              "enforceOrder": false
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:19:10.747Z",
+            "updatedAt": "2026-10-16T03:19:10.747Z"
+          },
+          {
+            "id": "4Iwjy",
+            "name": "owner_email",
+            "description": "由关联用户 Email 自动取得，用于所有权读取限制",
+            "type": "LOOKUP",
+            "options": {
+              "linkedRecordFieldId": "I25SP",
+              "lookupFieldId": "c63tL",
+              "returnedField": {
+                "type": "EMAIL",
+                "aiOptions": {
+                  "aiFillable": false,
+                  "aiOnly": true,
+                  "allowWebSearch": false,
+                  "allowCreatingNewOptions": false,
+                  "aiModel": "openai-gpt-4-1",
+                  "prompt": "",
+                  "canBeTriggeredManually": true,
+                  "runWhenRecordIsCreated": true,
+                  "runWhenRecordIsUpdated": true,
+                  "runOnUpdateMode": "ANY_FIELD",
+                  "dependentFieldIds": [],
+                  "referencedFieldIds": null,
+                  "skipIfValueExists": true,
+                  "runFilter": null
+                },
+                "options": {}
+              },
+              "sorting": null,
+              "filter": null,
+              "limitNumberOfRecords": false,
+              "maxNumberOfRecords": 1,
+              "valid": true
+            },
+            "allowMultipleEntries": false,
+            "readonly": true,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-23T02:30:29.091Z",
+            "updatedAt": "2026-10-23T02:30:29.091Z"
+          },
+          {
+            "id": "APnrY",
+            "name": "activity_feedback",
+            "description": null,
+            "type": "LINKED_RECORD",
+            "options": {
+              "linkedTableId": "3MwTRjVkVcMm6z",
+              "inverseLinkFieldId": "YR2ea",
+              "viewId": null,
+              "sorting": null,
+              "filter": null,
+              "enforceOrder": false
+            },
+            "allowMultipleEntries": true,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-23T02:30:33.906Z",
+            "updatedAt": "2026-10-23T02:30:33.906Z"
+          },
+          {
+            "id": "enFy2",
+            "name": "activity_title",
+            "description": "",
+            "type": "LOOKUP",
+            "options": {
+              "linkedRecordFieldId": "jyOQK",
+              "lookupFieldId": "J21Dd",
+              "returnedField": {
+                "type": "SINGLE_LINE_TEXT",
+                "options": {
+                  "minLength": 0,
+                  "maxLength": 1024
+                },
+                "aiOptions": null
+              },
+              "sorting": null,
+              "filter": null,
+              "limitNumberOfRecords": false,
+              "maxNumberOfRecords": 1,
+              "valid": true
+            },
+            "allowMultipleEntries": false,
+            "readonly": true,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-23T02:41:21.029Z",
+            "updatedAt": "2026-10-23T02:41:21.029Z"
+          }
+        ],
+        "createdAt": "2026-10-16T03:18:55.283Z",
+        "updatedAt": "2026-10-26T06:42:37.934Z"
+      }
+    },
+    {
+      "id": "4NJI3TrXlZBZEE",
+      "name": "book",
+      "description": null,
+      "recordsCount": 8,
+      "createdAt": "2026-10-16T03:18:56.169Z",
+      "updatedAt": "2026-10-16T03:19:52.836Z",
+      "schema": {
+        "id": "4NJI3TrXlZBZEE",
+        "name": "book",
+        "description": null,
+        "defaultViewId": "4OEdBnqaiNXYmp",
+        "primaryFieldId": "LkE2D",
+        "fields": [
+          {
+            "id": "LkE2D",
+            "name": "Display Name",
+            "description": "图书显示名称（中文：用于展示的图书编号）",
+            "type": "FORMULA",
+            "options": {
+              "formula": "\"BK-\" & {book_id}",
+              "referencedFieldIds": [
+                "5owIX"
+              ],
+              "returnedField": {
+                "type": "SINGLE_LINE_TEXT",
+                "options": {
+                  "minLength": 0,
+                  "maxLength": 1024
+                },
+                "aiOptions": {
+                  "aiFillable": false,
+                  "aiOnly": true,
+                  "allowWebSearch": false,
+                  "allowCreatingNewOptions": false,
+                  "aiModel": "openai-gpt-4-1",
+                  "prompt": "",
+                  "canBeTriggeredManually": true,
+                  "runWhenRecordIsCreated": true,
+                  "runWhenRecordIsUpdated": true,
+                  "runOnUpdateMode": "ANY_FIELD",
+                  "dependentFieldIds": [],
+                  "referencedFieldIds": null,
+                  "skipIfValueExists": true,
+                  "runFilter": null
+                }
+              },
+              "valid": true
+            },
+            "allowMultipleEntries": false,
+            "readonly": true,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:19:31.972Z",
+            "updatedAt": "2026-10-16T03:19:31.972Z"
+          },
+          {
+            "id": "5owIX",
+            "name": "book_id",
+            "description": "图书业务展示编号（中文：图书编号）",
+            "type": "AUTONUMBER",
+            "options": {
+              "counter": 8
+            },
+            "allowMultipleEntries": false,
+            "readonly": true,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:56.208Z",
+            "updatedAt": "2026-10-16T03:18:56.208Z"
+          },
+          {
+            "id": "eUN5x",
+            "name": "isbn",
+            "description": "ISBN（中文：国际标准书号；非空值应唯一需后续配置；不能用数字类型以保留前导零）",
+            "type": "SINGLE_LINE_TEXT",
+            "options": {
+              "minLength": 0,
+              "maxLength": 1024
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:56.208Z",
+            "updatedAt": "2026-10-16T03:18:56.208Z"
+          },
+          {
+            "id": "OzrKT",
+            "name": "title",
+            "description": "书名（中文：图书标题；必填需后续配置）",
+            "type": "SINGLE_LINE_TEXT",
+            "options": {
+              "minLength": 0,
+              "maxLength": 1024
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:56.208Z",
+            "updatedAt": "2026-10-16T03:18:56.208Z"
+          },
+          {
+            "id": "7Qzym",
+            "name": "author",
+            "description": "作者或译者（中文：作者/译者）",
+            "type": "SINGLE_LINE_TEXT",
+            "options": {
+              "minLength": 0,
+              "maxLength": 1024
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:56.208Z",
+            "updatedAt": "2026-10-16T03:18:56.208Z"
+          },
+          {
+            "id": "NDO2m",
+            "name": "publisher",
+            "description": "出版社（中文：出版社）",
+            "type": "SINGLE_LINE_TEXT",
+            "options": {
+              "minLength": 0,
+              "maxLength": 1024
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:56.208Z",
+            "updatedAt": "2026-10-16T03:18:56.208Z"
+          },
+          {
+            "id": "3vAU2",
+            "name": "price",
+            "description": "定价（中文：图书价格；币种 CNY；可空）",
+            "type": "CURRENCY",
+            "options": {
+              "precision": 2,
+              "min": 0,
+              "max": null,
+              "isoCode": "CNY",
+              "customSymbol": "CN¥",
+              "showAs": "SYMBOL",
+              "showThousandSeparator": true,
+              "thousandSeparatorLocale": "DEFAULT",
+              "largeNumberAbbreviation": "NONE",
+              "symbolOrCodePosition": "BEFORE"
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:56.208Z",
+            "updatedAt": "2026-10-16T03:18:56.208Z"
+          },
+          {
+            "id": "z5SqO",
+            "name": "category",
+            "description": "图书分类（中文：图书分类）",
+            "type": "SELECT",
+            "options": {
+              "choices": [
+                {
+                  "id": "9a0f29bb-f2cc-46bf-b23d-35dc089d9dd7",
+                  "label": "哲学",
+                  "color": "#386af5"
+                },
+                {
+                  "id": "eca23064-f952-4176-8818-0995c7ffaf1a",
+                  "label": "社科",
+                  "color": "#8e4ec6"
+                },
+                {
+                  "id": "1b660a93-593a-4c84-abf8-4a163d77d98f",
+                  "label": "文学",
+                  "color": "#cf3897"
+                },
+                {
+                  "id": "5e13d7a3-a801-4a52-ad25-097b9223fb23",
+                  "label": "少儿",
+                  "color": "#f53878"
+                },
+                {
+                  "id": "003f1ac1-8d94-4df8-b5ab-b57e9323dd4a",
+                  "label": "德语文学",
+                  "color": "#d92626"
+                },
+                {
+                  "id": "c286418a-5f51-411a-bbb1-bd0be746c415",
+                  "label": "其他",
+                  "color": "#ef5f00"
+                }
+              ],
+              "allowToAddNewChoice": false,
+              "multiColorMode": true,
+              "sorting": "CUSTOM",
+              "enforceOrder": true
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:56.208Z",
+            "updatedAt": "2026-10-16T03:18:56.208Z"
+          },
+          {
+            "id": "yqznK",
+            "name": "language",
+            "description": "语言（中文：图书语言；默认 中文）",
+            "type": "SELECT",
+            "options": {
+              "choices": [
+                {
+                  "id": "88d2623a-5ed7-4ebb-83b5-64bb424620b2",
+                  "label": "中文",
+                  "color": "#386af5"
+                },
+                {
+                  "id": "039f4621-15f8-4425-91b3-aa5159dd0ec0",
+                  "label": "英文",
+                  "color": "#8e4ec6"
+                },
+                {
+                  "id": "d1ccddd5-6170-4765-bdc5-e97ab6e05734",
+                  "label": "德文",
+                  "color": "#cf3897"
+                },
+                {
+                  "id": "9303cd9b-1157-4bde-95a2-21de55fa6dd9",
+                  "label": "其他",
+                  "color": "#f53878"
+                }
+              ],
+              "allowToAddNewChoice": false,
+              "multiColorMode": true,
+              "sorting": "CUSTOM",
+              "enforceOrder": true
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": {
+              "id": "\"中文\"",
+              "label": "\"中文\""
+            },
+            "createdAt": "2026-10-16T03:18:56.208Z",
+            "updatedAt": "2026-10-16T03:18:56.208Z"
+          },
+          {
+            "id": "VDQMN",
+            "name": "cover_url",
+            "description": "封面地址（中文：封面图片 URL）",
+            "type": "URL",
+            "options": {},
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:56.208Z",
+            "updatedAt": "2026-10-16T03:18:56.208Z"
+          },
+          {
+            "id": "VX8KO",
+            "name": "summary",
+            "description": "简介（中文：图书简介/推荐语）",
+            "type": "LONG_TEXT",
+            "options": {
+              "type": "TEXT"
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:56.208Z",
+            "updatedAt": "2026-10-16T03:18:56.208Z"
+          },
+          {
+            "id": "Qqmck",
+            "name": "stock_status",
+            "description": "库存状态（中文：在架/缺货/预留；不代表精确库存数量；默认 1_在架）",
+            "type": "SELECT",
+            "options": {
+              "choices": [
+                {
+                  "id": "b894121b-e0d0-4df4-8759-1ba530d5463c",
+                  "label": "0_缺货",
+                  "color": "#386af5"
+                },
+                {
+                  "id": "9a60d483-c4a4-49f2-8131-8d8343eeac50",
+                  "label": "1_在架",
+                  "color": "#8e4ec6"
+                },
+                {
+                  "id": "6ae531b4-c139-4ec2-ad13-a39da54e72d4",
+                  "label": "2_已预留",
+                  "color": "#cf3897"
+                }
+              ],
+              "allowToAddNewChoice": false,
+              "multiColorMode": true,
+              "sorting": "CUSTOM",
+              "enforceOrder": true
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": {
+              "id": "\"1_在架\"",
+              "label": "\"1_在架\""
+            },
+            "createdAt": "2026-10-16T03:18:56.208Z",
+            "updatedAt": "2026-10-16T03:18:56.208Z"
+          },
+          {
+            "id": "gtuAC",
+            "name": "arrived_at",
+            "description": "到店日期（中文：新书到店日期；仅日期口径需后续校验）",
+            "type": "DATETIME",
+            "options": {
+              "precision": "DATE",
+              "useRelativeDatetimeFormat": false,
+              "timezoneType": "LOCAL",
+              "timezone": null
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:56.208Z",
+            "updatedAt": "2026-10-16T03:18:56.208Z"
+          },
+          {
+            "id": "HXk2A",
+            "name": "rec_rank",
+            "description": "推荐排序（中文：推荐位排序；整数；留空表示不进入推荐位）",
+            "type": "NUMBER",
+            "options": {
+              "precision": 0,
+              "min": null,
+              "max": null,
+              "showThousandSeparator": false,
+              "thousandSeparatorLocale": "DEFAULT",
+              "largeNumberAbbreviation": "NONE",
+              "prefix": null,
+              "suffix": null
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:56.208Z",
+            "updatedAt": "2026-10-16T03:18:56.208Z"
+          },
+          {
+            "id": "zGZPu",
+            "name": "rec_shelf",
+            "description": "主题书单名称（中文：推荐书单/主题）",
+            "type": "SINGLE_LINE_TEXT",
+            "options": {
+              "minLength": 0,
+              "maxLength": 1024
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:56.208Z",
+            "updatedAt": "2026-10-16T03:18:56.208Z"
+          },
+          {
+            "id": "9Sj0A",
+            "name": "created_at",
+            "description": "创建时间（中文：记录创建时间）",
+            "type": "CREATED_AT",
+            "options": {
+              "precision": "DATETIME",
+              "useRelativeDatetimeFormat": false,
+              "timezoneType": "LOCAL",
+              "timezone": "DEFAULT"
+            },
+            "allowMultipleEntries": false,
+            "readonly": true,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:56.208Z",
+            "updatedAt": "2026-10-16T03:18:56.208Z"
+          },
+          {
+            "id": "5pMhG",
+            "name": "updated_at",
+            "description": "更新时间（中文：最后修改时间）",
+            "type": "UPDATED_AT",
+            "options": {
+              "precision": "DATETIME",
+              "useRelativeDatetimeFormat": false,
+              "timezoneType": "LOCAL",
+              "timezone": "DEFAULT",
+              "changePolicy": "ANY_EDITABLE_FIELD",
+              "specificFieldIds": []
+            },
+            "allowMultipleEntries": false,
+            "readonly": true,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:56.208Z",
+            "updatedAt": "2026-10-16T03:18:56.208Z"
+          }
+        ],
+        "createdAt": "2026-10-16T03:18:56.169Z",
+        "updatedAt": "2026-10-16T03:19:52.836Z"
+      }
+    },
+    {
+      "id": "nHueZ6rEXbu0qA",
+      "name": "_order",
+      "description": null,
+      "recordsCount": 8,
+      "createdAt": "2026-10-16T03:18:57.127Z",
+      "updatedAt": "2026-10-16T03:22:42.594Z",
+      "schema": {
+        "id": "nHueZ6rEXbu0qA",
+        "name": "_order",
+        "description": null,
+        "defaultViewId": "X22OIwjmTaJmYG",
+        "primaryFieldId": "wkRI0",
+        "fields": [
+          {
+            "id": "wkRI0",
+            "name": "Display Name",
+            "description": "订单显示名称（中文：用于展示的订单编号）",
+            "type": "FORMULA",
+            "options": {
+              "formula": "\"ORD-\" & {order_id}",
+              "referencedFieldIds": [
+                "5G5ML"
+              ],
+              "returnedField": {
+                "type": "SINGLE_LINE_TEXT",
+                "options": {
+                  "minLength": 0,
+                  "maxLength": 1024
+                },
+                "aiOptions": {
+                  "aiFillable": false,
+                  "aiOnly": true,
+                  "allowWebSearch": false,
+                  "allowCreatingNewOptions": false,
+                  "aiModel": "openai-gpt-4-1",
+                  "prompt": "",
+                  "canBeTriggeredManually": true,
+                  "runWhenRecordIsCreated": true,
+                  "runWhenRecordIsUpdated": true,
+                  "runOnUpdateMode": "ANY_FIELD",
+                  "dependentFieldIds": [],
+                  "referencedFieldIds": null,
+                  "skipIfValueExists": true,
+                  "runFilter": null
+                }
+              },
+              "valid": true
+            },
+            "allowMultipleEntries": false,
+            "readonly": true,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:19:33.056Z",
+            "updatedAt": "2026-10-16T03:19:33.056Z"
+          },
+          {
+            "id": "5G5ML",
+            "name": "order_id",
+            "description": "订单业务展示编号（中文：饮品订单编号）",
+            "type": "AUTONUMBER",
+            "options": {
+              "counter": 8
+            },
+            "allowMultipleEntries": false,
+            "readonly": true,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:57.165Z",
+            "updatedAt": "2026-10-16T03:18:57.165Z"
+          },
+          {
+            "id": "GzL0X",
+            "name": "order_no",
+            "description": "对外订单号（中文：订单号；必填且唯一需后续配置；不能用数字类型以保留前导零）",
+            "type": "SINGLE_LINE_TEXT",
+            "options": {
+              "minLength": 0,
+              "maxLength": 1024
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:57.165Z",
+            "updatedAt": "2026-10-16T03:18:57.165Z"
+          },
+          {
+            "id": "g5Jl9",
+            "name": "pickup_code",
+            "description": "取单码（中文：6 位取单码；必填；允许前导零；需后续生成时做冲突检查）",
+            "type": "SINGLE_LINE_TEXT",
+            "options": {
+              "minLength": 0,
+              "maxLength": 1024
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:57.165Z",
+            "updatedAt": "2026-10-16T03:18:57.165Z"
+          },
+          {
+            "id": "oibte",
+            "name": "items_json",
+            "description": "订单商品快照（中文：历史订单 JSON 快照；现改为可空兼容字段；新订单的可查询明细以 order_item 为准，不把 JSON 与明细表同时作为两个独立可编辑数据源）",
+            "type": "LONG_TEXT",
+            "options": {
+              "type": "TEXT"
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:57.165Z",
+            "updatedAt": "2026-10-16T03:22:42.594Z"
+          },
+          {
+            "id": "m80FY",
+            "name": "item_count",
+            "description": "饮品杯数合计（中文：历史订单快照；新订单请以 calculated_item_count 汇总为准；整数约束需后续配置）",
+            "type": "NUMBER",
+            "options": {
+              "precision": 0,
+              "min": 0,
+              "max": null,
+              "showThousandSeparator": false,
+              "thousandSeparatorLocale": "DEFAULT",
+              "largeNumberAbbreviation": "NONE",
+              "prefix": null,
+              "suffix": null
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:57.165Z",
+            "updatedAt": "2026-10-16T03:22:40.472Z"
+          },
+          {
+            "id": "5qllB",
+            "name": "total_amount",
+            "description": "订单总金额（中文：历史订单快照；新订单请以 calculated_total_amount 汇总为准；币种 CNY）",
+            "type": "CURRENCY",
+            "options": {
+              "precision": 2,
+              "min": 0,
+              "max": null,
+              "isoCode": "CNY",
+              "customSymbol": "CN¥",
+              "showAs": "SYMBOL",
+              "showThousandSeparator": true,
+              "thousandSeparatorLocale": "DEFAULT",
+              "largeNumberAbbreviation": "NONE",
+              "symbolOrCodePosition": "BEFORE"
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:57.165Z",
+            "updatedAt": "2026-10-16T03:22:41.545Z"
+          },
+          {
+            "id": "4DCUG",
+            "name": "pay_status",
+            "description": "支付状态（中文：待支付/已支付/已退单；默认 0_待支付；一期到店支付不接入在线支付）",
+            "type": "SELECT",
+            "options": {
+              "choices": [
+                {
+                  "id": "ee4cfbe2-0f29-4786-bc7e-95f01ac1f48a",
+                  "label": "0_待支付",
+                  "color": "#386af5"
+                },
+                {
+                  "id": "1881e8db-333e-4877-8fb8-7b3edd466995",
+                  "label": "1_已支付",
+                  "color": "#8e4ec6"
+                },
+                {
+                  "id": "6489be71-570a-463d-ae70-90901bd90158",
+                  "label": "2_已退单",
+                  "color": "#cf3897"
+                }
+              ],
+              "allowToAddNewChoice": false,
+              "multiColorMode": true,
+              "sorting": "CUSTOM",
+              "enforceOrder": true
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": {
+              "id": "\"0_待支付\"",
+              "label": "\"0_待支付\""
+            },
+            "createdAt": "2026-10-16T03:18:57.165Z",
+            "updatedAt": "2026-10-16T03:18:57.165Z"
+          },
+          {
+            "id": "XTEYP",
+            "name": "make_status",
+            "description": "制作状态（中文：待制作/可取/已核销取走；默认 0_待制作；已退单不能继续制作或核销；已核销不能重复核销——需后续工作流保证）",
+            "type": "SELECT",
+            "options": {
+              "choices": [
+                {
+                  "id": "fccfe567-ed5f-4be5-8a9e-db951ee34804",
+                  "label": "0_待制作",
+                  "color": "#386af5"
+                },
+                {
+                  "id": "b3954fa3-7719-4ed8-9634-bed902c6528f",
+                  "label": "1_可取",
+                  "color": "#8e4ec6"
+                },
+                {
+                  "id": "3ce69c13-5f63-4285-8da4-23e4b1ae2f99",
+                  "label": "2_已核销取走",
+                  "color": "#cf3897"
+                }
+              ],
+              "allowToAddNewChoice": false,
+              "multiColorMode": true,
+              "sorting": "CUSTOM",
+              "enforceOrder": true
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": {
+              "id": "\"0_待制作\"",
+              "label": "\"0_待制作\""
+            },
+            "createdAt": "2026-10-16T03:18:57.165Z",
+            "updatedAt": "2026-10-16T03:18:57.165Z"
+          },
+          {
+            "id": "Qsbh7",
+            "name": "remark",
+            "description": "备注（中文：少冰/去糖等备注）",
+            "type": "LONG_TEXT",
+            "options": {
+              "type": "TEXT"
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:57.165Z",
+            "updatedAt": "2026-10-16T03:18:57.165Z"
+          },
+          {
+            "id": "Uk96G",
+            "name": "created_at",
+            "description": "创建时间（中文：记录创建时间）",
+            "type": "CREATED_AT",
+            "options": {
+              "precision": "DATETIME",
+              "useRelativeDatetimeFormat": false,
+              "timezoneType": "LOCAL",
+              "timezone": "DEFAULT"
+            },
+            "allowMultipleEntries": false,
+            "readonly": true,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:57.165Z",
+            "updatedAt": "2026-10-16T03:18:57.165Z"
+          },
+          {
+            "id": "sQWPF",
+            "name": "paid_at",
+            "description": "支付时间（中文：到店支付完成时间；可空；业务口径 Asia/Shanghai/UTC+8 需后续统一设置）",
+            "type": "DATETIME",
+            "options": {
+              "precision": "DATETIME",
+              "useRelativeDatetimeFormat": false,
+              "timezoneType": "LOCAL",
+              "timezone": null
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:57.165Z",
+            "updatedAt": "2026-10-16T03:18:57.165Z"
+          },
+          {
+            "id": "JRUAt",
+            "name": "picked_at",
+            "description": "取走时间（中文：核销取走时间；可空；业务口径 Asia/Shanghai/UTC+8 需后续统一设置）",
+            "type": "DATETIME",
+            "options": {
+              "precision": "DATETIME",
+              "useRelativeDatetimeFormat": false,
+              "timezoneType": "LOCAL",
+              "timezone": null
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:57.165Z",
+            "updatedAt": "2026-10-16T03:18:57.165Z"
+          },
+          {
+            "id": "VIA3j",
+            "name": "refund_reason",
+            "description": "退单原因（中文：退款/退单原因）",
+            "type": "LONG_TEXT",
+            "options": {
+              "type": "TEXT"
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:57.165Z",
+            "updatedAt": "2026-10-16T03:18:57.165Z"
+          },
+          {
+            "id": "9XIdi",
+            "name": "refunded_at",
+            "description": "退单时间（中文：退款/退单时间；可空；业务口径 Asia/Shanghai/UTC+8 需后续统一设置）",
+            "type": "DATETIME",
+            "options": {
+              "precision": "DATETIME",
+              "useRelativeDatetimeFormat": false,
+              "timezoneType": "LOCAL",
+              "timezone": null
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:18:57.165Z",
+            "updatedAt": "2026-10-16T03:18:57.165Z"
+          },
+          {
+            "id": "irYgM",
+            "name": "user_id",
+            "description": "关联 user（中文：下单用户；单条关联；可空；游客兼容设计）",
+            "type": "LINKED_RECORD",
+            "options": {
+              "linkedTableId": "PuGg91ge2phIra",
+              "inverseLinkFieldId": "VzSnO",
+              "viewId": null,
+              "sorting": null,
+              "filter": null,
+              "enforceOrder": false
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:19:13.529Z",
+            "updatedAt": "2026-10-16T03:19:13.529Z"
+          },
+          {
+            "id": "gmrEt",
+            "name": "order_items",
+            "description": "关联 order_item（中文：该订单的明细记录）",
+            "type": "LINKED_RECORD",
+            "options": {
+              "linkedTableId": "kEBVwF8KGj44VV",
+              "inverseLinkFieldId": "tSYHL",
+              "viewId": null,
+              "sorting": null,
+              "filter": null,
+              "enforceOrder": false
+            },
+            "allowMultipleEntries": true,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:22:35.025Z",
+            "updatedAt": "2026-10-16T03:22:36.199Z"
+          },
+          {
+            "id": "R738V",
+            "name": "calculated_item_count",
+            "description": "计算杯数合计（中文：汇总 order_item.qty；用于核对历史快照 item_count）",
+            "type": "ROLLUP",
+            "options": {
+              "linkedRecordFieldId": "gmrEt",
+              "rollupFieldId": "NEI0r",
+              "function": "SUM",
+              "filter": {
+                "condition": null,
+                "fieldIds": []
+              },
+              "returnedField": {
+                "type": "NUMBER",
+                "options": {
+                  "precision": 0,
+                  "min": null,
+                  "max": null,
+                  "showThousandSeparator": true,
+                  "thousandSeparatorLocale": "DEFAULT",
+                  "largeNumberAbbreviation": "NONE",
+                  "prefix": null,
+                  "suffix": null
+                },
+                "aiOptions": {
+                  "aiFillable": false,
+                  "aiOnly": true,
+                  "allowWebSearch": false,
+                  "allowCreatingNewOptions": false,
+                  "aiModel": "openai-gpt-4-1",
+                  "prompt": "",
+                  "canBeTriggeredManually": true,
+                  "runWhenRecordIsCreated": true,
+                  "runWhenRecordIsUpdated": true,
+                  "runOnUpdateMode": "ANY_FIELD",
+                  "dependentFieldIds": [],
+                  "referencedFieldIds": null,
+                  "skipIfValueExists": true,
+                  "runFilter": null
+                }
+              }
+            },
+            "allowMultipleEntries": false,
+            "readonly": true,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:22:38.960Z",
+            "updatedAt": "2026-10-16T03:22:38.960Z"
+          },
+          {
+            "id": "J33Bw",
+            "name": "calculated_total_amount",
+            "description": "计算订单总金额（中文：汇总 order_item.line_total；用于核对历史快照 total_amount）",
+            "type": "ROLLUP",
+            "options": {
+              "linkedRecordFieldId": "gmrEt",
+              "rollupFieldId": "F6oqp",
+              "function": "SUM",
+              "filter": {
+                "condition": null,
+                "fieldIds": []
+              },
+              "returnedField": {
+                "type": "CURRENCY",
+                "options": {
+                  "precision": 2,
+                  "min": null,
+                  "max": null,
+                  "isoCode": "CNY",
+                  "customSymbol": "CN¥",
+                  "showAs": "SYMBOL",
+                  "showThousandSeparator": true,
+                  "thousandSeparatorLocale": "DEFAULT",
+                  "largeNumberAbbreviation": "NONE",
+                  "symbolOrCodePosition": "BEFORE"
+                },
+                "aiOptions": {
+                  "aiFillable": false,
+                  "aiOnly": true,
+                  "allowWebSearch": false,
+                  "allowCreatingNewOptions": false,
+                  "aiModel": "openai-gpt-4-1",
+                  "prompt": "",
+                  "canBeTriggeredManually": true,
+                  "runWhenRecordIsCreated": true,
+                  "runWhenRecordIsUpdated": true,
+                  "runOnUpdateMode": "ANY_FIELD",
+                  "dependentFieldIds": [],
+                  "referencedFieldIds": null,
+                  "skipIfValueExists": true,
+                  "runFilter": null
+                }
+              }
+            },
+            "allowMultipleEntries": false,
+            "readonly": true,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:22:39.575Z",
+            "updatedAt": "2026-10-16T03:22:39.575Z"
+          }
+        ],
+        "createdAt": "2026-10-16T03:18:57.127Z",
+        "updatedAt": "2026-10-16T03:22:42.594Z"
+      }
+    },
+    {
+      "id": "0VEQFdCETwaLxM",
+      "name": "food_item",
+      "description": null,
+      "recordsCount": 0,
+      "createdAt": "2026-10-16T03:22:33.745Z",
+      "updatedAt": "2026-10-16T03:22:38.170Z",
+      "schema": {
+        "id": "0VEQFdCETwaLxM",
+        "name": "food_item",
+        "description": null,
+        "defaultViewId": "8MEtkesy2QjSqy",
+        "primaryFieldId": "ZNGX4",
+        "fields": [
+          {
+            "id": "ZNGX4",
+            "name": "item_id",
+            "description": "饮品规格业务展示编号（中文：饮品规格编号）",
+            "type": "AUTONUMBER",
+            "options": {
+              "counter": 0
+            },
+            "allowMultipleEntries": false,
+            "readonly": true,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:22:33.789Z",
+            "updatedAt": "2026-10-16T03:22:33.789Z"
+          },
+          {
+            "id": "uV5ss",
+            "name": "item_name",
+            "description": "饮品名称（中文：饮品名称；必填需后续配置）",
+            "type": "SINGLE_LINE_TEXT",
+            "options": {
+              "minLength": 0,
+              "maxLength": 1024
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:22:33.789Z",
+            "updatedAt": "2026-10-16T03:22:33.789Z"
+          },
+          {
+            "id": "Lr5CW",
+            "name": "category",
+            "description": "饮品分类（中文：咖啡/茶饮/其他）",
+            "type": "SELECT",
+            "options": {
+              "choices": [
+                {
+                  "id": "84eff46d-2c0d-49c3-b376-3bea6f46e58d",
+                  "label": "咖啡",
+                  "color": "#386af5"
+                },
+                {
+                  "id": "7602fe97-ab99-424d-b8da-dce0b167cee6",
+                  "label": "茶饮",
+                  "color": "#8e4ec6"
+                },
+                {
+                  "id": "d2187bd7-ad6b-4158-ab09-68eeec1841e1",
+                  "label": "其他",
+                  "color": "#cf3897"
+                }
+              ],
+              "allowToAddNewChoice": false,
+              "multiColorMode": true,
+              "sorting": "CUSTOM",
+              "enforceOrder": true
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:22:33.789Z",
+            "updatedAt": "2026-10-16T03:22:33.789Z"
+          },
+          {
+            "id": "dwgVU",
+            "name": "spec",
+            "description": "规格（中文：如热/冰/中杯；必填需后续配置）",
+            "type": "SINGLE_LINE_TEXT",
+            "options": {
+              "minLength": 0,
+              "maxLength": 1024
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:22:33.789Z",
+            "updatedAt": "2026-10-16T03:22:33.789Z"
+          },
+          {
+            "id": "tqrwc",
+            "name": "unit_price",
+            "description": "单价（中文：饮品规格单价；币种 CNY；必填）",
+            "type": "CURRENCY",
+            "options": {
+              "precision": 2,
+              "min": 0,
+              "max": null,
+              "isoCode": "CNY",
+              "customSymbol": "CN¥",
+              "showAs": "SYMBOL",
+              "showThousandSeparator": true,
+              "thousandSeparatorLocale": "DEFAULT",
+              "largeNumberAbbreviation": "NONE",
+              "symbolOrCodePosition": "BEFORE"
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:22:33.789Z",
+            "updatedAt": "2026-10-16T03:22:33.789Z"
+          },
+          {
+            "id": "kK5HH",
+            "name": "image",
+            "description": "饮品图片（中文：饮品图片；可空）",
+            "type": "ATTACHMENT",
+            "options": {
+              "showAs": "PREVIEW",
+              "inferredFileType": null,
+              "enableFileLinkExpiration": true,
+              "fileLinkExpirationValue": 1,
+              "fileLinkExpirationUnit": "HOURS"
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:22:33.789Z",
+            "updatedAt": "2026-10-16T03:22:33.789Z"
+          },
+          {
+            "id": "GliQo",
+            "name": "description",
+            "description": "描述（中文：饮品描述）",
+            "type": "LONG_TEXT",
+            "options": {
+              "type": "TEXT"
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:22:33.789Z",
+            "updatedAt": "2026-10-16T03:22:33.789Z"
+          },
+          {
+            "id": "wO51l",
+            "name": "is_available",
+            "description": "是否上架（中文：是否上架；默认 true）",
+            "type": "CHECKBOX",
+            "options": {
+              "icon": "CHECK",
+              "color": "#386af5"
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": true,
+            "createdAt": "2026-10-16T03:22:33.789Z",
+            "updatedAt": "2026-10-16T03:22:33.789Z"
+          },
+          {
+            "id": "rkgkf",
+            "name": "is_sold_out",
+            "description": "是否售罄（中文：是否售罄；默认 false）",
+            "type": "CHECKBOX",
+            "options": {
+              "icon": "CHECK",
+              "color": "#386af5"
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": false,
+            "createdAt": "2026-10-16T03:22:33.789Z",
+            "updatedAt": "2026-10-16T03:22:33.789Z"
+          },
+          {
+            "id": "iGsjO",
+            "name": "sort_order",
+            "description": "排序（中文：菜单排序；默认 0；整数约束需后续配置）",
+            "type": "NUMBER",
+            "options": {
+              "precision": 0,
+              "min": 0,
+              "max": null,
+              "showThousandSeparator": false,
+              "thousandSeparatorLocale": "DEFAULT",
+              "largeNumberAbbreviation": "NONE",
+              "prefix": null,
+              "suffix": null
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": 0,
+            "createdAt": "2026-10-16T03:22:33.789Z",
+            "updatedAt": "2026-10-16T03:22:33.789Z"
+          },
+          {
+            "id": "c01d6",
+            "name": "created_at",
+            "description": "创建时间（中文：记录创建时间）",
+            "type": "CREATED_AT",
+            "options": {
+              "precision": "DATETIME",
+              "useRelativeDatetimeFormat": false,
+              "timezoneType": "LOCAL",
+              "timezone": "DEFAULT"
+            },
+            "allowMultipleEntries": false,
+            "readonly": true,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:22:33.789Z",
+            "updatedAt": "2026-10-16T03:22:33.789Z"
+          },
+          {
+            "id": "w9ktH",
+            "name": "updated_at",
+            "description": "更新时间（中文：最后修改时间）",
+            "type": "UPDATED_AT",
+            "options": {
+              "precision": "DATETIME",
+              "useRelativeDatetimeFormat": false,
+              "timezoneType": "LOCAL",
+              "timezone": "DEFAULT",
+              "changePolicy": "ANY_EDITABLE_FIELD",
+              "specificFieldIds": []
+            },
+            "allowMultipleEntries": false,
+            "readonly": true,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:22:33.789Z",
+            "updatedAt": "2026-10-16T03:22:33.789Z"
+          },
+          {
+            "id": "LDaca",
+            "name": "order_items",
+            "description": "关联 order_item（中文：引用该饮品规格的订单明细）",
+            "type": "LINKED_RECORD",
+            "options": {
+              "linkedTableId": "kEBVwF8KGj44VV",
+              "inverseLinkFieldId": "IqjQj",
+              "viewId": null,
+              "sorting": null,
+              "filter": null,
+              "enforceOrder": false
+            },
+            "allowMultipleEntries": true,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:22:36.999Z",
+            "updatedAt": "2026-10-16T03:22:38.170Z"
+          }
+        ],
+        "createdAt": "2026-10-16T03:22:33.745Z",
+        "updatedAt": "2026-10-16T03:22:38.170Z"
+      }
+    },
+    {
+      "id": "kEBVwF8KGj44VV",
+      "name": "order_item",
+      "description": null,
+      "recordsCount": 0,
+      "createdAt": "2026-10-16T03:22:34.292Z",
+      "updatedAt": "2026-10-16T03:22:37.017Z",
+      "schema": {
+        "id": "kEBVwF8KGj44VV",
+        "name": "order_item",
+        "description": null,
+        "defaultViewId": "JIQ5oSZWbhVrLZ",
+        "primaryFieldId": "adlZf",
+        "fields": [
+          {
+            "id": "adlZf",
+            "name": "order_item_id",
+            "description": "订单明细业务展示编号（中文：订单明细编号）",
+            "type": "AUTONUMBER",
+            "options": {
+              "counter": 0
+            },
+            "allowMultipleEntries": false,
+            "readonly": true,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:22:34.336Z",
+            "updatedAt": "2026-10-16T03:22:34.336Z"
+          },
+          {
+            "id": "Hcl5O",
+            "name": "item_name_snapshot",
+            "description": "下单时饮品名称快照（中文：下单时饮品名称；必填；不使用 Lookup 引用当前菜单）",
+            "type": "SINGLE_LINE_TEXT",
+            "options": {
+              "minLength": 0,
+              "maxLength": 1024
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:22:34.336Z",
+            "updatedAt": "2026-10-16T03:22:34.336Z"
+          },
+          {
+            "id": "uugdU",
+            "name": "spec_snapshot",
+            "description": "下单时规格快照（中文：下单时规格；必填；不使用 Lookup 引用当前菜单）",
+            "type": "SINGLE_LINE_TEXT",
+            "options": {
+              "minLength": 0,
+              "maxLength": 1024
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:22:34.336Z",
+            "updatedAt": "2026-10-16T03:22:34.336Z"
+          },
+          {
+            "id": "NEI0r",
+            "name": "qty",
+            "description": "数量（中文：杯数；必填；至少 1；整数约束需后续配置）",
+            "type": "NUMBER",
+            "options": {
+              "precision": 0,
+              "min": 1,
+              "max": null,
+              "showThousandSeparator": false,
+              "thousandSeparatorLocale": "DEFAULT",
+              "largeNumberAbbreviation": "NONE",
+              "prefix": null,
+              "suffix": null
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:22:34.336Z",
+            "updatedAt": "2026-10-16T03:22:34.336Z"
+          },
+          {
+            "id": "OoWy1",
+            "name": "unit_price",
+            "description": "下单时单价快照（中文：下单时单价；币种 CNY；必填；不使用 Lookup 引用当前菜单）",
+            "type": "CURRENCY",
+            "options": {
+              "precision": 2,
+              "min": 0,
+              "max": null,
+              "isoCode": "CNY",
+              "customSymbol": "CN¥",
+              "showAs": "SYMBOL",
+              "showThousandSeparator": true,
+              "thousandSeparatorLocale": "DEFAULT",
+              "largeNumberAbbreviation": "NONE",
+              "symbolOrCodePosition": "BEFORE"
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:22:34.336Z",
+            "updatedAt": "2026-10-16T03:22:34.336Z"
+          },
+          {
+            "id": "F6oqp",
+            "name": "line_total",
+            "description": "行小计（中文：qty × unit_price；按金额显示两位小数）",
+            "type": "FORMULA",
+            "options": {
+              "formula": "{qty} * {unit_price}",
+              "referencedFieldIds": [
+                "OoWy1",
+                "NEI0r"
+              ],
+              "returnedField": {
+                "type": "SINGLE_LINE_TEXT",
+                "options": {
+                  "minLength": 0,
+                  "maxLength": 1024
+                },
+                "aiOptions": {
+                  "aiFillable": false,
+                  "aiOnly": true,
+                  "allowWebSearch": false,
+                  "allowCreatingNewOptions": false,
+                  "aiModel": "openai-gpt-4-1",
+                  "prompt": "",
+                  "canBeTriggeredManually": true,
+                  "runWhenRecordIsCreated": true,
+                  "runWhenRecordIsUpdated": true,
+                  "runOnUpdateMode": "ANY_FIELD",
+                  "dependentFieldIds": [],
+                  "referencedFieldIds": null,
+                  "skipIfValueExists": true,
+                  "runFilter": null
+                }
+              },
+              "valid": true
+            },
+            "allowMultipleEntries": false,
+            "readonly": true,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:22:34.336Z",
+            "updatedAt": "2026-10-16T03:22:34.336Z"
+          },
+          {
+            "id": "5TY9t",
+            "name": "remark",
+            "description": "备注（中文：该杯或该项的备注）",
+            "type": "LONG_TEXT",
+            "options": {
+              "type": "TEXT"
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:22:34.336Z",
+            "updatedAt": "2026-10-16T03:22:34.336Z"
+          },
+          {
+            "id": "MOuBL",
+            "name": "created_at",
+            "description": "创建时间（中文：记录创建时间）",
+            "type": "CREATED_AT",
+            "options": {
+              "precision": "DATETIME",
+              "useRelativeDatetimeFormat": false,
+              "timezoneType": "LOCAL",
+              "timezone": "DEFAULT"
+            },
+            "allowMultipleEntries": false,
+            "readonly": true,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:22:34.336Z",
+            "updatedAt": "2026-10-16T03:22:34.336Z"
+          },
+          {
+            "id": "tSYHL",
+            "name": "order_id",
+            "description": "关联 food_order（中文：所属饮品订单；单条关联；必填需后续配置）",
+            "type": "LINKED_RECORD",
+            "options": {
+              "linkedTableId": "nHueZ6rEXbu0qA",
+              "inverseLinkFieldId": "gmrEt",
+              "viewId": null,
+              "sorting": null,
+              "filter": null,
+              "enforceOrder": false
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:22:35.004Z",
+            "updatedAt": "2026-10-16T03:22:35.004Z"
+          },
+          {
+            "id": "IqjQj",
+            "name": "item_id",
+            "description": "关联 food_item（中文：所属饮品规格；单条关联；必填需后续配置）",
+            "type": "LINKED_RECORD",
+            "options": {
+              "linkedTableId": "0VEQFdCETwaLxM",
+              "inverseLinkFieldId": "LDaca",
+              "viewId": null,
+              "sorting": null,
+              "filter": null,
+              "enforceOrder": false
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:22:36.984Z",
+            "updatedAt": "2026-10-16T03:22:36.984Z"
+          }
+        ],
+        "createdAt": "2026-10-16T03:22:34.292Z",
+        "updatedAt": "2026-10-16T03:22:37.017Z"
+      }
+    },
+    {
+      "id": "W9nD7HlW2yGcdR",
+      "name": "operation_log",
+      "description": null,
+      "recordsCount": 0,
+      "createdAt": "2026-10-16T03:24:50.042Z",
+      "updatedAt": "2026-10-16T03:25:03.589Z",
+      "schema": {
+        "id": "W9nD7HlW2yGcdR",
+        "name": "operation_log",
+        "description": null,
+        "defaultViewId": "HlcAKj9fxmlXzr",
+        "primaryFieldId": "MAK16",
+        "fields": [
+          {
+            "id": "MAK16",
+            "name": "log_id",
+            "description": "操作日志业务展示编号（中文：日志编号）",
+            "type": "AUTONUMBER",
+            "options": {
+              "counter": 0
+            },
+            "allowMultipleEntries": false,
+            "readonly": true,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:24:50.081Z",
+            "updatedAt": "2026-10-16T03:24:50.081Z"
+          },
+          {
+            "id": "civhN",
+            "name": "action",
+            "description": "操作类型（中文：操作动作；必填需后续配置）",
+            "type": "SELECT",
+            "options": {
+              "choices": [
+                {
+                  "id": "e1cb80b1-b1e7-49de-81f3-c5a14d0e1c6a",
+                  "label": "导出报名名单",
+                  "color": "#386af5"
+                },
+                {
+                  "id": "e1023acf-5776-463c-9664-a8f26900892d",
+                  "label": "提交审核",
+                  "color": "#8e4ec6"
+                },
+                {
+                  "id": "1c4d4a98-ca64-4ef1-ae03-2275bb306274",
+                  "label": "审核通过",
+                  "color": "#cf3897"
+                },
+                {
+                  "id": "1489035a-112d-489a-878f-d2efebc08a0b",
+                  "label": "审核驳回",
+                  "color": "#f53878"
+                },
+                {
+                  "id": "fb284685-c539-4fc0-b5b4-a528ee693169",
+                  "label": "活动改期",
+                  "color": "#d92626"
+                },
+                {
+                  "id": "1f5a6ef9-6768-44cb-b154-59d41ff21d71",
+                  "label": "活动软删除",
+                  "color": "#ef5f00"
+                },
+                {
+                  "id": "9faa7e11-b618-4c78-adb7-f53cebce368d",
+                  "label": "修改角色",
+                  "color": "#fcac00"
+                },
+                {
+                  "id": "c3c75701-803d-4a65-879c-d9bfeca9a664",
+                  "label": "停用账号",
+                  "color": "#ffe629"
+                },
+                {
+                  "id": "20683168-6b43-431f-a37d-ae428fd46967",
+                  "label": "饮品退单",
+                  "color": "#386af5"
+                },
+                {
+                  "id": "a21ddaca-859f-4073-af1d-785a78d49a3d",
+                  "label": "其他",
+                  "color": "#8e4ec6"
+                }
+              ],
+              "allowToAddNewChoice": false,
+              "multiColorMode": false,
+              "sorting": "CUSTOM",
+              "enforceOrder": true
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:24:50.081Z",
+            "updatedAt": "2026-10-16T03:24:50.081Z"
+          },
+          {
+            "id": "KLlkV",
+            "name": "target_table",
+            "description": "目标表名（中文：操作涉及的目标表；必填需后续配置）",
+            "type": "SINGLE_LINE_TEXT",
+            "options": {
+              "minLength": 0,
+              "maxLength": 1024
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:24:50.081Z",
+            "updatedAt": "2026-10-16T03:24:50.081Z"
+          },
+          {
+            "id": "LkXtp",
+            "name": "target_record_id",
+            "description": "目标记录 ID（中文：目标记录的 Softr Record ID；可空）",
+            "type": "SINGLE_LINE_TEXT",
+            "options": {
+              "minLength": 0,
+              "maxLength": 1024
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:24:50.081Z",
+            "updatedAt": "2026-10-16T03:24:50.081Z"
+          },
+          {
+            "id": "PBEe5",
+            "name": "detail",
+            "description": "操作详情（中文：操作内容、原因或前后状态摘要；可空）",
+            "type": "LONG_TEXT",
+            "options": {
+              "type": "TEXT"
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:24:50.081Z",
+            "updatedAt": "2026-10-16T03:24:50.081Z"
+          },
+          {
+            "id": "ANApX",
+            "name": "result",
+            "description": "操作结果（中文：成功/失败；必填需后续配置）",
+            "type": "SELECT",
+            "options": {
+              "choices": [
+                {
+                  "id": "141ae047-6562-4f3f-9f3f-afc03b54a755",
+                  "label": "成功",
+                  "color": "#386af5"
+                },
+                {
+                  "id": "24db6268-48ed-4a51-8412-31a2d7570c4a",
+                  "label": "失败",
+                  "color": "#d92626"
+                }
+              ],
+              "allowToAddNewChoice": false,
+              "multiColorMode": true,
+              "sorting": "CUSTOM",
+              "enforceOrder": true
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:24:50.081Z",
+            "updatedAt": "2026-10-16T03:24:50.081Z"
+          },
+          {
+            "id": "QaDop",
+            "name": "created_at",
+            "description": "创建时间（中文：记录创建时间）",
+            "type": "CREATED_AT",
+            "options": {
+              "precision": "DATETIME",
+              "useRelativeDatetimeFormat": false,
+              "timezoneType": "LOCAL",
+              "timezone": "DEFAULT"
+            },
+            "allowMultipleEntries": false,
+            "readonly": true,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:24:50.081Z",
+            "updatedAt": "2026-10-16T03:24:50.081Z"
+          },
+          {
+            "id": "I4bRf",
+            "name": "actor_id",
+            "description": "关联 user（中文：操作人；单条关联；必填需后续配置）",
+            "type": "LINKED_RECORD",
+            "options": {
+              "linkedTableId": "PuGg91ge2phIra",
+              "inverseLinkFieldId": "v5Mvu",
+              "viewId": null,
+              "sorting": null,
+              "filter": null,
+              "enforceOrder": false
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:24:59.631Z",
+            "updatedAt": "2026-10-16T03:24:59.631Z"
+          },
+          {
+            "id": "gWLBa",
+            "name": "activity_id",
+            "description": "关联 activity（中文：涉及的活动；单条关联；可空）",
+            "type": "LINKED_RECORD",
+            "options": {
+              "linkedTableId": "gyLDTF0J8GYwOz",
+              "inverseLinkFieldId": "Eoza9",
+              "viewId": null,
+              "sorting": null,
+              "filter": null,
+              "enforceOrder": false
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:25:01.575Z",
+            "updatedAt": "2026-10-16T03:25:01.575Z"
+          },
+          {
+            "id": "eJHGB",
+            "name": "target_user_id",
+            "description": "关联 user（中文：涉及的账号；单条关联；可空）",
+            "type": "LINKED_RECORD",
+            "options": {
+              "linkedTableId": "PuGg91ge2phIra",
+              "inverseLinkFieldId": "TkMRB",
+              "viewId": null,
+              "sorting": null,
+              "filter": null,
+              "enforceOrder": false
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-16T03:25:03.552Z",
+            "updatedAt": "2026-10-16T03:25:03.552Z"
+          }
+        ],
+        "createdAt": "2026-10-16T03:24:50.042Z",
+        "updatedAt": "2026-10-16T03:25:03.589Z"
+      }
+    },
+    {
+      "id": "4INKKrHsnzxFGf",
+      "name": "Feedbacks",
+      "description": null,
+      "recordsCount": 14,
+      "createdAt": "2026-10-28T09:27:53.331Z",
+      "updatedAt": "2026-10-28T09:31:39.595Z",
+      "schema": {
+        "id": "4INKKrHsnzxFGf",
+        "name": "Feedbacks",
+        "description": null,
+        "defaultViewId": "IPogGvvzucMWFT",
+        "primaryFieldId": "K5yW8",
+        "fields": [
+          {
+            "id": "K5yW8",
+            "name": "编号",
+            "description": null,
+            "type": "SINGLE_LINE_TEXT",
+            "options": {
+              "minLength": 0,
+              "maxLength": 1024
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-28T09:27:53.477Z",
+            "updatedAt": "2026-10-28T09:27:53.477Z"
+          },
+          {
+            "id": "feFiV",
+            "name": "会员卡号",
+            "description": null,
+            "type": "LINKED_RECORD",
+            "options": {
+              "linkedTableId": "3ysaTVtlxT7PmA",
+              "inverseLinkFieldId": "tuwt5",
+              "viewId": null,
+              "sorting": null,
+              "filter": null,
+              "enforceOrder": false
+            },
+            "allowMultipleEntries": true,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-28T09:27:53.495Z",
+            "updatedAt": "2026-10-28T09:28:15.936Z"
+          },
+          {
+            "id": "3s9rz",
+            "name": "反馈类型",
+            "description": null,
+            "type": "SELECT",
+            "options": {
+              "choices": [
+                {
+                  "id": "ccd69ab9-1412-493e-814f-34b7cc929641",
+                  "label": "环境与设施",
+                  "color": "#e0c4f4"
+                },
+                {
+                  "id": "b0dc6166-65a1-4a70-b266-89914bb1f43e",
+                  "label": "图书服务",
+                  "color": "#1c487e"
+                },
+                {
+                  "id": "ada2c518-68ff-4082-841b-70048a51a8a7",
+                  "label": "餐饮咖啡",
+                  "color": "#b0e64c"
+                },
+                {
+                  "id": "54509577-137d-4bde-be8e-321ff005cb35",
+                  "label": "线上系统",
+                  "color": "#b9d2ff"
+                },
+                {
+                  "id": "88c34116-5852-4aad-85b2-98ef898a1684",
+                  "label": "价格与会员权益",
+                  "color": "#fff394"
+                },
+                {
+                  "id": "7e86434a-921d-45ae-8d8d-4cd0739ba992",
+                  "label": "活动体验",
+                  "color": "#fff394"
+                },
+                {
+                  "id": "a2a2e195-485b-46b8-ab9b-d11192a288f2",
+                  "label": "员工服务",
+                  "color": "#ffdc88"
+                }
+              ],
+              "allowToAddNewChoice": true,
+              "multiColorMode": true,
+              "sorting": "CUSTOM",
+              "enforceOrder": false
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-28T09:27:53.517Z",
+            "updatedAt": "2026-10-28T09:27:53.517Z"
+          },
+          {
+            "id": "LOizZ",
+            "name": "评分",
+            "description": null,
+            "type": "NUMBER",
+            "options": {
+              "precision": 0,
+              "min": -2147483648,
+              "max": 2147483647,
+              "showThousandSeparator": true,
+              "thousandSeparatorLocale": "en-US",
+              "largeNumberAbbreviation": "NONE",
+              "prefix": null,
+              "suffix": null
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-28T09:27:53.540Z",
+            "updatedAt": "2026-10-28T09:27:53.540Z"
+          },
+          {
+            "id": "f6tNp",
+            "name": "反馈内容",
+            "description": null,
+            "type": "SINGLE_LINE_TEXT",
+            "options": {
+              "minLength": 0,
+              "maxLength": 1024
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-28T09:27:53.565Z",
+            "updatedAt": "2026-10-28T09:27:53.565Z"
+          },
+          {
+            "id": "4i7xv",
+            "name": "联系方式",
+            "description": null,
+            "type": "SINGLE_LINE_TEXT",
+            "options": {
+              "minLength": 0,
+              "maxLength": 1024
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-28T09:27:53.588Z",
+            "updatedAt": "2026-10-28T09:27:53.588Z"
+          },
+          {
+            "id": "HqRfE",
+            "name": "提交时间",
+            "description": null,
+            "type": "DATETIME",
+            "options": {
+              "precision": "DATETIME",
+              "useRelativeDatetimeFormat": false,
+              "timezoneType": "FIXED",
+              "timezone": "DEFAULT"
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-28T09:27:53.611Z",
+            "updatedAt": "2026-10-28T09:27:53.611Z"
+          },
+          {
+            "id": "xSBhL",
+            "name": "处理状态",
+            "description": null,
+            "type": "SELECT",
+            "options": {
+              "choices": [
+                {
+                  "id": "78c7e6bb-8eef-4c76-88c6-5e16c030fc11",
+                  "label": "已回复",
+                  "color": "#211f26"
+                },
+                {
+                  "id": "bc5ed821-2f05-48a8-a395-ff25c041d34a",
+                  "label": "待处理",
+                  "color": "#e6ccb9"
+                },
+                {
+                  "id": "f359dd66-5f91-4013-a6fd-f24b6f4356da",
+                  "label": "已关闭",
+                  "color": "#c2e9d7"
+                },
+                {
+                  "id": "f175eb4f-6d58-4d37-9658-10fc6b71929f",
+                  "label": "处理中",
+                  "color": "#b0e64c"
+                }
+              ],
+              "allowToAddNewChoice": true,
+              "multiColorMode": true,
+              "sorting": "CUSTOM",
+              "enforceOrder": false
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-28T09:27:53.634Z",
+            "updatedAt": "2026-10-28T09:27:53.634Z"
+          },
+          {
+            "id": "vwWWG",
+            "name": "门店回复",
+            "description": null,
+            "type": "SINGLE_LINE_TEXT",
+            "options": {
+              "minLength": 0,
+              "maxLength": 1024
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-28T09:27:53.657Z",
+            "updatedAt": "2026-10-28T09:27:53.657Z"
+          },
+          {
+            "id": "c1Q6E",
+            "name": "手动置顶",
+            "description": null,
+            "type": "NUMBER",
+            "options": {
+              "precision": 0,
+              "min": -2147483648,
+              "max": 2147483647,
+              "showThousandSeparator": true,
+              "thousandSeparatorLocale": "en-US",
+              "largeNumberAbbreviation": "NONE",
+              "prefix": null,
+              "suffix": null
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-28T09:27:53.679Z",
+            "updatedAt": "2026-10-28T09:27:53.679Z"
+          },
+          {
+            "id": "MO8UL",
+            "name": "规则得分",
+            "description": "",
+            "type": "FORMULA",
+            "options": {
+              "formula": "SUM(\r\n  IF(SEARCH(\"异物\",{反馈内容})>0,50,0),\r\n  IF(SEARCH(\"食品安全\",{反馈内容})>0,50,0),\r\n  IF(SEARCH(\"滑倒\",{反馈内容})>0,45,0),\r\n  IF(SEARCH(\"摔倒\",{反馈内容})>0,45,0),\r\n  IF(SEARCH(\"很滑\",{反馈内容})>0,45,0),\r\n  IF(SEARCH(\"过期\",{反馈内容})>0,45,0),\r\n  IF(SEARCH(\"漏电\",{反馈内容})>0,45,0),\r\n  IF(SEARCH(\"消防\",{反馈内容})>0,40,0),\r\n  IF(SEARCH(\"多扣\",{反馈内容})>0,35,0),\r\n  IF(SEARCH(\"乱收钱\",{反馈内容})>0,34,0),\r\n  IF(SEARCH(\"余额不对\",{反馈内容})>0,32,0),\r\n  IF(SEARCH(\"退款\",{反馈内容})>0,28,0),\r\n  IF(SEARCH(\"优惠券不能用\",{反馈内容})>0,28,0),\r\n  IF(SEARCH(\"对不上\",{反馈内容})>0,22,0),\r\n  IF(SEARCH(\"价格偏高\",{反馈内容})>0,20,0),\r\n  IF(SEARCH(\"不新鲜\",{反馈内容})>0,22,0),\r\n  IF(SEARCH(\"难吃\",{反馈内容})>0,20,0),\r\n  IF(SEARCH(\"很差\",{反馈内容})>0,16,0),\r\n  IF(SEARCH(\"态度恶劣\",{反馈内容})>0,26,0),\r\n  IF(SEARCH(\"态度差\",{反馈内容})>0,24,0),\r\n  IF(SEARCH(\"敷衍\",{反馈内容})>0,20,0),\r\n  IF(SEARCH(\"没人\",{反馈内容})>0,16,0),\r\n  IF(SEARCH(\"等了\",{反馈内容})>0,16,0),\r\n  IF(SEARCH(\"支付失败\",{反馈内容})>0,22,0),\r\n  IF(SEARCH(\"闪退\",{反馈内容})>0,20,0),\r\n  IF(SEARCH(\"报错\",{反馈内容})>0,18,0),\r\n  IF(SEARCH(\"打不开\",{反馈内容})>0,18,0),\r\n  IF(SEARCH(\"卡顿\",{反馈内容})>0,14,0),\r\n  IF(SEARCH(\"漏水\",{反馈内容})>0,20,0),\r\n  IF(SEARCH(\"异味\",{反馈内容})>0,16,0),\r\n  IF(SEARCH(\"排队\",{反馈内容})>0,14,0),\r\n  IF(SEARCH(\"空调\",{反馈内容})>0,12,0),\r\n  IF(SEARCH(\"噪音\",{反馈内容})>0,12,0),\r\n  IF(SEARCH(\"插座\",{反馈内容})>0,12,0),\r\n  IF(SEARCH(\"洗手间\",{反馈内容})>0,12,0),\r\n  IF(SEARCH(\"太暗\",{反馈内容})>0,10,0),\r\n  IF(SEARCH(\"桌面灯\",{反馈内容})>0,8,0),\r\n  IF(SEARCH(\"座位\",{反馈内容})>0,8,0),\r\n  IF(SEARCH(\"太少\",{反馈内容})>0,8,0),\r\n  IF(SEARCH(\"不够\",{反馈内容})>0,8,0),\r\n  IF(SEARCH(\"缺少\",{反馈内容})>0,8,0),\r\n  IF(SEARCH(\"再也不来\",{反馈内容})>0,14,0),\r\n  IF(SEARCH(\"失望\",{反馈内容})>0,10,0),\r\n  IF(SEARCH(\"建议\",{反馈内容})>0,8,0),\r\n  IF(SEARCH(\"希望\",{反馈内容})>0,6,0),\r\n  IF(SEARCH(\"贴心\",{反馈内容})>0,-12,0),\r\n  IF(SEARCH(\"感谢\",{反馈内容})>0,-10,0),\r\n  IF(SEARCH(\"专业\",{反馈内容})>0,-10,0),\r\n  IF(SEARCH(\"很好\",{反馈内容})>0,-10,0),\r\n  IF(SEARCH(\"推荐\",{反馈内容})>0,-8,0),\r\n  IF(SEARCH(\"不错\",{反馈内容})>0,-8,0)\r\n)\r\n+ IF({评分}=1,12,IF({评分}=2,6,0))\r\n+ IF({手动置顶}>0,{手动置顶},0)",
+              "referencedFieldIds": [
+                "f6tNp",
+                "LOizZ",
+                "c1Q6E"
+              ],
+              "returnedField": {
+                "type": "SINGLE_LINE_TEXT",
+                "options": {
+                  "minLength": 0,
+                  "maxLength": 2147483647
+                },
+                "aiOptions": {
+                  "aiFillable": false,
+                  "aiOnly": true,
+                  "allowWebSearch": false,
+                  "allowCreatingNewOptions": false,
+                  "aiModel": "openai-gpt-4-1",
+                  "prompt": "",
+                  "canBeTriggeredManually": true,
+                  "runWhenRecordIsCreated": true,
+                  "runWhenRecordIsUpdated": true,
+                  "runOnUpdateMode": "ANY_FIELD",
+                  "dependentFieldIds": [],
+                  "referencedFieldIds": null,
+                  "skipIfValueExists": true,
+                  "runFilter": null
+                }
+              },
+              "valid": true
+            },
+            "allowMultipleEntries": false,
+            "readonly": true,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-28T09:31:09.591Z",
+            "updatedAt": "2026-10-28T09:31:09.591Z"
+          },
+          {
+            "id": "FknyQ",
+            "name": "优先级",
+            "description": "",
+            "type": "FORMULA",
+            "options": {
+              "formula": "IF(OR(SEARCH(\"异物\",{反馈内容})>0,SEARCH(\"食品安全\",{反馈内容})>0,SEARCH(\"滑倒\",{反馈内容})>0,SEARCH(\"摔倒\",{反馈内容})>0,SEARCH(\"很滑\",{反馈内容})>0,SEARCH(\"过期\",{反馈内容})>0,SEARCH(\"漏电\",{反馈内容})>0,SEARCH(\"消防\",{反馈内容})>0),\"高\",\r\nIF({规则得分}>=60,\"高\",\r\nIF({规则得分}>=30,\"中\",\"低\")))",
+              "referencedFieldIds": [
+                "f6tNp",
+                "MO8UL"
+              ],
+              "returnedField": {
+                "type": "SINGLE_LINE_TEXT",
+                "options": {
+                  "minLength": 0,
+                  "maxLength": 2147483647
+                },
+                "aiOptions": {
+                  "aiFillable": false,
+                  "aiOnly": true,
+                  "allowWebSearch": false,
+                  "allowCreatingNewOptions": false,
+                  "aiModel": "openai-gpt-4-1",
+                  "prompt": "",
+                  "canBeTriggeredManually": true,
+                  "runWhenRecordIsCreated": true,
+                  "runWhenRecordIsUpdated": true,
+                  "runOnUpdateMode": "ANY_FIELD",
+                  "dependentFieldIds": [],
+                  "referencedFieldIds": null,
+                  "skipIfValueExists": true,
+                  "runFilter": null
+                }
+              },
+              "valid": true
+            },
+            "allowMultipleEntries": false,
+            "readonly": true,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-28T09:31:39.588Z",
+            "updatedAt": "2026-10-28T09:31:39.588Z"
+          }
+        ],
+        "createdAt": "2026-10-28T09:27:53.331Z",
+        "updatedAt": "2026-10-28T09:31:39.595Z"
+      }
+    },
+    {
+      "id": "3ysaTVtlxT7PmA",
+      "name": "Members",
+      "description": null,
+      "recordsCount": 8,
+      "createdAt": "2026-10-28T09:27:54.081Z",
+      "updatedAt": "2026-10-28T09:28:16.126Z",
+      "schema": {
+        "id": "3ysaTVtlxT7PmA",
+        "name": "Members",
+        "description": null,
+        "defaultViewId": "rhCh9fwJHXDsWm",
+        "primaryFieldId": "IP0lb",
+        "fields": [
+          {
+            "id": "IP0lb",
+            "name": "﻿卡号",
+            "description": null,
+            "type": "SINGLE_LINE_TEXT",
+            "options": {
+              "minLength": 0,
+              "maxLength": 1024
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-28T09:27:54.206Z",
+            "updatedAt": "2026-10-28T09:27:54.206Z"
+          },
+          {
+            "id": "4Xwis",
+            "name": "姓名",
+            "description": null,
+            "type": "SINGLE_LINE_TEXT",
+            "options": {
+              "minLength": 0,
+              "maxLength": 1024
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-28T09:27:54.221Z",
+            "updatedAt": "2026-10-28T09:27:54.221Z"
+          },
+          {
+            "id": "zGB3w",
+            "name": "会员等级",
+            "description": null,
+            "type": "SELECT",
+            "options": {
+              "choices": [
+                {
+                  "id": "075b204c-82b9-4a44-a16c-c307a86c1530",
+                  "label": "银杏会员",
+                  "color": "#1c487e"
+                },
+                {
+                  "id": "64d5769c-255b-449a-b08c-1a727619ca91",
+                  "label": "雪松会员",
+                  "color": "#e6ccb9"
+                }
+              ],
+              "allowToAddNewChoice": true,
+              "multiColorMode": true,
+              "sorting": "CUSTOM",
+              "enforceOrder": false
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-28T09:27:54.240Z",
+            "updatedAt": "2026-10-28T09:27:54.240Z"
+          },
+          {
+            "id": "WRbpY",
+            "name": "入会日期",
+            "description": null,
+            "type": "DATETIME",
+            "options": {
+              "precision": "DATE",
+              "useRelativeDatetimeFormat": false,
+              "timezoneType": "FIXED",
+              "timezone": "DEFAULT"
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-28T09:27:54.259Z",
+            "updatedAt": "2026-10-28T09:27:54.259Z"
+          },
+          {
+            "id": "1eAE4",
+            "name": "手机",
+            "description": null,
+            "type": "SINGLE_LINE_TEXT",
+            "options": {
+              "minLength": 0,
+              "maxLength": 1024
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-28T09:27:54.277Z",
+            "updatedAt": "2026-10-28T09:27:54.277Z"
+          },
+          {
+            "id": "lqpRu",
+            "name": "常用门店",
+            "description": null,
+            "type": "SELECT",
+            "options": {
+              "choices": [
+                {
+                  "id": "0e11e9a9-786e-4228-9569-3f8b35f1432a",
+                  "label": "太仓天镜湖店",
+                  "color": "#f7c0ad"
+                }
+              ],
+              "allowToAddNewChoice": true,
+              "multiColorMode": true,
+              "sorting": "CUSTOM",
+              "enforceOrder": false
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-28T09:27:54.296Z",
+            "updatedAt": "2026-10-28T09:27:54.296Z"
+          },
+          {
+            "id": "68JIE",
+            "name": "最近到店",
+            "description": null,
+            "type": "DATETIME",
+            "options": {
+              "precision": "DATE",
+              "useRelativeDatetimeFormat": false,
+              "timezoneType": "FIXED",
+              "timezone": "DEFAULT"
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-28T09:27:54.316Z",
+            "updatedAt": "2026-10-28T09:27:54.316Z"
+          },
+          {
+            "id": "J8HMb",
+            "name": "储值余额",
+            "description": null,
+            "type": "NUMBER",
+            "options": {
+              "precision": 1,
+              "min": -2147483648,
+              "max": 2147483647,
+              "showThousandSeparator": true,
+              "thousandSeparatorLocale": "en-US",
+              "largeNumberAbbreviation": "NONE",
+              "prefix": null,
+              "suffix": null
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-28T09:27:54.336Z",
+            "updatedAt": "2026-10-28T09:27:54.336Z"
+          },
+          {
+            "id": "FcNMs",
+            "name": "累计消费",
+            "description": null,
+            "type": "NUMBER",
+            "options": {
+              "precision": 1,
+              "min": -2147483648,
+              "max": 2147483647,
+              "showThousandSeparator": true,
+              "thousandSeparatorLocale": "en-US",
+              "largeNumberAbbreviation": "NONE",
+              "prefix": null,
+              "suffix": null
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-28T09:27:54.355Z",
+            "updatedAt": "2026-10-28T09:27:54.355Z"
+          },
+          {
+            "id": "PWkBY",
+            "name": "积分",
+            "description": null,
+            "type": "NUMBER",
+            "options": {
+              "precision": 0,
+              "min": -2147483648,
+              "max": 2147483647,
+              "showThousandSeparator": true,
+              "thousandSeparatorLocale": "en-US",
+              "largeNumberAbbreviation": "NONE",
+              "prefix": null,
+              "suffix": null
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-28T09:27:54.375Z",
+            "updatedAt": "2026-10-28T09:27:54.375Z"
+          },
+          {
+            "id": "kZep1",
+            "name": "会员标签",
+            "description": null,
+            "type": "SINGLE_LINE_TEXT",
+            "options": {
+              "minLength": 0,
+              "maxLength": 1024
+            },
+            "allowMultipleEntries": false,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-28T09:27:54.395Z",
+            "updatedAt": "2026-10-28T09:27:54.395Z"
+          },
+          {
+            "id": "tuwt5",
+            "name": "Feedbacks",
+            "description": null,
+            "type": "LINKED_RECORD",
+            "options": {
+              "linkedTableId": "4INKKrHsnzxFGf",
+              "inverseLinkFieldId": "feFiV",
+              "viewId": null,
+              "sorting": null,
+              "filter": null,
+              "enforceOrder": false
+            },
+            "allowMultipleEntries": true,
+            "readonly": false,
+            "required": false,
+            "defaultValue": null,
+            "createdAt": "2026-10-28T09:28:16.126Z",
+            "updatedAt": "2026-10-28T09:28:16.126Z"
+          }
+        ],
+        "createdAt": "2026-10-28T09:27:54.081Z",
+        "updatedAt": "2026-10-28T09:28:16.126Z"
+      }
+    }
+  ],
+  "bookRecommendation": {
+    "id": "WrAFXOSvIZRJb3",
+    "name": "Books",
+    "description": null,
+    "defaultViewId": "AErZp8R5knIoL8",
+    "primaryFieldId": "UNMHX",
+    "fields": [
+      {
+        "id": "UNMHX",
+        "name": "BookName",
+        "description": null,
+        "type": "SINGLE_LINE_TEXT",
+        "options": {
+          "minLength": 0,
+          "maxLength": 2147483647
+        },
+        "allowMultipleEntries": false,
+        "readonly": false,
+        "required": false,
+        "defaultValue": null,
+        "createdAt": "2026-10-30T01:38:20.506Z",
+        "updatedAt": "2026-10-30T01:38:20.506Z"
+      },
+      {
+        "id": "TyAKi",
+        "name": "Author",
+        "description": null,
+        "type": "SINGLE_LINE_TEXT",
+        "options": {
+          "minLength": 0,
+          "maxLength": 2147483647
+        },
+        "allowMultipleEntries": false,
+        "readonly": false,
+        "required": false,
+        "defaultValue": null,
+        "createdAt": "2026-10-30T01:38:20.506Z",
+        "updatedAt": "2026-10-30T01:38:20.506Z"
+      },
+      {
+        "id": "xY6KB",
+        "name": "BookTags",
+        "description": null,
+        "type": "SELECT",
+        "options": {
+          "choices": [
+            {
+              "id": "27b95024-903d-4090-830e-9ccd6eb77fe1",
+              "label": "科幻",
+              "color": "#cfdfff"
+            },
+            {
+              "id": "33f6d92c-4610-445b-a0ca-31dd7f5980fd",
+              "label": "自然科学",
+              "color": "#d0f0fd"
+            },
+            {
+              "id": "260f794c-fcc8-4fae-9d6d-e1aeb78dd739",
+              "label": "历史",
+              "color": "#c2f5e9"
+            },
+            {
+              "id": "7526f5ba-632d-4eb1-8910-5c0a4bdd9493",
+              "label": "传记",
+              "color": "#d1f7c4"
+            },
+            {
+              "id": "edee3c48-030b-4f4f-be4f-93008ba4e949",
+              "label": "心理学",
+              "color": "#ffeab6"
+            },
+            {
+              "id": "5876260f-35b1-4bdf-910b-44be7b6462d3",
+              "label": "经济",
+              "color": "#fee2d5"
+            },
+            {
+              "id": "cdbde988-eede-4699-bf8e-46571c294df6",
+              "label": "文学",
+              "color": "#ffdce5"
+            },
+            {
+              "id": "7807527f-82e9-4ff3-837d-0cba2b8158c0",
+              "label": "哲学",
+              "color": "#ffdaf6"
+            },
+            {
+              "id": "815b735e-de39-4195-8266-de63707fcbdf",
+              "label": "编程",
+              "color": "#ede2fe"
+            },
+            {
+              "id": "697356b7-36a8-485b-b306-2486cd43ab33",
+              "label": "悬疑",
+              "color": "#eeeeee"
+            }
+          ],
+          "allowToAddNewChoice": true,
+          "multiColorMode": true,
+          "sorting": "CUSTOM",
+          "enforceOrder": false
+        },
+        "allowMultipleEntries": true,
+        "readonly": false,
+        "required": false,
+        "defaultValue": null,
+        "createdAt": "2026-10-30T01:38:20.506Z",
+        "updatedAt": "2026-10-30T01:38:20.506Z"
+      },
+      {
+        "id": "rYdDt",
+        "name": "Intro",
+        "description": null,
+        "type": "LONG_TEXT",
+        "options": {
+          "type": "TEXT"
+        },
+        "allowMultipleEntries": false,
+        "readonly": false,
+        "required": false,
+        "defaultValue": null,
+        "createdAt": "2026-10-30T01:38:20.506Z",
+        "updatedAt": "2026-10-30T01:38:20.506Z"
+      },
+      {
+        "id": "szcpg",
+        "name": "Rating",
+        "description": null,
+        "type": "NUMBER",
+        "options": {
+          "precision": 1,
+          "min": -2147483648,
+          "max": 2147483647,
+          "showThousandSeparator": true,
+          "thousandSeparatorLocale": "DEFAULT",
+          "largeNumberAbbreviation": "NONE",
+          "prefix": null,
+          "suffix": null
+        },
+        "allowMultipleEntries": false,
+        "readonly": false,
+        "required": false,
+        "defaultValue": null,
+        "createdAt": "2026-10-30T01:38:20.506Z",
+        "updatedAt": "2026-10-30T01:38:20.506Z"
+      },
+      {
+        "id": "tMMsH",
+        "name": "ISBN",
+        "description": null,
+        "type": "SINGLE_LINE_TEXT",
+        "options": {
+          "minLength": 0,
+          "maxLength": 2147483647
+        },
+        "allowMultipleEntries": false,
+        "readonly": false,
+        "required": false,
+        "defaultValue": null,
+        "createdAt": "2026-10-30T01:38:20.506Z",
+        "updatedAt": "2026-10-30T01:38:20.506Z"
+      },
+      {
+        "id": "n8U50",
+        "name": "Created At",
+        "description": null,
+        "type": "CREATED_AT",
+        "options": {
+          "precision": "DATETIME",
+          "useRelativeDatetimeFormat": false,
+          "timezoneType": "FIXED",
+          "timezone": "DEFAULT"
+        },
+        "allowMultipleEntries": false,
+        "readonly": true,
+        "required": true,
+        "defaultValue": null,
+        "createdAt": "2026-10-30T01:38:20.506Z",
+        "updatedAt": "2026-10-30T01:38:20.506Z"
+      }
+    ],
+    "createdAt": "2026-10-30T01:38:20.506Z",
+    "updatedAt": "2026-10-30T01:38:20.550Z"
+  },
+  "findings": [
+    "C app has published timestamp 2026-10-30T01:29:54Z; previous handoff is historical.",
+    "Legacy feedback table 3MwTRjVkVcMm6z is NOT_FOUND; C feedback block still references it.",
+    "Some linked fields and a restriction still reference the missing feedback table.",
+    "Feedbacks + Members are new schema, not equivalent to the former activity feedback table.",
+    "BookRecommendation is a separate database; its users are not assumed equivalent to main Users.",
+    "Table counts describe remote records only; none are imported locally."
+  ]
+}

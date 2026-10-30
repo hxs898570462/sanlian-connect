@@ -1,0 +1,27 @@
+{
+  "name": "sanlian-connect",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Sanlian Connect local HTML/CSS/JavaScript application",
+  "engines": {
+    "node": ">=22.20.0"
+  },
+  "scripts": {
+    "dev": "node --watch server/index.js",
+    "start": "node server/index.js",
+    "test": "node scripts/run-tests.js",
+    "db:local": "node scripts/local-postgres.js",
+    "migrate:sqlite": "node scripts/migrate-sqlite.js",
+    "create-admin": "node scripts/create-admin.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "express-rate-limit": "^8.1.0",
+    "helmet": "^8.1.0",
+    "pg": "^8.23.1"
+  },
+  "devDependencies": {
+    "embedded-postgres": "^18.4.0-beta.17"
+  }
+}

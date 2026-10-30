@@ -1,0 +1,18 @@
+.admin-content .filters { flex-wrap: wrap; }
+.admin-content .filters input { min-width: 140px; flex: 1 1 220px; }
+.admin-content .filters select { width: auto; flex: 0 1 180px; }
+.admin-content .filters button { flex: 0 0 auto; white-space: nowrap; }
+@media (max-width: 680px) {
+  .admin-shell { grid-template-columns: 1fr; gap: 22px; }
+  .admin-nav { position: static; flex-direction: row; flex-wrap: wrap; gap: 5px; }
+  .admin-nav a { padding: 7px 12px; border-left: 0; border-bottom: 2px solid transparent; font-size: 13px; }
+  .admin-nav a.selected { border-bottom-color: var(--brand); }
+  .admin-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .admin-heading h1 { font-size: 33px; }
+  .manage-record summary { padding: 16px; align-items: flex-start; }
+  .manage-fields { padding: 0 16px 18px; }
+  .pagination { flex-wrap: wrap; }
+  .topbar nav { justify-content: flex-start; }
+  .admin-content .filters input { min-width: 100%; }
+  .admin-content .filters select { flex: 1 1 auto; }
+}
