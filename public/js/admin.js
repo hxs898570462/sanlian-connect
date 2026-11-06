@@ -1,15 +1,24 @@
 import { api } from './api.js';
 
-let searchState = {tab:'',q:'',status:'',offset:0};
+let searchState = {tab:'',q:'',status:'',priority:'',offset:0};
 const titles = {users:'用户管理',registrations:'报名管理',feedbacks:'反馈管理',suggestions:'建议管理',activities:'活动管理',logs:'操作记录'};
 const feedbackStatus = {pending:'待处理',processing:'处理中',replied:'已回复',closed:'已关闭'};
 const actionLabels = {update_user:'更新用户',update_registration:'更新报名',update_feedback:'处理反馈',update_suggestion:'处理建议',create_activity:'创建活动',update_activity:'更新活动',bootstrap_administrator:'初始化管理员'};
+const levelLabels = {high:'高优先级',mid:'中优先级',low:'低优先级'};
+const priorityOptions = {high:'高优先级',mid:'中优先级',low:'低优先级'};
+// 动态优先级与筛选口径同服务端：安全硬升级优先，否则看含等待加成的总分。
+const levelOfRow = row => row.score_level === 'high' ? 'high' : row.total_score >= 60 ? 'high' : row.total_score >= 30 ? 'mid' : 'low';
+const scoreBadge = row => {
+  const level = levelOfRow(row), bonus = row.total_score - row.score, hitCount = row.score_hits ? row.score_hits.split(' ').filter(Boolean).length : 0;
+  return `<span class="score-badge score-${level}" title="规则分 ${row.score}${bonus ? ` + 等待加成 ${bonus}` : ''} · 命中 ${hitCount} 个词条">${levelLabels[level]} · ${row.total_score} 分</span>`;
+};
+const scoreHits = (row,e) => row.score_hits ? `<div class="score-hits">${row.score_hits.split(' ').filter(Boolean).map(term => `<span class="hit">${e(term)}</span>`).join('')}</div>` : '';
 
 export async function renderAdmin(root, context) {
   const {user,escape:e,date,status,notice,refresh,isCurrent} = context;
   const tab = Object.hasOwn(titles,context.tab) ? context.tab : 'feedbacks';
   if(searchState.tab!==tab) searchState={tab,q:'',status:'',offset:0};
-  const params=new URLSearchParams({q:searchState.q,status:searchState.status,limit:'25',offset:String(searchState.offset)});
+  const params=new URLSearchParams({q:searchState.q,status:searchState.status,priority:searchState.priority,limit:'25',offset:String(searchState.offset)});
   const [summaryData,data]=await Promise.all([api('/admin/summary'),api(`/admin/${tab}?${params}`)]);
   if(!isCurrent())return;
   const summary=summaryData.summary;
@@ -23,7 +32,8 @@ export async function renderAdmin(root, context) {
     let states=null;
     if(tab==='registrations')states={confirmed:'已报名',cancelled:'已取消',checked_in:'已签到'};
     if(tab==='feedbacks'||tab==='suggestions')states=feedbackStatus;
-    return `<form id="manage-search" class="filters"><input name="q" aria-label="搜索管理记录" placeholder="搜索姓名、邮箱、活动或内容" value="${e(searchState.q)}">${states?`<select name="status" aria-label="筛选状态"><option value="">全部状态</option>${options(states,searchState.status)}</select>`:''}<button type="submit">搜索</button></form>`;
+    const priorities=(tab==='feedbacks'||tab==='suggestions')?`<select name="priority" aria-label="筛选优先级"><option value="">全部优先级</option>${options(priorityOptions,searchState.priority)}</select>`:'';
+    return `<form id="manage-search" class="filters"><input name="q" aria-label="搜索管理记录" placeholder="搜索姓名、邮箱、活动或内容" value="${e(searchState.q)}">${states?`<select name="status" aria-label="筛选状态"><option value="">全部状态</option>${options(states,searchState.status)}</select>`:''}${priorities}<button type="submit">搜索</button></form>`;
   };
   const empty=message=>`<div class="empty">${e(message)}</div>`;
   const pagination=()=>data?.total===undefined?'':`<div class="pagination"><span>共 ${data.total} 条 · 第 ${Math.floor(data.offset/25)+1} 页</span><div><button class="secondary" id="previous-page"${data.offset===0?' disabled':''}>上一页</button><button class="secondary" id="next-page"${data.offset+25>=data.total?' disabled':''}>下一页</button></div></div>`;
@@ -64,17 +74,17 @@ export async function renderAdmin(root, context) {
     )).join(''):empty('没有匹配的报名记录。')}</div>`+pagination();
   } else if(tab==='feedbacks') {
     content=filter()+`<div class="stack">${data.feedbacks.length?data.feedbacks.map(f=>record(
-      `${e(f.title)} <span class="tag">${feedbackStatus[f.status]}</span>`,
+      `${e(f.title)} <span class="tag">${feedbackStatus[f.status]}</span> ${scoreBadge(f)}`,
       `${e(f.user_name)} · ${e(f.email)} · ${f.rating}/5 分 · ${date(f.created_at)}`,
-      `<div class="prose feedback-content">${e(f.content)}</div>`+
+      `<div class="prose feedback-content">${e(f.content)}</div>${scoreHits(f,e)}`+
       form('feedbacks',f.id,select('处理状态','status',feedbackStatus,f.status)+
         `<label class="span-two">门店回复<textarea name="reply" maxlength="2000" placeholder="回复将显示在该用户的“读者一隅”页面中">${e(f.reply||'')}</textarea></label>`)
     )).join(''):empty('没有匹配的活动反馈。')}</div>`+pagination();
   } else if(tab==='suggestions') {
     content=filter()+`<div class="stack">${data.suggestions.length?data.suggestions.map(s=>record(
-      `给书店的建议 <span class="tag">${feedbackStatus[s.status]}</span>`,
+      `给书店的建议 <span class="tag">${feedbackStatus[s.status]}</span> ${scoreBadge(s)}`,
       `${e(s.user_name)} · ${e(s.email)} · ${date(s.created_at)}`,
-      `<div class="prose feedback-content">${e(s.content)}</div>`+
+      `<div class="prose feedback-content">${e(s.content)}</div>${scoreHits(s,e)}`+
       form('suggestions',s.id,select('处理状态','status',feedbackStatus,s.status)+
         `<label class="span-two">门店回复<textarea name="reply" maxlength="2000" placeholder="回复将显示在该用户的“读者一隅”页面中">${e(s.reply||'')}</textarea></label>`)
     )).join(''):empty('还没有收到用户建议。')}</div>`+pagination();
@@ -88,11 +98,11 @@ export async function renderAdmin(root, context) {
     content=`<div class="stack">${data.logs.length?data.logs.map(l=>`<article class="panel log-row"><b>${e(actionLabels[l.action]||l.action)}</b><span>${e(l.actor_name)} · ${date(l.created_at)}</span><small>记录编号：${e(l.target_id)}</small></article>`).join(''):empty('还没有管理操作记录。')}</div>`+pagination();
   }
   root.innerHTML=`<section class="admin-heading"><div class="eyebrow">SANLIAN · ADMINISTRATION</div><h1>管理后台</h1><p>你好，${e(user.name)}。</p></section>
-    <div class="admin-stats"><div><span>注册用户</span><strong>${summary.users}</strong></div><div><span>有效报名</span><strong>${summary.registrations}</strong></div><div><span>待处理反馈</span><strong>${summary.pending_feedbacks}</strong></div><div><span>活动场次</span><strong>${summary.activities}</strong></div></div>
+    <div class="admin-stats"><div><span>注册用户</span><strong>${summary.users}</strong></div><div><span>有效报名</span><strong>${summary.registrations}</strong></div><div><span>待处理反馈</span><strong>${summary.pending_feedbacks}</strong></div><div><span>高优先级待办</span><strong>${summary.high_priority}</strong></div><div><span>活动场次</span><strong>${summary.activities}</strong></div></div>
     <div class="admin-shell"><nav class="admin-nav" aria-label="后台导航">${Object.entries(titles).map(([key,label])=>`<a href="#admin/${key}"${tab===key?' class="selected" aria-current="page"':''}>${label}${key==='suggestions'&&summary.pending_suggestions?`<em>${summary.pending_suggestions}</em>`:''}</a>`).join('')}</nav><section class="admin-content"><h2>${titles[tab]}</h2>${content}</section></div>`;
   root.querySelector('#manage-search')?.addEventListener('submit',async event=>{
     event.preventDefault();const form=new FormData(event.currentTarget);
-    searchState.q=form.get('q')||'';searchState.status=form.get('status')||'';searchState.offset=0;await refresh();
+    searchState.q=form.get('q')||'';searchState.status=form.get('status')||'';searchState.priority=form.get('priority')||'';searchState.offset=0;await refresh();
   });
   root.querySelector('#previous-page')?.addEventListener('click',async()=>{searchState.offset=Math.max(0,searchState.offset-25);await refresh();});
   root.querySelector('#next-page')?.addEventListener('click',async()=>{searchState.offset+=25;await refresh();});

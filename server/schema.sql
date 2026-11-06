@@ -75,3 +75,20 @@ BEGIN
   INSERT INTO schema_migrations(version) VALUES(2);
  END IF;
 END $$;
+-- v3：反馈与建议接入智能打分引擎（server/feedback-scoring.js），
+-- score 为静态规则分，score_level 为静态优先级，score_hits 为命中词条（空格分隔）；
+-- 等待加成不落库，由管理端查询时按当前时间动态计算。
+DO $$
+BEGIN
+ IF NOT EXISTS (SELECT 1 FROM schema_migrations WHERE version=3) THEN
+  ALTER TABLE feedbacks
+   ADD COLUMN score INTEGER NOT NULL DEFAULT 0,
+   ADD COLUMN score_level TEXT NOT NULL DEFAULT 'low' CHECK(score_level IN ('high','mid','low')),
+   ADD COLUMN score_hits TEXT NOT NULL DEFAULT '';
+  ALTER TABLE suggestions
+   ADD COLUMN score INTEGER NOT NULL DEFAULT 0,
+   ADD COLUMN score_level TEXT NOT NULL DEFAULT 'low' CHECK(score_level IN ('high','mid','low')),
+   ADD COLUMN score_hits TEXT NOT NULL DEFAULT '';
+  INSERT INTO schema_migrations(version) VALUES(3);
+ END IF;
+END $$;

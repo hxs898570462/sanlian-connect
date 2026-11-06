@@ -2,6 +2,7 @@ import pg from 'pg';
 import './config.js';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import { scoreContent } from './feedback-scoring.js';
 export const projectRoot=fileURLToPath(new URL('../',import.meta.url));
 pg.types.setTypeParser(1184,value=>new Date(value).toISOString());
 function queries(executor) {
@@ -29,13 +30,26 @@ export async function openDatabase(connectionString=process.env.DATABASE_URL,{se
   }, close:()=>pool.end()
  };
  try{
+  // v3 迁移会为反馈/建议补打分列；仅对升级上来的旧库回填存量数据，新库表为空无需回填。
+  const upgraded=(await db.get("SELECT COUNT(*)::integer AS n FROM information_schema.columns WHERE table_name='suggestions' AND column_name='score'")).n===0;
   await db.transaction(async tx=>{
    await tx.query('SELECT pg_advisory_xact_lock(20261030,1)');
    await tx.query(readFileSync(new URL('./schema.sql',import.meta.url),'utf8'));
    if(seed&&(await tx.get('SELECT COUNT(*)::integer AS n FROM activities')).n===0)await seedDemo(tx);
+   if(upgraded)await backfillScores(tx);
   });
   return db;
  }catch(error){await pool.end();throw error;}
+}
+async function backfillScores(tx){
+ for(const row of await tx.all('SELECT id,content,rating FROM feedbacks')){
+  const scored=scoreContent(row.content,{rating:row.rating});
+  await tx.run('UPDATE feedbacks SET score=$1,score_level=$2,score_hits=$3 WHERE id=$4',[scored.score,scored.level,scored.hits.join(' '),row.id]);
+ }
+ for(const row of await tx.all('SELECT id,content FROM suggestions')){
+  const scored=scoreContent(row.content);
+  await tx.run('UPDATE suggestions SET score=$1,score_level=$2,score_hits=$3 WHERE id=$4',[scored.score,scored.level,scored.hits.join(' '),row.id]);
+ }
 }
 async function seedDemo(tx) {
  const now=new Date().toISOString();

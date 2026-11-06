@@ -8,6 +8,7 @@ import { hashPassword,verifyPassword,publicUser,createSession,sessionMiddleware 
 import { registerAdminRoutes } from './admin.js';
 import { activitySelect,privateRegistrations,lockActivity,enrollmentCount } from './queries.js';
 import { feedbackEligibility } from './feedback-policy.js';
+import { scoreContent } from './feedback-scoring.js';
 import { httpConfig } from './config.js';
 import packageInfo from '../package.json' with {type:'json'};
 
@@ -121,12 +122,20 @@ export function createApp(db,{sessionCookie='sanlian_session',http=httpConfig()}
  app.get('/api/feedbacks',requireLogin,async(req,res)=>res.json({feedbacks:await db.all(`
  SELECT f.id,f.registration_id,f.rating,f.content,f.status,f.reply,f.created_at,a.title
  FROM feedbacks f JOIN activities a ON a.id=f.activity_id WHERE f.user_id=$1 ORDER BY f.created_at DESC,f.id`,[req.user.id])}));
- app.get('/api/suggestions',requireLogin,async(req,res)=>res.json({suggestions:await db.all('SELECT id,content,status,reply,created_at FROM suggestions WHERE user_id=$1 ORDER BY created_at DESC,id',[req.user.id])}));
+app.get('/api/suggestions',requireLogin,async(req,res)=>res.json({suggestions:await db.all('SELECT id,content,status,reply,created_at FROM suggestions WHERE user_id=$1 ORDER BY created_at DESC,id',[req.user.id])}));
 app.post('/api/suggestions',requireLogin,async(req,res)=>{
-  const content=text(req.body?.content,5,2000,'建议内容');
-  if(/[\u0000-\u001f\u007f]/.test(content))fail(400,'建议内容包含无效字符');
-  await db.run('INSERT INTO suggestions(id,user_id,content,created_at) VALUES($1,$2,$3,$4)',[randomUUID(),req.user.id,content,new Date().toISOString()]);
-  res.status(201).json({ok:true});
+ const content=text(req.body?.content,5,2000,'建议内容');
+ if(/[\u0000-\u001f\u007f]/.test(content))fail(400,'建议内容包含无效字符');
+ const scored=scoreContent(content);
+ await db.run('INSERT INTO suggestions(id,user_id,content,score,score_level,score_hits,created_at) VALUES($1,$2,$3,$4,$5,$6,$7)',[randomUUID(),req.user.id,content,scored.score,scored.level,scored.hits.join(' '),new Date().toISOString()]);
+ res.status(201).json({ok:true});
+});
+// 删除本人的建议（误发补救）：仅提交者可删，查不到即视为无权访问，不暴露记录是否存在。
+app.delete('/api/suggestions/:id',requireLogin,async(req,res)=>{
+ const row=await db.get('SELECT id FROM suggestions WHERE id=$1 AND user_id=$2',[req.params.id,req.user.id]);
+ if(!row)fail(404,'建议不存在或已被删除');
+ await db.run('DELETE FROM suggestions WHERE id=$1',[row.id]);
+ res.json({ok:true});
 });
 app.get('/api/activities',async(req,res)=>{
   const days=req.query.days===undefined?60:Number(req.query.days);integer(days,1,366,'日期范围');
@@ -173,15 +182,23 @@ app.get('/api/activities',async(req,res)=>{
   const q=typeof req.query.q==='string'?req.query.q.slice(0,100):'';
   res.json({books:await db.all("SELECT id,title,author,category,summary,isbn,price_cents FROM books WHERE $1='' OR strpos(title,$1)>0 OR strpos(author,$1)>0 ORDER BY recommendation_rank,title",[q])});
  });
- app.post('/api/feedbacks',requireLogin,async(req,res)=>{
-  const b=req.body||{},content=text(b.content,5,2000,'反馈内容');integer(b.rating,1,5,'评分');if(typeof b.registration_id!=='string')fail(400,'请选择报名记录');
-  await db.transaction(async tx=>{
-   const ref=await tx.get('SELECT activity_id FROM registrations WHERE id=$1 AND user_id=$2',[b.registration_id,req.user.id]);if(!ref)fail(403,'仅可评价本人的有效报名');
-   const a=await lockActivity(tx,ref.activity_id);
-   const r=await tx.get('SELECT * FROM registrations WHERE id=$1 AND user_id=$2 FOR UPDATE',[b.registration_id,req.user.id]);
-   if(!feedbackEligibility({...r,end_time:a.end_time}).can_feedback)fail(403,r.status==='cancelled'?'已取消的报名不能填写反馈':'签到后即可填写反馈；未签到的有效报名需等活动结束');
-   await tx.run('INSERT INTO feedbacks(id,user_id,activity_id,registration_id,rating,content,created_at) VALUES($1,$2,$3,$4,$5,$6,$7)',[randomUUID(),req.user.id,a.id,r.id,b.rating,content,new Date().toISOString()]);
-  });res.status(201).json({ok:true});
+app.post('/api/feedbacks',requireLogin,async(req,res)=>{
+ const b=req.body||{},content=text(b.content,5,2000,'反馈内容');integer(b.rating,1,5,'评分');if(typeof b.registration_id!=='string')fail(400,'请选择报名记录');
+ await db.transaction(async tx=>{
+  const ref=await tx.get('SELECT activity_id FROM registrations WHERE id=$1 AND user_id=$2',[b.registration_id,req.user.id]);if(!ref)fail(403,'仅可评价本人的有效报名');
+  const a=await lockActivity(tx,ref.activity_id);
+  const r=await tx.get('SELECT * FROM registrations WHERE id=$1 AND user_id=$2 FOR UPDATE',[b.registration_id,req.user.id]);
+  if(!feedbackEligibility({...r,end_time:a.end_time}).can_feedback)fail(403,r.status==='cancelled'?'已取消的报名不能填写反馈':'签到后即可填写反馈；未签到的有效报名需等活动结束');
+  const scored=scoreContent(content,{rating:b.rating});
+  await tx.run('INSERT INTO feedbacks(id,user_id,activity_id,registration_id,rating,content,score,score_level,score_hits,created_at) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)',[randomUUID(),req.user.id,a.id,r.id,b.rating,content,scored.score,scored.level,scored.hits.join(' '),new Date().toISOString()]);
+ });res.status(201).json({ok:true});
+});
+// 删除本人的活动反馈（误发补救）：仅提交者可删，查不到即视为无权访问，不暴露记录是否存在。
+app.delete('/api/feedbacks/:id',requireLogin,async(req,res)=>{
+ const row=await db.get('SELECT id FROM feedbacks WHERE id=$1 AND user_id=$2',[req.params.id,req.user.id]);
+ if(!row)fail(404,'反馈不存在或已被删除');
+ await db.run('DELETE FROM feedbacks WHERE id=$1',[row.id]);
+ res.json({ok:true});
 });
  registerAdminRoutes(app,db,{requireLogin,requireManager,fail,text,integer,isoDate,validatePhone,activitySelect});
  app.use('/api',(req,res)=>res.status(404).json({error:'接口不存在'}));
