@@ -18,11 +18,17 @@ const scoreHits = (row,e) => [
   row.score_quality ? `<div class="score-hits score-quality">${row.score_quality.split(' ').filter(Boolean).map(tag => `<span class="hit hit-quality">${e(tag)}</span>`).join('')}</div>` : ''
 ].join('');
 
+// 管理后台列表查询参数：所有字段兜底为字符串，避免 undefined 被 URLSearchParams
+// 序列化成字面量 "undefined" 触发服务端「优先级筛选无效」校验（管理后台打不开的根因）。
+export const adminListQuery = state => new URLSearchParams({
+  q:state.q||'',status:state.status||'',priority:state.priority||'',limit:'25',offset:String(state.offset||0)
+});
+
 export async function renderAdmin(root, context) {
   const {user,escape:e,date,status,notice,refresh,isCurrent} = context;
   const tab = Object.hasOwn(titles,context.tab) ? context.tab : 'feedbacks';
-  if(searchState.tab!==tab) searchState={tab,q:'',status:'',offset:0};
-  const params=new URLSearchParams({q:searchState.q,status:searchState.status,priority:searchState.priority,limit:'25',offset:String(searchState.offset)});
+  if(searchState.tab!==tab) searchState={tab,q:'',status:'',priority:'',offset:0};
+  const params=adminListQuery(searchState);
   const [summaryData,data]=await Promise.all([api('/admin/summary'),api(`/admin/${tab}?${params}`)]);
   if(!isCurrent())return;
   const summary=summaryData.summary;

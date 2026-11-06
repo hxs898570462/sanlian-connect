@@ -16,7 +16,7 @@ try {
   await runtime.initialise();await runtime.start();
   url=`postgresql://postgres:${password}@127.0.0.1:${port}/postgres`;
  }
- const child=spawn(process.execPath,['--test','--test-concurrency=1','test/integration.test.js','test/admin.test.js','test/bootstrap.test.js','test/migration.test.js','test/deployment.test.js','test/postgres-transfer.test.js','test/account-settings.test.js','test/feedback.test.js','test/suggestions.test.js','test/feedback-scoring.test.js'],{
+ const child=spawn(process.execPath,['--test','--test-concurrency=1','test/integration.test.js','test/admin.test.js','test/bootstrap.test.js','test/migration.test.js','test/deployment.test.js','test/postgres-transfer.test.js','test/account-settings.test.js','test/feedback.test.js','test/suggestions.test.js','test/feedback-scoring.test.js','test/admin-frontend.test.js'],{
   stdio:'inherit',windowsHide:true,env:{...process.env,TEST_DATABASE_URL:url}
  });
  process.exitCode=await new Promise((resolve,reject)=>{child.once('error',reject);child.once('close',code=>resolve(code??1));});

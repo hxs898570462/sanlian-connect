@@ -69,3 +69,10 @@
 - 顶部导航「反馈列表」改名「管理后台」（`public/index.html`，指向 `#admin/feedbacks` 不变）。
 - 自动测试共 74 项（包含父测试）全部通过：新增优质维度子测试（长度/具体性/覆盖/中肯/建设性/评分存疑/封顶）、已回复建议与已回复反馈删除被拒（409）两个子测试；更新 softr 基准分与「我的资料」不含地区断言；原 71 项零回归。
 - 环境备注：本地 PostgreSQL（55432，sanlian_dev）由 v2 升级至 v4，迁移与回填在启动时自动完成；演示账号 reader@sanlian.test / manager@sanlian.test 验证通过。
+
+## 管理后台「优先级筛选无效」修复增量验收（2026-11-07 深夜）
+
+- 现象：管理员登录后点击「管理后台」整页报错「暂时无法打开 / 优先级筛选无效 / 回到首页」，所有后台页签均无法打开。
+- 根因：`public/js/admin.js` 切换页签时重置筛选状态的对象漏掉 `priority` 键（`searchState={tab,q:'',status:'',offset:0}`），`searchState.priority` 变为 `undefined`；`new URLSearchParams({priority:undefined})` 将其序列化为字面量字符串 `"undefined"`，服务端 `checkPriority` 校验不在 `SCORE_LEVELS` 白名单，返回 400「优先级筛选无效」。每次进入管理后台（初始页签 `''` → `feedbacks`）都会触发该重置，故整页必现。
+- 修复：查询参数构建抽为导出的纯函数 `adminListQuery(state)`，所有字段兜底为字符串（`priority:state.priority||''` 等）；页签重置对象补回 `priority:''` 键。服务端校验保持不变（非法值仍应拒绝）。
+- 验证：`npm test` 76 项（包含父测试）全部通过，原 74 项零回归。新增 `test/admin-frontend.test.js`：查询串不含 `undefined`、优先级取值落在服务端 `SCORE_LEVELS` 白名单、真实管理列表接口对页签切换后产生的查询串（feedbacks/suggestions × 全部优先级取值）均返回 200。线上服务实测：修复后 `summary`、`feedbacks`（无筛选/各优先级）、`suggestions` 全流程 200；静态文件 `Cache-Control: max-age=0` 带 ETag 重新验证，浏览器刷新即可生效。
