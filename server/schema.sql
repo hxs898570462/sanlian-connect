@@ -43,6 +43,14 @@ CREATE TABLE IF NOT EXISTS feedbacks (
  reply TEXT, created_at TIMESTAMPTZ NOT NULL,
  FOREIGN KEY(registration_id,user_id,activity_id) REFERENCES registrations(id,user_id,activity_id)
 );
+CREATE TABLE IF NOT EXISTS suggestions (
+ id TEXT PRIMARY KEY,
+ user_id TEXT NOT NULL REFERENCES users(id),
+ content TEXT NOT NULL,
+ status TEXT NOT NULL DEFAULT 'pending' CHECK(status IN ('pending','processing','replied','closed')),
+ reply TEXT, created_at TIMESTAMPTZ NOT NULL
+);
+CREATE INDEX IF NOT EXISTS suggestions_user ON suggestions(user_id,created_at DESC);
 CREATE TABLE IF NOT EXISTS books (
  id TEXT PRIMARY KEY, source_id TEXT UNIQUE, title TEXT NOT NULL, author TEXT NOT NULL,
  category TEXT NOT NULL, summary TEXT NOT NULL, isbn TEXT, price_cents INTEGER CHECK(price_cents >= 0),

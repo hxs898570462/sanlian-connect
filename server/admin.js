@@ -26,7 +26,8 @@ export function registerAdminRoutes(app,db,h) {
  (SELECT COUNT(*)::integer FROM users WHERE role='stuff' AND is_active=1) AS administrators,
  (SELECT COUNT(*)::integer FROM activities WHERE is_deleted=0) AS activities,
  (SELECT COUNT(*)::integer FROM registrations WHERE status IN ('confirmed','checked_in')) AS registrations,
- (SELECT COUNT(*)::integer FROM feedbacks WHERE status IN ('pending','processing')) AS pending_feedbacks`)}));
+ (SELECT COUNT(*)::integer FROM feedbacks WHERE status IN ('pending','processing')) AS pending_feedbacks,
+ (SELECT COUNT(*)::integer FROM suggestions WHERE status IN ('pending','processing')) AS pending_suggestions`)}));
  app.get('/api/admin/users',async(req,res)=>{
   const {limit,offset,q}=page(req),where="($1='' OR strpos(u.name,$1)>0 OR strpos(lower(u.email),lower($1))>0)";
   const users=await db.all(`SELECT u.id,u.email,u.name,u.role,u.is_active,u.created_at,
@@ -97,7 +98,26 @@ export function registerAdminRoutes(app,db,h) {
    await tx.run('UPDATE feedbacks SET status=$1,reply=$2 WHERE id=$3',[state,reply,f.id]);await audit(tx,req.user.id,'update_feedback',f.id);
   });res.json({ok:true});
  });
- app.get('/api/admin/activities',async(req,res)=>res.json({activities:await db.all(`${activitySelect} WHERE a.is_deleted=0 ORDER BY a.created_at DESC,a.id`)}));
+ app.get('/api/admin/suggestions',async(req,res)=>{
+  const {limit,offset,q}=page(req),state=typeof req.query.status==='string'?req.query.status:'';
+  if(state&&!['pending','processing','replied','closed'].includes(state))fail(400,'建议状态无效');
+  const from='FROM suggestions s JOIN users u ON u.id=s.user_id';
+  const where="($1='' OR strpos(s.content,$1)>0 OR strpos(lower(u.email),lower($1))>0 OR strpos(u.name,$1)>0) AND ($2='' OR s.status=$2)";
+  const suggestions=await db.all(`SELECT s.id,s.user_id,s.content,s.status,s.reply,s.created_at,u.name AS user_name,u.email ${from} WHERE ${where} ORDER BY s.created_at DESC,s.id LIMIT $3 OFFSET $4`,[q,state,limit,offset]);
+  const total=(await db.get(`SELECT COUNT(*)::integer AS n ${from} WHERE ${where}`,[q,state])).n;res.json({suggestions,total,limit,offset});
+});
+app.patch('/api/admin/suggestions/:id',async(req,res)=>{
+  const b=allowedBody(req.body,['status','reply']);
+  await adminTx(req,async tx=>{
+   const s=await tx.get('SELECT * FROM suggestions WHERE id=$1 FOR UPDATE',[req.params.id]);if(!s)fail(404,'建议不存在');
+   const state=b.status===undefined?s.status:b.status,reply=b.reply===undefined?(s.reply||''):typeof b.reply==='string'?b.reply.trim():null;
+   if(!['pending','processing','replied','closed'].includes(state))fail(400,'建议状态无效');
+   if(reply===null||reply.length>2000)fail(400,'回复不能超过 2000 个字符');
+   if(state==='replied'&&!reply)fail(400,'标记为已回复前请填写回复内容');
+   await tx.run('UPDATE suggestions SET status=$1,reply=$2 WHERE id=$3',[state,reply,s.id]);await audit(tx,req.user.id,'update_suggestion',s.id);
+  });res.json({ok:true});
+});
+app.get('/api/admin/activities',async(req,res)=>res.json({activities:await db.all(`${activitySelect} WHERE a.is_deleted=0 ORDER BY a.created_at DESC,a.id`)}));
  app.post('/api/admin/activities',async(req,res)=>{
   const b=req.body||{},title=text(b.title,2,100,'活动标题'),category=text(b.category,1,30,'分类'),description=text(b.description,5,5000,'活动说明'),location=text(b.location,2,120,'地点');
   const start=isoDate(b.start_time),end=isoDate(b.end_time);if(end<=start||start<=new Date().toISOString())fail(400,'请设置未来的开始时间，结束时间需晚于开始时间');

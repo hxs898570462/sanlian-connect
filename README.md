@@ -14,13 +14,13 @@ The shared test site runs on Render and stores its data in Neon. Initial event a
 
 - **Discover events:** browse published events in the next 60 days, search and filter the event list, or expand the window to 180 days.
 - **Register and manage attendance:** view availability, register with contact consent, view personal tickets, and cancel eligible registrations to release places.
-- **Member centre ("我的"):** signed-in users see their profile summary, statistics, registrations, and feedback on one page, with a shortcut to Settings.
-- **Share feedback:** a checked-in registration can be reviewed immediately; an unattended valid registration becomes eligible once the event ends. Feedback text and ratings stay visible only to the participant and the store, and the store's reply appears on the same page.
-- **Manage an account:** register, sign in, and view your private profile. Edit your profile, change your password, or choose a reader theme and text size in [Settings](docs/account-settings.md); display preferences stay in the current browser.
-- **Administer the community:** manage users, events, registrations, feedback, and operation logs from the administrator dashboard. Administrators land directly on the feedback list after signing in.
+- **Reader's corner ("读者一隅"):** signed-in users see their profile summary, statistics, registrations, feedback, and suggestions on one page, with their signature under the page title and a shortcut to Settings.
+- **Share feedback and suggestions:** a checked-in registration can be reviewed immediately; an unattended valid registration becomes eligible once the event ends. Readers can also send store suggestions at any time from the reader's corner. Feedback and suggestion texts stay visible only to the participant and the store, and the store's reply appears on the same page.
+- **Manage an account:** register, sign in, and view your private profile; registration offers a reader or administrator role. Edit your profile, change your password, or choose a reader theme and text size in [Settings](docs/account-settings.md); display preferences stay in the current browser.
+- **Administer the community:** manage users, events, registrations, feedback, suggestions, and operation logs from the administrator dashboard. Administrators land directly on the feedback list after signing in.
 - **Explore a sample bookshelf:** browse a basic demonstration of book recommendations.
 
-The two application roles are `user` and `stuff`. The spelling `stuff` is intentional: it is the project's administrator role. Public registration always creates a `user` account.
+The two application roles are `user` and `stuff`. The spelling `stuff` is intentional: it is the project's administrator role. Registration lets you choose between a reader and an administrator account (a local development convention; on hosted deployments prefer adjusting roles through the dashboard instead of open administrator self-registration).
 
 ## Architecture
 
@@ -87,7 +87,7 @@ Dates use PostgreSQL `TIMESTAMPTZ`. APIs return UTC ISO strings and the interfac
 
 ## Accounts and administration
 
-Regular users can access public content and their own profile, registrations, and feedback, and land on the member centre ("我的") after signing in. Administrators land directly on the feedback list and manage business data through the dashboard. Role and account-status changes revoke the affected account's existing sessions.
+Regular users can access public content and their own profile, registrations, feedback, and suggestions, and land on the reader's corner ("读者一隅") after signing in. Administrators land directly on the feedback list and manage business data through the dashboard. Role and account-status changes revoke the affected account's existing sessions.
 
 Create an administrator in the database selected by your local `.env` / `DATABASE_URL`:
 
@@ -111,7 +111,7 @@ npm test
 
 Tests start a temporary real PostgreSQL instance and create isolated test databases. Multi-instance scenarios use two HTTP servers with independent connection pools. The temporary databases and server are cleaned up afterward; the development database is not cleared.
 
-The member centre and feedback eligibility policy were verified on **November 6, 2026** using Node.js 22.22.2 with an existing test server (`TEST_DATABASE_URL`), with **all 52 tests passing**, including parent tests. New coverage: immediate feedback after check-in, rejection of unattended and cancelled registrations, duplicate-submission handling, one feedback per registration across concurrent servers, permission isolation for administrator viewing and replies, plus the existing registration, administration, deployment, and data migration checks.
+The reader's corner, store suggestions, and registration role choice were verified on **November 6, 2026** using Node.js 22.22.2 with an existing test server (`TEST_DATABASE_URL`), with **all 58 tests passing**, including parent tests. New coverage: reader/administrator registration roles and rejection of invalid roles, permission isolation for submitting and viewing suggestions, administrator content search over suggestions, reply rules (marking replied requires reply text), suggestions visible only to their author, plus the existing registration, feedback, administration, deployment, and data migration checks.
 
 An existing test server can be supplied with `TEST_DATABASE_URL`; its account needs permission to create and drop isolated test databases. Do not use the shared or production database as the test target.
 

@@ -90,7 +90,7 @@ export function settingsPage({section,profile,email,version,escape}){
     ).join('')}</ul></nav>`;
   }
   return `<div class="account-page">
-    <a class="back" href="#${category?'settings':'profile'}">← 返回${category?'设置':'我的资料'}</a>
+    <a class="back" href="#${category?'settings':'mine'}">← 返回${category?'设置':'读者一隅'}</a>
     <h1 tabindex="-1">${category||'设置'}</h1>
     ${content}
   </div>`;

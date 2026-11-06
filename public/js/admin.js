@@ -1,18 +1,16 @@
 import { api } from './api.js';
 
 let searchState = {tab:'',q:'',status:'',offset:0};
-const titles = {overview:'工作概览',users:'用户管理',registrations:'报名管理',feedbacks:'反馈管理',activities:'活动管理',logs:'操作记录'};
+const titles = {users:'用户管理',registrations:'报名管理',feedbacks:'反馈管理',suggestions:'建议管理',activities:'活动管理',logs:'操作记录'};
 const feedbackStatus = {pending:'待处理',processing:'处理中',replied:'已回复',closed:'已关闭'};
-const actionLabels = {update_user:'更新用户',update_registration:'更新报名',update_feedback:'处理反馈',create_activity:'创建活动',update_activity:'更新活动',bootstrap_administrator:'初始化管理员'};
+const actionLabels = {update_user:'更新用户',update_registration:'更新报名',update_feedback:'处理反馈',update_suggestion:'处理建议',create_activity:'创建活动',update_activity:'更新活动',bootstrap_administrator:'初始化管理员'};
 
 export async function renderAdmin(root, context) {
   const {user,escape:e,date,status,notice,refresh,isCurrent} = context;
-  const tab = Object.hasOwn(titles,context.tab) ? context.tab : 'overview';
+  const tab = Object.hasOwn(titles,context.tab) ? context.tab : 'feedbacks';
   if(searchState.tab!==tab) searchState={tab,q:'',status:'',offset:0};
   const params=new URLSearchParams({q:searchState.q,status:searchState.status,limit:'25',offset:String(searchState.offset)});
-  const [summaryData,data]=await Promise.all([
-    api('/admin/summary'),tab==='overview'?Promise.resolve(null):api(`/admin/${tab}?${params}`)
-  ]);
+  const [summaryData,data]=await Promise.all([api('/admin/summary'),api(`/admin/${tab}?${params}`)]);
   if(!isCurrent())return;
   const summary=summaryData.summary;
   const options=(items,value)=>Object.entries(items).map(([key,label])=>`<option value="${e(key)}"${key===value?' selected':''}>${e(label)}</option>`).join('');
@@ -24,7 +22,7 @@ export async function renderAdmin(root, context) {
   const filter=()=>{
     let states=null;
     if(tab==='registrations')states={confirmed:'已报名',cancelled:'已取消',checked_in:'已签到'};
-    if(tab==='feedbacks')states=feedbackStatus;
+    if(tab==='feedbacks'||tab==='suggestions')states=feedbackStatus;
     return `<form id="manage-search" class="filters"><input name="q" aria-label="搜索管理记录" placeholder="搜索姓名、邮箱、活动或内容" value="${e(searchState.q)}">${states?`<select name="status" aria-label="筛选状态"><option value="">全部状态</option>${options(states,searchState.status)}</select>`:''}<button type="submit">搜索</button></form>`;
   };
   const empty=message=>`<div class="empty">${e(message)}</div>`;
@@ -44,9 +42,7 @@ export async function renderAdmin(root, context) {
     </div>`;
   };
   let content='';
-  if(tab==='overview') {
-    content=`<section class="panel"><h2>管理日常，从这里开始</h2><p>管理员可以查看和处理全部用户、报名和活动反馈。普通用户的页面只展示自己的资料、报名、反馈与公开活动。</p><div class="quick-links"><a href="#admin/users">查看注册用户 →</a><a href="#admin/registrations">处理报名与签到 →</a><a href="#admin/feedbacks">回复活动反馈 →</a><a href="#admin/activities">维护活动内容 →</a></div><p class="small">当前有 ${summary.administrators} 位启用的管理员。账号授权与停用会使该账号原有登录会话失效。</p></section>`;
-  } else if(tab==='users') {
+  if(tab==='users') {
     content=filter()+`<div class="stack">${data.users.length?data.users.map(u=>record(
       `${e(u.name)} <span class="tag">${u.role==='stuff'?'管理员 · stuff':'普通用户 · user'}</span> <span class="small">${u.is_active?'启用':'已停用'}${u.id===user.id?' · 当前账号':''}</span>`,
       `${e(u.email)} · 报名 ${u.registration_count} 条 · 反馈 ${u.feedback_count} 条`,
@@ -72,8 +68,16 @@ export async function renderAdmin(root, context) {
       `${e(f.user_name)} · ${e(f.email)} · ${f.rating}/5 分 · ${date(f.created_at)}`,
       `<div class="prose feedback-content">${e(f.content)}</div>`+
       form('feedbacks',f.id,select('处理状态','status',feedbackStatus,f.status)+
-        `<label class="span-two">门店回复<textarea name="reply" maxlength="2000" placeholder="回复将显示在该用户的“我的”页面中">${e(f.reply||'')}</textarea></label>`)
+        `<label class="span-two">门店回复<textarea name="reply" maxlength="2000" placeholder="回复将显示在该用户的“读者一隅”页面中">${e(f.reply||'')}</textarea></label>`)
     )).join(''):empty('没有匹配的活动反馈。')}</div>`+pagination();
+  } else if(tab==='suggestions') {
+    content=filter()+`<div class="stack">${data.suggestions.length?data.suggestions.map(s=>record(
+      `给书店的建议 <span class="tag">${feedbackStatus[s.status]}</span>`,
+      `${e(s.user_name)} · ${e(s.email)} · ${date(s.created_at)}`,
+      `<div class="prose feedback-content">${e(s.content)}</div>`+
+      form('suggestions',s.id,select('处理状态','status',feedbackStatus,s.status)+
+        `<label class="span-two">门店回复<textarea name="reply" maxlength="2000" placeholder="回复将显示在该用户的“读者一隅”页面中">${e(s.reply||'')}</textarea></label>`)
+    )).join(''):empty('还没有收到用户建议。')}</div>`+pagination();
   } else if(tab==='activities') {
     content=`<details class="manage-record"><summary>＋ 新增活动</summary><div class="manage-fields"><form class="managed-form" data-kind="activities" data-id="">${activityFields(null)}${save}</form></div></details><div class="stack admin-list">${data.activities.map(a=>record(
       `${e(a.title)} <span class="tag">${status(a.publish_status)}</span>`,
@@ -83,9 +87,9 @@ export async function renderAdmin(root, context) {
   } else if(tab==='logs') {
     content=`<div class="stack">${data.logs.length?data.logs.map(l=>`<article class="panel log-row"><b>${e(actionLabels[l.action]||l.action)}</b><span>${e(l.actor_name)} · ${date(l.created_at)}</span><small>记录编号：${e(l.target_id)}</small></article>`).join(''):empty('还没有管理操作记录。')}</div>`+pagination();
   }
-  root.innerHTML=`<section class="admin-heading"><div class="eyebrow">SANLIAN · ADMINISTRATION</div><h1>管理后台</h1><p>你好，${e(user.name)}。当前身份：管理员（stuff）。</p></section>
+  root.innerHTML=`<section class="admin-heading"><div class="eyebrow">SANLIAN · ADMINISTRATION</div><h1>管理后台</h1><p>你好，${e(user.name)}。</p></section>
     <div class="admin-stats"><div><span>注册用户</span><strong>${summary.users}</strong></div><div><span>有效报名</span><strong>${summary.registrations}</strong></div><div><span>待处理反馈</span><strong>${summary.pending_feedbacks}</strong></div><div><span>活动场次</span><strong>${summary.activities}</strong></div></div>
-    <div class="admin-shell"><nav class="admin-nav" aria-label="后台导航">${Object.entries(titles).map(([key,label])=>`<a href="#admin/${key}"${tab===key?' class="selected" aria-current="page"':''}>${label}</a>`).join('')}</nav><section class="admin-content"><h2>${titles[tab]}</h2>${content}</section></div>`;
+    <div class="admin-shell"><nav class="admin-nav" aria-label="后台导航">${Object.entries(titles).map(([key,label])=>`<a href="#admin/${key}"${tab===key?' class="selected" aria-current="page"':''}>${label}${key==='suggestions'&&summary.pending_suggestions?`<em>${summary.pending_suggestions}</em>`:''}</a>`).join('')}</nav><section class="admin-content"><h2>${titles[tab]}</h2>${content}</section></div>`;
   root.querySelector('#manage-search')?.addEventListener('submit',async event=>{
     event.preventDefault();const form=new FormData(event.currentTarget);
     searchState.q=form.get('q')||'';searchState.status=form.get('status')||'';searchState.offset=0;await refresh();
@@ -112,7 +116,7 @@ export async function renderAdmin(root, context) {
         body.capacity=Number(body.capacity);body.fee_cents=Math.round(Number(body.fee)*100);delete body.fee;
       }
       await api(`/admin/${kind}${id?'/'+encodeURIComponent(id):''}`,{method:id?'PATCH':'POST',body});
-      notice(kind==='feedbacks'?'反馈处理已保存，用户可以查看回复。':'修改已保存。');await refresh();
+      notice(kind==='suggestions'?'建议处理已保存，用户可以查看回复。':kind==='feedbacks'?'反馈处理已保存，用户可以查看回复。':'修改已保存。');await refresh();
     } catch(err){error.textContent=err.message;} finally {button.disabled=false;}
   }));
 }

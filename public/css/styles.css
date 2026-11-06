@@ -39,6 +39,21 @@ html[data-theme="dark"] :focus-visible{outline-color:#f2bc78}
 .mine-stats strong{display:block;font:28px Georgia,serif;margin-top:6px}
 .mine-section{margin-top:42px}
 .mine-section .section-heading h2{margin:0}
+.mine-signature{margin:12px 0 0;font-family:"Songti SC",SimSun,serif;font-size:1.3125rem;color:var(--ink)}
+.mine-signature.is-empty{font-family:inherit;font-size:0.9375rem;color:var(--muted)}
+.mine-stats>div:nth-child(1){background:#e3dccc}
+.mine-stats>div:nth-child(2){background:#d8dfd7}
+.mine-stats>div:nth-child(3){background:#e8d9d1}
+html[data-theme="dark"] .mine-stats>div:nth-child(1){background:#3e382d}
+html[data-theme="dark"] .mine-stats>div:nth-child(2){background:#314139}
+html[data-theme="dark"] .mine-stats>div:nth-child(3){background:#46332f}
+.entry-tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.suggest-form textarea{min-height:120px}
+.auth-panel .role-choice{margin:20px 0 6px}
+.auth-panel .role-choice label{flex:1}
+.auth-panel .role-choice span{text-align:center}
+.role-hint{margin:0 0 18px}
+.admin-nav em{margin-left:8px;font-style:normal;background:var(--brand);color:#fff;border-radius:999px;padding:1px 8px;font-size:11px;line-height:1.6}
 .settings-menu{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
 .settings-menu a{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:56px;padding:10px 12px;border-bottom:1px solid var(--line);font-weight:600}
 .settings-menu a:hover{background:var(--soft)}

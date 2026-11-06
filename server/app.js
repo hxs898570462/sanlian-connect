@@ -61,8 +61,10 @@ export function createApp(db,{sessionCookie='sanlian_session',http=httpConfig()}
  app.get('/api/auth/me',(req,res)=>res.json({user:publicUser(req.user)}));
  app.post('/api/auth/register',authLimit,async(req,res)=>{
   const {email,password}=credentials(req.body||{}),name=text(req.body.name,1,60,'称呼'),hash=await hashPassword(password),id=randomUUID();
+  const role=req.body?.role===undefined?'user':req.body.role;
+  if(!['user','stuff'].includes(role))fail(400,'用户组需为 user 或 stuff');
   const user=await db.transaction(async tx=>{
-   const u=await tx.get('INSERT INTO users(id,email,name,password_hash,created_at) VALUES($1,$2,$3,$4,$5) RETURNING *',[id,email,name,hash,new Date().toISOString()]);
+   const u=await tx.get('INSERT INTO users(id,email,name,password_hash,role,created_at) VALUES($1,$2,$3,$4,$5,$6) RETURNING *',[id,email,name,hash,role,new Date().toISOString()]);
    if(req.sessionHash)await tx.run('DELETE FROM sessions WHERE token_hash=$1',[req.sessionHash]);
    await createSession(tx,id,res,sessionCookie,{secure:http.production});return u;
   });
@@ -119,7 +121,14 @@ export function createApp(db,{sessionCookie='sanlian_session',http=httpConfig()}
  app.get('/api/feedbacks',requireLogin,async(req,res)=>res.json({feedbacks:await db.all(`
  SELECT f.id,f.registration_id,f.rating,f.content,f.status,f.reply,f.created_at,a.title
  FROM feedbacks f JOIN activities a ON a.id=f.activity_id WHERE f.user_id=$1 ORDER BY f.created_at DESC,f.id`,[req.user.id])}));
- app.get('/api/activities',async(req,res)=>{
+ app.get('/api/suggestions',requireLogin,async(req,res)=>res.json({suggestions:await db.all('SELECT id,content,status,reply,created_at FROM suggestions WHERE user_id=$1 ORDER BY created_at DESC,id',[req.user.id])}));
+app.post('/api/suggestions',requireLogin,async(req,res)=>{
+  const content=text(req.body?.content,5,2000,'建议内容');
+  if(/[\u0000-\u001f\u007f]/.test(content))fail(400,'建议内容包含无效字符');
+  await db.run('INSERT INTO suggestions(id,user_id,content,created_at) VALUES($1,$2,$3,$4)',[randomUUID(),req.user.id,content,new Date().toISOString()]);
+  res.status(201).json({ok:true});
+});
+app.get('/api/activities',async(req,res)=>{
   const days=req.query.days===undefined?60:Number(req.query.days);integer(days,1,366,'日期范围');
   const q=typeof req.query.q==='string'?req.query.q.trim().slice(0,100):'',category=typeof req.query.category==='string'?req.query.category:'';
   const activities=await db.all(`${activitySelect} WHERE a.is_deleted=0 AND a.publish_status='published'
