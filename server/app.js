@@ -10,6 +10,7 @@ import { activitySelect,privateRegistrations,lockActivity,enrollmentCount } from
 import { feedbackEligibility } from './feedback-policy.js';
 import { scoreContent } from './feedback-scoring.js';
 import { httpConfig } from './config.js';
+import { registerAssistantRoutes } from './assistant.js';
 import packageInfo from '../package.json' with {type:'json'};
 
 export const fail=(status,message)=>{const error=new Error(message);error.status=status;throw error;};
@@ -28,7 +29,7 @@ const passwordValue=value=>{
 const profileFields={name:[1,60,'昵称'],gender:[0,6,'性别'],region:[0,60,'地区'],signature:[0,100,'签名']};
 const profileData=u=>({...publicUser(u),created_at:u.created_at,gender:u.gender,region:u.region,signature:u.signature});
 
-export function createApp(db,{sessionCookie='sanlian_session',http=httpConfig()}={}) {
+export function createApp(db,{sessionCookie='sanlian_session',http=httpConfig(),assistant={}}={}) {
  const app=express();app.disable('x-powered-by');
  app.set('trust proxy',http.proxyHops);
  app.use(helmet({contentSecurityPolicy:{directives:{'upgrade-insecure-requests':http.production?[]:null}},strictTransportSecurity:http.production}));
@@ -151,9 +152,9 @@ app.get('/api/activities',async(req,res)=>{
   if(!activity)fail(404,'活动不存在或尚未发布');res.json({activity});
  });
  app.get('/api/registrations',requireLogin,async(req,res)=>{
- const rows=await db.all(privateRegistrations,[req.user.id]),now=Date.now();
- res.json({registrations:rows.map(r=>({...r,...feedbackEligibility(r,now)}))});
-});
+  const rows=await db.all(privateRegistrations,[req.user.id]),now=Date.now();
+  res.json({registrations:rows.map(r=>({...r,...feedbackEligibility(r,now)}))});
+ });
  app.post('/api/registrations',requireLogin,async(req,res)=>{
   const b=req.body||{},name=text(b.attendee_name,1,60,'参加者姓名'),phone=validatePhone(b.phone);
   if(b.privacy_consent!==true)fail(400,'请同意将报名资料用于本次活动联系');
@@ -183,6 +184,10 @@ app.get('/api/activities',async(req,res)=>{
   const q=typeof req.query.q==='string'?req.query.q.slice(0,100):'';
   res.json({books:await db.all("SELECT id,title,author,category,summary,isbn,price_cents FROM books WHERE $1='' OR strpos(title,$1)>0 OR strpos(author,$1)>0 ORDER BY recommendation_rank,title",[q])});
  });
+ app.get('/api/books/:id',async(req,res)=>{
+  const book=await db.get('SELECT id,title,author,category,summary,isbn,price_cents FROM books WHERE id=$1',[req.params.id]);
+  if(!book)fail(404,'书目不存在');res.json({book});
+ });
 app.post('/api/feedbacks',requireLogin,async(req,res)=>{
  const b=req.body||{},content=text(b.content,5,2000,'反馈内容');integer(b.rating,1,5,'评分');if(typeof b.registration_id!=='string')fail(400,'请选择报名记录');
  await db.transaction(async tx=>{
@@ -202,6 +207,7 @@ app.delete('/api/feedbacks/:id',requireLogin,async(req,res)=>{
  await db.run('DELETE FROM feedbacks WHERE id=$1',[row.id]);
  res.json({ok:true});
 });
+ registerAssistantRoutes(app,db,{...assistant,requireLogin});
  registerAdminRoutes(app,db,{requireLogin,requireManager,fail,text,integer,isoDate,validatePhone,activitySelect});
  app.use('/api',(req,res)=>res.status(404).json({error:'接口不存在'}));
  app.use(express.static(resolve(projectRoot,'public'),{index:'index.html'}));

@@ -101,3 +101,5 @@ html[data-theme="dark"] .score-hits .hit-quality{background:#2e3a2c;color:#bcd8b
   .mine-profile .actions{margin-left:0;width:100%}
   .mine-avatar{width:52px;height:52px;font-size:1.5rem}
 }
+
+.feedback-section{margin-bottom:36px}.feedback-section>h2,.feedback-panel>h2{font-size:1.625rem}.feedback-panel>h1{font-size:2.125rem}
