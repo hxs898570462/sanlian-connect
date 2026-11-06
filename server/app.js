@@ -8,6 +8,7 @@ import { hashPassword,verifyPassword,publicUser,createSession,sessionMiddleware 
 import { registerAdminRoutes } from './admin.js';
 import { activitySelect,privateRegistrations,lockActivity,enrollmentCount } from './queries.js';
 import { httpConfig } from './config.js';
+import packageInfo from '../package.json' with {type:'json'};
 
 export const fail=(status,message)=>{const error=new Error(message);error.status=status;throw error;};
 const text=(v,min,max,label)=>{
@@ -18,6 +19,12 @@ const isoDate=v=>{
  if(typeof v!=='string'||!/(Z|[+-]\d{2}:\d{2})$/.test(v)||!Number.isFinite(Date.parse(v)))fail(400,'时间需包含有效的时区');return new Date(v).toISOString();
 };
 const validatePhone=v=>{const phone=text(v,7,24,'联系电话');if(!/^\+?[\d ()-]{7,24}$/.test(phone)||phone.replace(/\D/g,'').length<7)fail(400,'联系电话格式不正确');return phone;};
+const passwordValue=value=>{
+ if(typeof value!=='string'||value.length<12||value.length>128)fail(400,'密码长度需为 12–128 个字符');
+ return value;
+};
+const profileFields={name:[1,60,'昵称'],gender:[0,6,'性别'],region:[0,60,'地区'],signature:[0,100,'签名']};
+const profileData=u=>({...publicUser(u),created_at:u.created_at,gender:u.gender,region:u.region,signature:u.signature});
 
 export function createApp(db,{sessionCookie='sanlian_session',http=httpConfig()}={}) {
  const app=express();app.disable('x-powered-by');
@@ -43,11 +50,11 @@ export function createApp(db,{sessionCookie='sanlian_session',http=httpConfig()}
  app.use(sessionMiddleware(db,sessionCookie));
  const requireLogin=(req,res,next)=>{if(!req.user)return res.status(401).json({error:'请先登录'});next();};
  const requireManager=(req,res,next)=>{if(req.user?.role!=='stuff')return res.status(403).json({error:'需要管理员权限'});next();};
- const authLimit=rateLimit({windowMs:15*60000,limit:30,standardHeaders:'draft-8',legacyHeaders:false,message:{error:'登录尝试过多，请稍后重试'}});
+ const authLimit=rateLimit({windowMs:15*60000,limit:30,standardHeaders:'draft-8',legacyHeaders:false,message:{error:'账号验证尝试过多，请稍后重试'}});
  const credentials=body=>{
   const email=text(body.email,3,254,'邮箱').toLowerCase();
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))fail(400,'邮箱格式不正确');
-  const password=body.password;if(typeof password!=='string'||password.length<12||password.length>128)fail(400,'密码长度需为 12–128 个字符');return {email,password};
+  return {email,password:passwordValue(body.password)};
  };
  app.get('/api/health',async(req,res)=>{await db.get('SELECT 1');res.json({status:'ok',storage:'postgresql',mode:http.production?'hosted':'local'});});
  app.get('/api/auth/me',(req,res)=>res.json({user:publicUser(req.user)}));
@@ -75,10 +82,38 @@ export function createApp(db,{sessionCookie='sanlian_session',http=httpConfig()}
   if(req.sessionHash)await db.run('DELETE FROM sessions WHERE token_hash=$1',[req.sessionHash]);
   res.clearCookie(sessionCookie,{path:'/'});res.json({ok:true});
  });
- app.get('/api/profile',requireLogin,(req,res)=>res.json({user:{...publicUser(req.user),created_at:req.user.created_at}}));
+ app.post('/api/auth/change-password',requireLogin,authLimit,async(req,res)=>{
+  const previous=passwordValue(req.body?.current_password),next=passwordValue(req.body?.new_password);
+  if(previous===next)fail(400,'新密码不能与当前密码相同');
+  if(!await verifyPassword(previous,req.user.password_hash))fail(401,'当前密码不正确');
+  const hash=await hashPassword(next);
+  await db.transaction(async tx=>{
+   // Serialize with login and other password changes before revoking sessions.
+   const current=await tx.get('SELECT password_hash,is_active FROM users WHERE id=$1 FOR UPDATE',[req.user.id]);
+   if(!current?.is_active||current.password_hash!==req.user.password_hash||
+      !await tx.get('SELECT 1 FROM sessions WHERE token_hash=$1 AND user_id=$2 AND expires_at>$3',[req.sessionHash,req.user.id,Date.now()]))
+    fail(401,'账号已变化，请重新登录');
+   await tx.run('UPDATE users SET password_hash=$1 WHERE id=$2',[hash,req.user.id]);
+   await tx.run('DELETE FROM sessions WHERE user_id=$1',[req.user.id]);
+  });
+  res.clearCookie(sessionCookie,{path:'/'});res.json({ok:true});
+ });
+ app.get('/api/version',requireLogin,(req,res)=>res.json({version:packageInfo.version}));
+ app.get('/api/profile',requireLogin,(req,res)=>res.json({user:profileData(req.user)}));
  app.patch('/api/profile',requireLogin,async(req,res)=>{
-  if(!req.body||Array.isArray(req.body)||Object.keys(req.body).some(k=>k!=='name'))fail(400,'个人资料仅支持修改称呼');
-  const name=text(req.body.name,1,60,'称呼');await db.run('UPDATE users SET name=$1 WHERE id=$2',[name,req.user.id]);res.json({user:publicUser({...req.user,name})});
+  const body=req.body,keys=Object.keys(body||{});
+  if(Array.isArray(body)||!keys.length||keys.some(k=>!Object.hasOwn(profileFields,k)))fail(400,'包含不支持修改的资料字段');
+  const [name,gender,region,signature]=Object.entries(profileFields).map(([key,rules])=>{
+   if(!Object.hasOwn(body,key))return null;
+   const value=text(body[key],...rules);
+   if(/[\u0000-\u001f\u007f]/.test(value))fail(400,`${rules[2]}包含无效字符`);
+   return value;
+  });
+  if(gender!==null&&!['','female','male','other'].includes(gender))fail(400,'请选择有效的性别选项');
+  const user=await db.get(`UPDATE users SET name=COALESCE($1,name),gender=COALESCE($2,gender),
+   region=COALESCE($3,region),signature=COALESCE($4,signature) WHERE id=$5 RETURNING *`,
+   [name,gender,region,signature,req.user.id]);
+  res.json({user:profileData(user)});
  });
  app.get('/api/feedbacks',requireLogin,async(req,res)=>res.json({feedbacks:await db.all(`
  SELECT f.id,f.registration_id,f.rating,f.content,f.status,f.reply,f.created_at,a.title

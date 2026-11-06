@@ -1,16 +1,21 @@
 import {api} from './api.js';
 import {renderAdmin} from './admin.js';
+import {applyPreferences,bindPreferences,profileView,settingsPage} from './settings.js';
 const root=document.querySelector('#app');
 let user=null,renderId=0,noticeTimer;
 const escape=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const date=s=>new Intl.DateTimeFormat('zh-CN',{timeZone:'Asia/Shanghai',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date(s));
 const status=s=>({confirmed:'已报名',cancelled:'已取消',checked_in:'已签到',draft:'草稿',published:'已发布',pending:'待审核',offline:'已下线'}[s]||s);
 function notice(message){document.querySelector('#notice').textContent=message;clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>document.querySelector('#notice').textContent='',4500);}
+async function logout(){
+  try{await api('/auth/logout',{method:'POST',body:{}});user=null;account();if(location.hash==='#home')await render();else location.hash='home';}
+  catch(e){notice(e.message);}
+}
 function account(){
   document.querySelector('#account').innerHTML=user?`<a href="#profile">${escape(user.name)}<small class="role-label">${user.role==='stuff'?'管理员 · stuff':'普通用户 · user'}</small></a><button class="secondary" id="logout">退出</button>`:'<a class="button secondary" href="#login">登录 / 注册</a>';
   document.querySelector('#admin-link').hidden=user?.role!=='stuff';
   document.querySelector('#feedback-link').hidden=!user;
-  document.querySelector('#logout')?.addEventListener('click',async()=>{try{await api('/auth/logout',{method:'POST',body:{}});user=null;account();location.hash='home';await render();}catch(e){notice(e.message);}});
+  document.querySelector('#logout')?.addEventListener('click',logout);
 }
 const empty=message=>`<div class="empty">${escape(message)}</div>`;
 function cards(items){return items.length?items.map((a,i)=>`<article class="card"><a href="#activity/${encodeURIComponent(a.id)}" class="card-cover theme-${i%3}" aria-label="查看${escape(a.title)}"><span class="symbol">${['阅','文','遇'][i%3]}</span><small>${escape(a.category)} · 天镜湖畔</small></a><div class="card-body"><span class="tag">${escape(a.category)}</span><h3><a href="#activity/${encodeURIComponent(a.id)}">${escape(a.title)}</a></h3><div class="meta">${date(a.start_time)}<br>${escape(a.location)}<br>余 ${Math.max(0,a.capacity-a.enrolled_count)} 席 / 共 ${a.capacity} 席</div><div class="card-foot"><span class="fee">${a.fee_cents?'¥ '+(a.fee_cents/100).toFixed(2):'免费参与'}</span><a class="text-link" href="#activity/${encodeURIComponent(a.id)}">了解活动 →</a></div></div></article>`).join(''):empty('这个时间范围内暂无活动，欢迎稍后再来。');}
@@ -23,6 +28,7 @@ function bindForm(id,submit){
 async function render(){
   const version=++renderId;
   const [page='home',rawId='']=(location.hash.slice(1)||'home').split('/');
+  applyPreferences(page);
   let id;try{id=decodeURIComponent(rawId);}catch{id='';}
   document.querySelectorAll('[data-nav]').forEach(a=>a.classList.toggle('active',a.dataset.nav===page||(page==='activity'&&a.dataset.nav==='activities')));
   root.innerHTML='<p class="loading">正在加载…</p>';
@@ -63,8 +69,30 @@ async function render(){
     }else if(page==='profile'){
       if(!user){location.hash='login';return;}
       const {user:profile}=await api('/profile');
-      if(!show(`<section class="panel auth-panel"><div class="eyebrow">YOUR ACCOUNT</div><h1>我的资料</h1><p>用户组：${profile.role==='stuff'?'管理员（stuff）':'普通用户（user）'}</p><p>邮箱：${escape(profile.email)}</p><p class="small">注册时间：${date(profile.created_at)}</p><form id="profile-form"><label for="profile-name">称呼</label><input id="profile-name" name="name" required maxlength="60" value="${escape(profile.name)}"><div class="form-error" role="alert"></div><button type="submit">保存称呼</button></form></section>`))return;
-      bindForm('profile-form',async data=>{await api('/profile',{method:'PATCH',body:{name:data.get('name')}});notice('个人资料已保存。');await render();});
+      show(profileView({profile,escape,date}));
+    }else if(page==='settings'){
+      if(!user){location.hash='login';return;}
+      const release=id==='about'?await api('/version'):null;
+      const profile=id==='profile'?(await api('/profile')).user:null;
+      if(!show(settingsPage({section:id,profile,email:user.email,version:release?.version,escape})))return;
+      root.querySelector('h1').focus({preventScroll:true});
+      if(id==='profile')bindForm('profile-form',async(data,form)=>{
+        const result=await api('/profile',{method:'PATCH',body:Object.fromEntries(data)});
+        if(version!==renderId)return;
+        user=result.user;
+        for(const field of data.keys())form.elements.namedItem(field).value=user[field];
+        account();notice('个人资料已保存。');
+      });
+      if(id==='display')bindPreferences();
+      if(id==='security'){
+        document.querySelector('#settings-logout').addEventListener('click',logout);
+        bindForm('password-form',async data=>{
+          const current_password=data.get('current_password'),new_password=data.get('new_password');
+          if(new_password!==data.get('confirm_password'))throw Error('两次输入的新密码不一致');
+          await api('/auth/change-password',{method:'POST',body:{current_password,new_password}});
+          user=null;account();notice('密码已修改，请重新登录。');location.hash='login';
+        });
+      }
     }else if(page==='myfeedbacks'){
       if(!user){location.hash='login';return;}
       const {feedbacks}=await api('/feedbacks');
@@ -76,5 +104,6 @@ async function render(){
   }catch(e){show(`<section class="intro"><h1>暂时无法打开</h1><p class="error">${escape(e.message)}</p><a class="text-link" href="#home">回到首页</a></section>`);}
 }
 window.addEventListener('hashchange',()=>{render();window.scrollTo({top:0,behavior:'instant'});});
+applyPreferences(location.hash.slice(1).split('/')[0]);
 try{user=(await api('/auth/me')).user;}catch(e){notice('连接服务失败，请确认本地服务已启动。');}
 account();await render();

@@ -15,7 +15,7 @@ The shared test site runs on Render and stores its data in Neon. Initial event a
 - **Discover events:** browse published events in the next 60 days, search and filter the event list, or expand the window to 180 days.
 - **Register and manage attendance:** view availability, register with contact consent, view personal tickets, and cancel eligible registrations to release places.
 - **Share feedback:** participants with a valid registration can review an event after it ends and read the store's reply.
-- **Manage an account:** register, sign in, update a display name, and use database-backed sessions.
+- **Manage an account:** register, sign in, and view your private profile. Edit your profile, change your password, or choose a reader theme and text size in [Settings](docs/account-settings.md); display preferences stay in the current browser.
 - **Administer the community:** manage users, events, registrations, feedback, and operation logs from the administrator dashboard.
 - **Explore a sample bookshelf:** browse a basic demonstration of book recommendations.
 
@@ -38,7 +38,7 @@ GitHub stores the code and database definitions. Live business records and datab
 
 ## Run locally
 
-Use Node.js **22.20.0**, the version pinned in [`.node-version`](.node-version) and used for the latest local verification.
+Use Node.js **22.20.0**, the version pinned in [`.node-version`](.node-version).
 
 ```powershell
 git clone https://github.com/hxs898570462/sanlian-connect.git
@@ -110,7 +110,7 @@ npm test
 
 Tests start a temporary real PostgreSQL instance and create isolated test databases. Multi-instance scenarios use two HTTP servers with independent connection pools. The temporary databases and server are cleaned up afterward; the development database is not cleared.
 
-The latest local run on **October 30, 2026** passed **39 tests**, including parent tests. Coverage includes competing for the last event place, duplicate registrations, administrator/user races, account isolation, session revocation, feedback replies, restart persistence, administrator commands, deployment checks with a simulated proxy, and both migration paths with rollback checks.
+The account settings branch passed **44 tests** on **November 6, 2026** using Node.js 24.20.0, including parent tests. Coverage includes the category-only settings menu, profile migration, private profile fields, and password changes with cross-instance session revocation, plus the existing registration, feedback, administration, deployment and data migration checks.
 
 An existing test server can be supplied with `TEST_DATABASE_URL`; its account needs permission to create and drop isolated test databases. Do not use the shared or production database as the test target.
 

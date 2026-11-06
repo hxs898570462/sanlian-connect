@@ -56,3 +56,14 @@ CREATE TABLE IF NOT EXISTS schema_migrations (
  version INTEGER PRIMARY KEY, applied_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 INSERT INTO schema_migrations(version) VALUES(1) ON CONFLICT DO NOTHING;
+
+DO $$
+BEGIN
+ IF NOT EXISTS (SELECT 1 FROM schema_migrations WHERE version=2) THEN
+  ALTER TABLE users
+   ADD COLUMN gender TEXT NOT NULL DEFAULT '' CHECK(gender IN ('','female','male','other')),
+   ADD COLUMN region VARCHAR(60) NOT NULL DEFAULT '',
+   ADD COLUMN signature VARCHAR(100) NOT NULL DEFAULT '';
+  INSERT INTO schema_migrations(version) VALUES(2);
+ END IF;
+END $$;
