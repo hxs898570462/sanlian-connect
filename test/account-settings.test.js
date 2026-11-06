@@ -1,0 +1,92 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import packageInfo from '../package.json' with {type:'json'};
+import {settingsPage} from '../public/js/settings.js';
+import {fixture} from './postgres-helper.js';
+
+test('Settings shows only category links until a category is opened',()=>{
+ const render=section=>settingsPage({section,email:'reader@example.test',version:packageInfo.version,escape:String});
+ const menu=render('');
+ for(const section of ['display','security','privacy','about'])assert.ok(menu.includes(`href="#settings/${section}"`));
+ assert.doesNotMatch(menu,/登录邮箱|修改密码|报名信息用途|系统版本|type="radio"/);
+ assert.match(render('display'),/type="radio"/);
+ assert.match(render('security'),/登录邮箱/);
+ assert.doesNotMatch(render('security'),/type="radio"|系统版本/);
+ assert.match(render('privacy'),/报名信息用途/);
+ assert.match(render('about'),/系统版本/);
+ for(const section of ['display','security','privacy','about'])assert.ok(render(section).includes('href="#settings"'));
+});
+
+test('Account settings preserve records and isolate private account changes',async t=>{
+ const f=await fixture({servers:2}),call=f.call.bind(f);
+ t.after(()=>f.close());
+ const password='ReaderTestPassword123!';
+ const signup=email=>call('/api/auth/register',{method:'POST',body:{name:'Reader',email,password}});
+ const alice=await signup('settings-a@example.test'),bob=await signup('settings-b@example.test');
+ const login=value=>call('/api/auth/login',{method:'POST',body:{email:'settings-a@example.test',password:value},instance:1});
+ const change=(cookie,current_password,new_password,instance=0)=>call('/api/auth/change-password',{
+  method:'POST',cookie,instance,body:{current_password,new_password}
+ });
+ assert.equal(alice.status,201);
+ assert.equal(bob.status,201);
+
+ await t.test('upgrade an existing account without losing its session or registration',async()=>{
+  const booking=await call('/api/registrations',{method:'POST',cookie:alice.cookie,body:{
+   activity_id:'demo-reading',attendee_name:'Reader',phone:'13800000000',privacy_consent:true
+  }});
+  assert.equal(booking.status,201);
+  await f.db.transaction(async tx=>{
+   await tx.run('ALTER TABLE users DROP COLUMN gender, DROP COLUMN region, DROP COLUMN signature');
+   await tx.run('DELETE FROM schema_migrations WHERE version=2');
+  });
+  await f.restart();
+  const profile=await call('/api/profile',{cookie:alice.cookie});
+  assert.equal(profile.status,200);
+  assert.deepEqual([profile.data.user.gender,profile.data.user.region,profile.data.user.signature],['','','']);
+  assert.equal((await call('/api/registrations',{cookie:alice.cookie})).data.registrations[0].id,booking.data.registration.id);
+  assert.equal((await call('/api/version',{cookie:alice.cookie})).data.version,packageInfo.version);
+  assert.equal((await call('/api/version')).status,401);
+ });
+
+ await t.test('only the owner can read and update the new fields',async()=>{
+  const patch=(body,cookie=alice.cookie)=>call('/api/profile',{method:'PATCH',body,cookie});
+  assert.equal((await call('/api/profile',{method:'PATCH',body:{name:'Reader'}})).status,401);
+  for(const body of [{role:'stuff'},{id:bob.data.user.id},{gender:'invalid'},{region:'x'.repeat(61)},{signature:'x'.repeat(101)},{signature:'bad\0text'}])
+   assert.equal((await patch(body)).status,400);
+  const profile={name:'New nickname',gender:'other',region:'Taicang',signature:'Reader by the lake'};
+  assert.equal((await patch(profile)).status,200);
+  await f.restart();
+  const mine=(await call('/api/profile',{cookie:alice.cookie,instance:1})).data.user;
+  for(const [key,value] of Object.entries(profile))assert.equal(mine[key],value);
+  const other=(await call('/api/profile?user_id='+alice.data.user.id,{cookie:bob.cookie})).data.user;
+  assert.equal(other.id,bob.data.user.id);
+  assert.equal(other.signature,'');
+  const summary=(await call('/api/auth/me',{cookie:alice.cookie})).data.user;
+  for(const key of ['gender','region','signature','password_hash'])assert.ok(!Object.hasOwn(summary,key));
+  const cleared=(await patch({gender:'',region:'',signature:''})).data.user;
+  assert.deepEqual([cleared.gender,cleared.region,cleared.signature],['','','']);
+  assert.equal(cleared.name,profile.name);
+ });
+
+ await t.test('require current credentials and revoke all sessions across instances',async()=>{
+  const alternatives=['ChangedPassword123!','OtherChangedPassword123!'];
+  assert.equal((await change(undefined,password,alternatives[0])).status,401);
+  assert.equal((await change(alice.cookie,password,'too short')).status,400);
+  assert.equal((await change(alice.cookie,'IncorrectPassword123!',alternatives[0])).status,401);
+  assert.equal((await change(alice.cookie,password,password)).status,400);
+  const second=await login(password);
+  assert.equal(second.status,200);
+  const changes=await Promise.all([
+   change(alice.cookie,password,alternatives[0]),change(second.cookie,password,alternatives[1],1)
+  ]);
+  assert.deepEqual(changes.map(r=>r.status).sort(),[200,401]);
+  assert.match(changes.find(r=>r.status===200).setCookie,/^sanlian_session=;/);
+  for(const cookie of [alice.cookie,second.cookie])
+   assert.equal((await call('/api/profile',{cookie,instance:1})).status,401);
+  assert.equal((await login(password)).status,401);
+  const replacement=await login(alternatives[changes.findIndex(r=>r.status===200)]);
+  assert.equal(replacement.status,200);
+  assert.equal((await call('/api/registrations',{cookie:replacement.cookie})).data.registrations.length,1);
+  assert.equal((await call('/api/profile',{cookie:bob.cookie})).status,200);
+ });
+});
