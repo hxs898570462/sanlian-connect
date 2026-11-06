@@ -72,7 +72,7 @@ export async function renderAdmin(root, context) {
       `${e(f.user_name)} · ${e(f.email)} · ${f.rating}/5 分 · ${date(f.created_at)}`,
       `<div class="prose feedback-content">${e(f.content)}</div>`+
       form('feedbacks',f.id,select('处理状态','status',feedbackStatus,f.status)+
-        `<label class="span-two">门店回复<textarea name="reply" maxlength="2000" placeholder="回复将显示在该用户的“我的反馈”中">${e(f.reply||'')}</textarea></label>`)
+        `<label class="span-two">门店回复<textarea name="reply" maxlength="2000" placeholder="回复将显示在该用户的“活动反馈”中">${e(f.reply||'')}</textarea></label>`)
     )).join(''):empty('没有匹配的活动反馈。')}</div>`+pagination();
   } else if(tab==='activities') {
     content=`<details class="manage-record"><summary>＋ 新增活动</summary><div class="manage-fields"><form class="managed-form" data-kind="activities" data-id="">${activityFields(null)}${save}</form></div></details><div class="stack admin-list">${data.activities.map(a=>record(

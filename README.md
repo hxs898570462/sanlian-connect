@@ -14,10 +14,11 @@ The shared test site runs on Render and stores its data in Neon. Initial event a
 
 - **Discover events:** browse published events in the next 60 days, search and filter the event list, or expand the window to 180 days.
 - **Register and manage attendance:** view availability, register with contact consent, view personal tickets, and cancel eligible registrations to release places.
-- **Share feedback:** participants with a valid registration can review an event after it ends and read the store's reply.
+- **Share feedback:** checked-in participants can submit feedback immediately, including while the event is still running. Other valid registrations become eligible after the event ends. Entry points appear in My registrations, event details, and Activity feedback; administrators can view and reply, and participants can read their own replies.
 - **Manage an account:** register, sign in, and view your private profile. Edit your profile, change your password, or choose a reader theme and text size in [Settings](docs/account-settings.md); display preferences stay in the current browser.
 - **Administer the community:** manage users, events, registrations, feedback, and operation logs from the administrator dashboard.
 - **Explore a sample bookshelf:** browse a basic demonstration of book recommendations.
+- **AI reading assistant (local implementation):** a floating DeepSeek chat panel searches live published events and sample books, opens book details, and prepares the event confirmation form. Sign-in is required for chat; the user supplies missing contact details, checks consent, and personally submits. The panel follows the reader theme and text size. Package checkout and payments are not implemented. This change has not yet been deployed to the shared site.
 
 The two application roles are `user` and `stuff`. The spelling `stuff` is intentional: it is the project's administrator role. Public registration always creates a `user` account.
 
@@ -79,6 +80,12 @@ See [`.env.example`](.env.example) for a safe configuration template. The applic
 | `APP_ORIGIN` | Exact website origin; on Render, defaults to the platform-provided `RENDER_EXTERNAL_URL` |
 | `HOST` | Defaults to `127.0.0.1` locally and `0.0.0.0` in production |
 | `TRUST_PROXY_HOPS` | Trusted proxy hop count; defaults to `0` locally and initially `1` on Render; verify the actual forwarding path before changing it |
+| `DEEPSEEK_API_KEY` | Optional private API key; enables the AI assistant when configured on the backend |
+| `DEEPSEEK_BASE_URL` | Defaults to `https://api.deepseek.com`; only the official HTTPS endpoint is accepted |
+| `DEEPSEEK_MODEL` | Defaults to `deepseek-flash` |
+| `DEEPSEEK_PROXY_URL` | Optional existing loopback HTTP proxy for local development; do not set on Render; rejected in production |
+
+AI setup, privacy, limits, and the confirmation flow are documented in [the assistant guide](docs/assistant.md). AI calls incur provider usage charges. Render needs its own private key environment variable; your local `.env` is not uploaded.
 
 `DB_PATH` is no longer used. The runtime database is PostgreSQL; SQLite is retained only for legacy imports and migration tests.
 
@@ -110,7 +117,7 @@ npm test
 
 Tests start a temporary real PostgreSQL instance and create isolated test databases. Multi-instance scenarios use two HTTP servers with independent connection pools. The temporary databases and server are cleaned up afterward; the development database is not cleared.
 
-The account settings branch passed **44 tests** on **November 6, 2026** using Node.js 24.20.0, including parent tests. Coverage includes the category-only settings menu, profile migration, private profile fields, and password changes with cross-instance session revocation, plus the existing registration, feedback, administration, deployment and data migration checks.
+Merge validation on **November 6, 2026** used Node.js **22.20.0** and an existing local PostgreSQL server (`TEST_DATABASE_URL`) with isolated test databases. **67 existing regression tests** passed; **4 new cross-feature checks** passed on a focused rerun. Coverage includes registration races, account isolation, profile migration, password changes with cross-instance session revocation, checked-in feedback, administrator replies, deployment and data migration, and mocked AI queries, confirmation boundaries, conversation isolation, rate limits and error handling. Browser checks covered Settings, dark mode and extra-large text (including a 390 × 844 viewport), AI confirmation without automatic submission, feedback submission, and chat clearing on logout. The AI assistant and updated feedback flow await deployment to the shared site.
 
 An existing test server can be supplied with `TEST_DATABASE_URL`; its account needs permission to create and drop isolated test databases. Do not use the shared or production database as the test target.
 
