@@ -1,8 +1,8 @@
 # AI 阅读助手 / AI reading assistant
 
-本地实现：右下角可收起的聊天浮窗，接入 DeepSeek 官方 API。服务端默认使用 `deepseek-flash`。这次改动尚未推送或部署至共享站；不能将本地验收当作线上验收。
+本地实现：右下角可收起的聊天浮窗，接入 DeepSeek 官方 API。服务端默认使用 `deepseek-flash`。本功能已推送至 `feature/AI-assistant` 分支，尚未部署至共享站。
 
-The local implementation adds a floating chat panel using the official DeepSeek API, with `deepseek-flash` as the default model. This change has not been pushed or deployed to the shared site; local checks do not establish hosted acceptance.
+The local implementation adds a floating chat panel using the official DeepSeek API, with `deepseek-flash` as the default model. The feature has been pushed to `feature/AI-assistant` and awaits deployment to the shared site.
 
 ## 配置 / Configuration
 

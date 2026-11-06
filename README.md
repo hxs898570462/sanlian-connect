@@ -15,10 +15,10 @@ The shared test site runs on Render and stores its data in Neon. Initial event a
 - **Discover events:** browse published events in the next 60 days, search and filter the event list, or expand the window to 180 days.
 - **Register and manage attendance:** view availability, register with contact consent, view personal tickets, and cancel eligible registrations to release places.
 - **Share feedback:** checked-in participants can submit feedback immediately, including while the event is still running. Other valid registrations become eligible after the event ends. Entry points appear in My registrations, event details, and Activity feedback; administrators can view and reply, and participants can read their own replies.
-- **Manage an account:** register, sign in, update a display name, and use database-backed sessions.
+- **Manage an account:** register, sign in, and view your private profile. Edit your profile, change your password, or choose a reader theme and text size in [Settings](docs/account-settings.md); display preferences stay in the current browser.
 - **Administer the community:** manage users, events, registrations, feedback, and operation logs from the administrator dashboard.
 - **Explore a sample bookshelf:** browse a basic demonstration of book recommendations.
-- **AI reading assistant (local implementation):** a floating DeepSeek chat panel searches live published events and sample books, opens book details, and prepares the event confirmation form. Sign-in is required for chat; the user supplies missing contact details, checks consent, and personally submits. Package checkout and payments are not implemented. This change has not yet been deployed to the shared site.
+- **AI reading assistant (local implementation):** a floating DeepSeek chat panel searches live published events and sample books, opens book details, and prepares the event confirmation form. Sign-in is required for chat; the user supplies missing contact details, checks consent, and personally submits. The panel follows the reader theme and text size. Package checkout and payments are not implemented. This change has not yet been deployed to the shared site.
 
 The two application roles are `user` and `stuff`. The spelling `stuff` is intentional: it is the project's administrator role. Public registration always creates a `user` account.
 
@@ -39,7 +39,7 @@ GitHub stores the code and database definitions. Live business records and datab
 
 ## Run locally
 
-Use Node.js **22.20.0**, the version pinned in [`.node-version`](.node-version) and used for the latest local verification.
+Use Node.js **22.20.0**, the version pinned in [`.node-version`](.node-version).
 
 ```powershell
 git clone https://github.com/hxs898570462/sanlian-connect.git
@@ -117,7 +117,7 @@ npm test
 
 Tests start a temporary real PostgreSQL instance and create isolated test databases. Multi-instance scenarios use two HTTP servers with independent connection pools. The temporary databases and server are cleaned up afterward; the development database is not cleared.
 
-The latest local run on **October 30, 2026** passed **62 tests**, including parent tests. Coverage includes competing for the last event place, duplicate registrations, administrator/user races, account isolation, session revocation, feedback during ongoing events after check-in, duplicate-feedback races and administrator replies, restart persistence, administrator commands, deployment checks with a simulated proxy, both migration paths with rollback checks, and the AI assistant's queries, confirmation boundary, conversation isolation, rate limits, and error handling. The updated feedback flow and AI assistant are local changes awaiting deployment to the shared site.
+Merge validation on **November 6, 2026** used Node.js **22.20.0** and an existing local PostgreSQL server (`TEST_DATABASE_URL`) with isolated test databases. **67 existing regression tests** passed; **4 new cross-feature checks** passed on a focused rerun. Coverage includes registration races, account isolation, profile migration, password changes with cross-instance session revocation, checked-in feedback, administrator replies, deployment and data migration, and mocked AI queries, confirmation boundaries, conversation isolation, rate limits and error handling. Browser checks covered Settings, dark mode and extra-large text (including a 390 × 844 viewport), AI confirmation without automatic submission, feedback submission, and chat clearing on logout. The AI assistant and updated feedback flow await deployment to the shared site.
 
 An existing test server can be supplied with `TEST_DATABASE_URL`; its account needs permission to create and drop isolated test databases. Do not use the shared or production database as the test target.
 
