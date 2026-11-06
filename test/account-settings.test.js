@@ -1,20 +1,29 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import packageInfo from '../package.json' with {type:'json'};
-import {settingsPage} from '../public/js/settings.js';
+import {profileView,settingsPage} from '../public/js/settings.js';
 import {fixture} from './postgres-helper.js';
 
-test('Settings shows only category links until a category is opened',()=>{
- const render=section=>settingsPage({section,email:'reader@example.test',version:packageInfo.version,escape:String});
+test('Settings separates profile editing from the read-only profile and category menu',()=>{
+ const profile={name:'Reader',gender:'other',region:'Taicang',signature:'By the lake',role:'user',email:'reader@example.test',created_at:'2026-11-06'};
+ const render=section=>settingsPage({section,profile,email:profile.email,version:packageInfo.version,escape:String});
+ const categories=['profile','display','security','privacy','about'];
  const menu=render('');
- for(const section of ['display','security','privacy','about'])assert.ok(menu.includes(`href="#settings/${section}"`));
- assert.doesNotMatch(menu,/登录邮箱|修改密码|报名信息用途|系统版本|type="radio"/);
+ for(const section of categories)assert.ok(menu.includes(`href="#settings/${section}"`));
+ assert.doesNotMatch(menu,/profile-form|登录邮箱|修改密码|报名信息用途|系统版本|type="radio"/);
+ const view=profileView({profile,date:String,escape:String});
+ for(const value of [profile.name,'其他',profile.region,profile.signature,profile.email,'普通用户（user）',profile.created_at])
+  assert.ok(view.includes(value));
+ assert.doesNotMatch(view,/<(?:form|input|select)\b/);
+ assert.match(profileView({profile:{...profile,signature:''},date:String,escape:String}),/签名<\/dt><dd>未填写/);
+ assert.match(render('profile'),/id="profile-form"/);
+ assert.doesNotMatch(render('profile'),/注册时间|用户组|登录邮箱/);
  assert.match(render('display'),/type="radio"/);
  assert.match(render('security'),/登录邮箱/);
  assert.doesNotMatch(render('security'),/type="radio"|系统版本/);
  assert.match(render('privacy'),/报名信息用途/);
  assert.match(render('about'),/系统版本/);
- for(const section of ['display','security','privacy','about'])assert.ok(render(section).includes('href="#settings"'));
+ for(const section of categories)assert.ok(render(section).includes('href="#settings"'));
 });
 
 test('Account settings preserve records and isolate private account changes',async t=>{

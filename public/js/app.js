@@ -1,6 +1,6 @@
 import {api} from './api.js';
 import {renderAdmin} from './admin.js';
-import {applyPreferences,bindPreferences,settingsPage} from './settings.js';
+import {applyPreferences,bindPreferences,profileView,settingsPage} from './settings.js';
 const root=document.querySelector('#app');
 let user=null,renderId=0,noticeTimer;
 const escape=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -69,27 +69,20 @@ async function render(){
     }else if(page==='profile'){
       if(!user){location.hash='login';return;}
       const {user:profile}=await api('/profile');
-      const genders={'':'不填写',female:'女',male:'男',other:'其他'};
-      if(!show(`<section class="account-page"><div class="account-heading"><h1>我的资料</h1><a class="button secondary" href="#settings">设置</a></div>
-        <form id="profile-form" class="settings-form">
-          <label for="profile-name">昵称</label><input id="profile-name" name="name" required maxlength="60" autocomplete="nickname" value="${escape(profile.name)}">
-          <label for="profile-gender">性别</label><select id="profile-gender" name="gender">${Object.entries(genders).map(([value,label])=>`<option value="${value}" ${value===profile.gender?'selected':''}>${label}</option>`).join('')}</select>
-          <label for="profile-region">地区</label><input id="profile-region" name="region" maxlength="60" placeholder="例如：太仓" value="${escape(profile.region)}">
-          <label for="profile-signature">签名</label><input id="profile-signature" name="signature" maxlength="100" value="${escape(profile.signature)}">
-          <div class="form-error" role="alert"></div><button type="submit">保存资料</button>
-        </form></section>`))return;
-      bindForm('profile-form',async(data,form)=>{
+      show(profileView({profile,escape,date}));
+    }else if(page==='settings'){
+      if(!user){location.hash='login';return;}
+      const release=id==='about'?await api('/version'):null;
+      const profile=id==='profile'?(await api('/profile')).user:null;
+      if(!show(settingsPage({section:id,profile,email:user.email,version:release?.version,escape})))return;
+      root.querySelector('h1').focus({preventScroll:true});
+      if(id==='profile')bindForm('profile-form',async(data,form)=>{
         const result=await api('/profile',{method:'PATCH',body:Object.fromEntries(data)});
         if(version!==renderId)return;
         user=result.user;
         for(const field of data.keys())form.elements.namedItem(field).value=user[field];
         account();notice('个人资料已保存。');
       });
-    }else if(page==='settings'){
-      if(!user){location.hash='login';return;}
-      const release=id==='about'?await api('/version'):null;
-      if(!show(settingsPage({section:id,email:user.email,version:release?.version,escape})))return;
-      root.querySelector('h1').focus({preventScroll:true});
       if(id==='display')bindPreferences();
       if(id==='security'){
         document.querySelector('#settings-logout').addEventListener('click',logout);

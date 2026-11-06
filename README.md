@@ -15,7 +15,7 @@ The shared test site runs on Render and stores its data in Neon. Initial event a
 - **Discover events:** browse published events in the next 60 days, search and filter the event list, or expand the window to 180 days.
 - **Register and manage attendance:** view availability, register with contact consent, view personal tickets, and cancel eligible registrations to release places.
 - **Share feedback:** participants with a valid registration can review an event after it ends and read the store's reply.
-- **Manage an account:** register, sign in, edit a private profile, and change your password. Choose a reader theme and text size in [Settings](docs/account-settings.md); display preferences stay in the current browser.
+- **Manage an account:** register, sign in, and view your private profile. Edit your profile, change your password, or choose a reader theme and text size in [Settings](docs/account-settings.md); display preferences stay in the current browser.
 - **Administer the community:** manage users, events, registrations, feedback, and operation logs from the administrator dashboard.
 - **Explore a sample bookshelf:** browse a basic demonstration of book recommendations.
 

@@ -2,9 +2,9 @@
 
 ## Scope
 
-Extend My Profile with nickname, optional gender, city/region and signature. Link it to Settings, which contains display preferences, account security, a registration-data-use note and the application version. Keep existing reader navigation and staff workflows. Show a store contact only after the store supplies an approved contact channel.
+My Profile (`#profile`) is a read-only view of nickname, gender, city/region, signature, account group, email and registration date. Empty optional fields are shown as not provided. The edit form is available only under Settings, and changing profile fields does not change account details.
 
-The Settings landing page (`#settings`) lists only four category links. Each category opens its own page (`#settings/display`, `#settings/security`, `#settings/privacy` or `#settings/about`) and links back to Settings. Show fields and actions only on their respective pages.
+The Settings landing page (`#settings`) lists only five category links. Each opens its own page (`#settings/profile`, `#settings/display`, `#settings/security`, `#settings/privacy` or `#settings/about`) and links back to Settings. Keep existing reader navigation and staff workflows. Show a store contact only after the store supplies an approved contact channel.
 
 Light/dark mode and standard/large/extra-large type apply to the reader interface, persist in the current browser, and do not affect the staff dashboard. No synchronisation, notifications, public profiles, password recovery or email changes.
 
@@ -22,7 +22,7 @@ Schema migration 2 adds three columns with empty defaults to existing users. It 
 ## Tasks And Verification
 
 1. Add the additive migration and authenticated API changes. Verify default values on upgrade, private field isolation, clearing fields and rejecting invalid or forbidden edits.
-2. Add the profile controls and category-only settings menu. Verify that every link opens a separate page with only that category's controls, direct links and browser back work, and display preferences persist. Check desktop and narrow-screen layout, keyboard access and staff style isolation.
+2. Verify that My Profile displays the complete saved record without editable fields, and that the editor lives in its own Settings category. Save and return to the profile to verify the result. Check category routing, browser back, preference persistence, desktop and narrow-screen layout, keyboard access and staff style isolation.
 3. Test rejected password changes, concurrent changes, old-password rejection, and revocation across two sessions and two server instances. Run the existing PostgreSQL suite before pushing the feature branch.
 
 Do not run these checks against Render or Neon. The feature branch is not a deployment.

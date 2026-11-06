@@ -36,6 +36,8 @@ html[data-theme="dark"] :focus-visible{outline-color:#f2bc78}
 .setting-row p{margin:6px 0 0}
 .setting-value{display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px 16px}
 .setting-value dd{margin:0;color:var(--muted);overflow-wrap:anywhere}
+.profile-details{margin:0 0 24px;border-top:1px solid var(--line)}
+.profile-details>div{border-bottom:1px solid var(--line)}
 .setting-row summary{cursor:pointer;font-weight:600;color:var(--brand);width:fit-content}
 .settings-form{max-width:520px}
 .settings-form label{font-size:.9375rem;font-weight:600}

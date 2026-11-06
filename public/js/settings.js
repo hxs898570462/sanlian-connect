@@ -27,7 +27,21 @@ export function bindPreferences(){
   });
 }
 
-const categories={display:'显示偏好',security:'账号与安全',privacy:'隐私与帮助',about:'关于'};
+const categories={profile:'编辑个人资料',display:'显示偏好',security:'账号与安全',privacy:'隐私与帮助',about:'关于'};
+const genders={'':'不填写',female:'女',male:'男',other:'其他'};
+
+export function profileView({profile,escape,date}){
+  const rows=fields=>`<dl class="profile-details">${fields.map(([label,value])=>
+    `<div class="setting-row setting-value"><dt>${label}</dt><dd>${escape(value||'未填写')}</dd></div>`
+  ).join('')}</dl>`;
+  return `<section class="account-page">
+    <div class="account-heading"><h1>我的资料</h1><a class="button secondary" href="#settings">设置</a></div>
+    <h2>个人信息</h2>
+    ${rows([['昵称',profile.name],['性别',profile.gender&&genders[profile.gender]],['地区',profile.region],['签名',profile.signature]])}
+    <h2>账号信息</h2>
+    ${rows([['邮箱',profile.email],['用户组',profile.role==='stuff'?'管理员（stuff）':'普通用户（user）'],['注册时间',date(profile.created_at)]])}
+  </section>`;
+}
 
 function displayOptions(){
   return `<div id="display-preferences">${Object.entries(groups).map(([name,{label,choices}])=>`
@@ -39,10 +53,18 @@ function displayOptions(){
     </fieldset>`).join('')}</div>`;
 }
 
-export function settingsPage({section,email,version,escape}){
+export function settingsPage({section,profile,email,version,escape}){
   const category=Object.hasOwn(categories,section)?categories[section]:'';
   let content;
-  if(section==='display'){
+  if(section==='profile'){
+    content=`<form id="profile-form" class="settings-form">
+      <label for="profile-name">昵称</label><input id="profile-name" name="name" required maxlength="60" autocomplete="nickname" value="${escape(profile.name)}">
+      <label for="profile-gender">性别</label><select id="profile-gender" name="gender">${Object.entries(genders).map(([value,label])=>`<option value="${value}" ${value===profile.gender?'selected':''}>${label}</option>`).join('')}</select>
+      <label for="profile-region">地区</label><input id="profile-region" name="region" maxlength="60" placeholder="例如：太仓" value="${escape(profile.region)}">
+      <label for="profile-signature">签名</label><input id="profile-signature" name="signature" maxlength="100" value="${escape(profile.signature)}">
+      <div class="form-error" role="alert"></div><button type="submit">保存资料</button>
+    </form>`;
+  }else if(section==='display'){
     content=displayOptions();
   }else if(section==='security'){
     content=`
