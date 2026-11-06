@@ -37,7 +37,7 @@ export function profileView({profile,escape,date}){
   return `<section class="account-page">
     <div class="account-heading"><h1>我的资料</h1><a class="button secondary" href="#settings">设置</a></div>
     <h2>个人信息</h2>
-    ${rows([['昵称',profile.name],['性别',profile.gender&&genders[profile.gender]],['地区',profile.region],['签名',profile.signature]])}
+    ${rows([['昵称',profile.name],['性别',profile.gender&&genders[profile.gender]],['签名',profile.signature]])}
     <h2>账号信息</h2>
     ${rows([['邮箱',profile.email],['用户组',profile.role==='stuff'?'管理员（stuff）':'普通用户（user）'],['注册时间',date(profile.created_at)]])}
   </section>`;
@@ -60,7 +60,6 @@ export function settingsPage({section,profile,email,version,escape}){
     content=`<form id="profile-form" class="settings-form">
       <label for="profile-name">昵称</label><input id="profile-name" name="name" required maxlength="60" autocomplete="nickname" value="${escape(profile.name)}">
       <label for="profile-gender">性别</label><select id="profile-gender" name="gender">${Object.entries(genders).map(([value,label])=>`<option value="${value}" ${value===profile.gender?'selected':''}>${label}</option>`).join('')}</select>
-      <label for="profile-region">地区</label><input id="profile-region" name="region" maxlength="60" placeholder="例如：太仓" value="${escape(profile.region)}">
       <label for="profile-signature">签名</label><input id="profile-signature" name="signature" maxlength="100" value="${escape(profile.signature)}">
       <div class="form-error" role="alert"></div><button type="submit">保存资料</button>
     </form>`;

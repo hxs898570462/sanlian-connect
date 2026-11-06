@@ -12,12 +12,14 @@ test('Settings separates profile editing from the read-only profile and category
  for(const section of categories)assert.ok(menu.includes(`href="#settings/${section}"`));
  assert.doesNotMatch(menu,/profile-form|登录邮箱|修改密码|报名信息用途|系统版本|type="radio"/);
  const view=profileView({profile,date:String,escape:String});
- for(const value of [profile.name,'其他',profile.region,profile.signature,profile.email,'普通用户（user）',profile.created_at])
+ for(const value of [profile.name,'其他',profile.signature,profile.email,'普通用户（user）',profile.created_at])
   assert.ok(view.includes(value));
  assert.doesNotMatch(view,/<(?:form|input|select)\b/);
+ assert.ok(!view.includes(profile.region),'「我的资料」不再展示地区');
+ assert.doesNotMatch(view,/地区/);
  assert.match(profileView({profile:{...profile,signature:''},date:String,escape:String}),/签名<\/dt><dd>未填写/);
  assert.match(render('profile'),/id="profile-form"/);
- assert.doesNotMatch(render('profile'),/注册时间|用户组|登录邮箱/);
+ assert.doesNotMatch(render('profile'),/注册时间|用户组|登录邮箱|地区/);
  assert.match(render('display'),/type="radio"/);
  assert.match(render('security'),/登录邮箱/);
  assert.doesNotMatch(render('security'),/type="radio"|系统版本/);

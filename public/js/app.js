@@ -75,10 +75,10 @@ async function render(){
       const active=registrations.filter(r=>r.status!=='cancelled').length;
       const upcoming=registrations.filter(r=>r.status!=='cancelled'&&new Date(r.start_time)>new Date()).length;
       const genders={female:'女',male:'男',other:'其他'};
-      const details=[['邮箱',profile.email],['性别',profile.gender&&genders[profile.gender]],['地区',profile.region],['注册时间',date(profile.created_at)]].filter(([,value])=>value);
+      const details=[['邮箱',profile.email],['性别',profile.gender&&genders[profile.gender]],['注册时间',date(profile.created_at)]].filter(([,value])=>value);
       const bookings=registrations.length?registrations.map(r=>`<article class="panel booking"><div><span class="tag">${status(r.status)}</span><h3><a href="#activity/${encodeURIComponent(r.activity_id)}">${escape(r.title)}</a></h3><div class="meta">${date(r.start_time)} · ${escape(r.location)}<br>联系电话：${escape(r.phone)} · 人数：${r.headcount}<br>报名时间：${date(r.created_at)}<br><span class="ticket">凭证：${escape(r.ticket_code)}</span></div></div><div class="actions">${r.status==='confirmed'&&new Date(r.start_time)>new Date()?`<button class="secondary" data-cancel="${escape(r.id)}">取消报名</button>`:''}${feedbackActions(r)}</div></article>`).join(''):empty('还没有报名，去发现一场感兴趣的活动吧。');
       const entries=[...feedbacks.map(f=>({target:'feedbacks',id:f.id,kind:'活动反馈',title:f.title,rating:f.rating,content:f.content,status:f.status,reply:f.reply,created_at:f.created_at})),...suggestions.map(s=>({target:'suggestions',id:s.id,kind:'建议',title:'给书店的建议',rating:null,content:s.content,status:s.status,reply:s.reply,created_at:s.created_at}))].sort((a,b)=>Date.parse(b.created_at)-Date.parse(a.created_at));
-      const replies=entries.length?entries.map(x=>`<article class="panel"><div class="entry-tags"><span class="tag">${x.kind}</span><span class="tag">${feedbackStatus[x.status]||x.status}</span></div><h3>${escape(x.title)}</h3><p class="small">${x.rating?`${x.rating} / 5 分 · `:''}${date(x.created_at)}</p><div class="prose">${escape(x.content)}</div>${x.reply?`<div class="staff-reply"><b>门店回复</b><div class="prose">${escape(x.reply)}</div></div>`:''}<div class="actions entry-actions"><button class="secondary" type="button" data-entry-delete="${x.target}" data-entry-id="${escape(x.id)}">删除</button></div></article>`).join(''):empty('还没有提交反馈或建议。活动签到或结束后即可填写感受，也可以随时给书店提建议。');
+      const replies=entries.length?entries.map(x=>`<article class="panel"><div class="entry-tags"><span class="tag">${x.kind}</span><span class="tag">${feedbackStatus[x.status]||x.status}</span></div><h3>${escape(x.title)}</h3><p class="small">${x.rating?`${x.rating} / 5 分 · `:''}${date(x.created_at)}</p><div class="prose">${escape(x.content)}</div>${x.reply?`<div class="staff-reply"><b>门店回复</b><div class="prose">${escape(x.reply)}</div></div>`:''}${x.reply?'':`<div class="actions entry-actions"><button class="secondary" type="button" data-entry-delete="${x.target}" data-entry-id="${escape(x.id)}">删除</button></div>`}</article>`).join(''):empty('还没有提交反馈或建议。活动签到或结束后即可填写感受，也可以随时给书店提建议。');
       const signature=(profile.signature||'').trim();
       if(!show(`<section class="intro"><div class="eyebrow">READER'S CORNER · 读者一隅</div><h1>读者一隅</h1>${signature?`<p class="mine-signature">${escape(signature)}</p>`:`<p class="mine-signature is-empty"><a class="text-link" href="#settings/profile">还没有签名，去设置写一句吧 →</a></p>`}</section>
       <article class="panel mine-profile"><div class="mine-avatar" aria-hidden="true">${escape([...profile.name][0]||'读')}</div><div class="mine-profile-body"><h2 class="mine-name">${escape(profile.name)}<span class="tag">${profile.role==='stuff'?'管理员 · stuff':'普通用户 · user'}</span></h2><dl class="profile-details">${details.map(([label,value])=>`<div class="setting-row setting-value"><dt>${label}</dt><dd>${escape(value)}</dd></div>`).join('')}</dl></div><div class="actions"><a class="button secondary" href="#settings">设置</a></div></article>
@@ -88,12 +88,10 @@ async function render(){
       <section class="mine-section" id="mine-feedbacks"><div class="section-heading"><div><div class="eyebrow">YOUR VOICE</div><h2>我的反馈</h2></div><p class="small">评价、建议与门店回复仅自己可见</p></div><div class="stack">${replies}</div></section>`))return;
       if(mineFocus==='feedbacks'){mineFocus=null;scrollToFeedbacks();}
       bindForm('suggest-form',async data=>{await api('/suggestions',{method:'POST',body:{content:data.get('content')}});notice('建议已提交，书店回复后会显示在下方。');mineFocus='feedbacks';await render();});
-      // 删除本人的反馈/建议（误发补救）：仅本人可删，服务端同样校验归属。
+      // 删除本人的反馈/建议（误发补救）：仅未回复条目显示按钮，服务端同样校验归属与回复状态。
       document.querySelectorAll('[data-entry-delete]').forEach(button=>button.addEventListener('click',async()=>{
         const target=button.dataset.entryDelete,id=button.dataset.entryId;
-        const entry=entries.find(x=>x.target===target&&x.id===id);
-        const warning=entry?.reply?'门店已回复这条内容，删除后回复也会一并消失。':'删除后无法恢复，门店将不再看到这条内容。';
-        if(!confirm(warning+'\n确认删除？'))return;
+        if(!confirm('删除后无法恢复，门店将不再看到这条内容。\n确认删除？'))return;
         button.disabled=true;
         try{await api(`/${target}/${encodeURIComponent(id)}`,{method:'DELETE',body:{}});notice('已删除。');await render();}
         catch(e){notice(e.message);button.disabled=false;}

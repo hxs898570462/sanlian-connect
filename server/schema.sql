@@ -92,3 +92,15 @@ BEGIN
   INSERT INTO schema_migrations(version) VALUES(3);
  END IF;
 END $$;
+-- v4：打分引擎叠加「优质评论」维度（长度深度、具体性、多面覆盖、情感适中、建设性、评分一致性），
+-- score_quality 记录优质加成的可解释标签（空格分隔），与 score_hits 的命中词条共同解释总分。
+DO $$
+BEGIN
+ IF NOT EXISTS (SELECT 1 FROM schema_migrations WHERE version=4) THEN
+  ALTER TABLE feedbacks
+   ADD COLUMN score_quality TEXT NOT NULL DEFAULT '';
+  ALTER TABLE suggestions
+   ADD COLUMN score_quality TEXT NOT NULL DEFAULT '';
+  INSERT INTO schema_migrations(version) VALUES(4);
+ END IF;
+END $$;

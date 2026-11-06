@@ -127,13 +127,14 @@ app.post('/api/suggestions',requireLogin,async(req,res)=>{
  const content=text(req.body?.content,5,2000,'建议内容');
  if(/[\u0000-\u001f\u007f]/.test(content))fail(400,'建议内容包含无效字符');
  const scored=scoreContent(content);
- await db.run('INSERT INTO suggestions(id,user_id,content,score,score_level,score_hits,created_at) VALUES($1,$2,$3,$4,$5,$6,$7)',[randomUUID(),req.user.id,content,scored.score,scored.level,scored.hits.join(' '),new Date().toISOString()]);
+ await db.run('INSERT INTO suggestions(id,user_id,content,score,score_level,score_hits,score_quality,created_at) VALUES($1,$2,$3,$4,$5,$6,$7,$8)',[randomUUID(),req.user.id,content,scored.score,scored.level,scored.hits.join(' '),scored.quality.tags.join(' '),new Date().toISOString()]);
  res.status(201).json({ok:true});
 });
 // 删除本人的建议（误发补救）：仅提交者可删，查不到即视为无权访问，不暴露记录是否存在。
 app.delete('/api/suggestions/:id',requireLogin,async(req,res)=>{
- const row=await db.get('SELECT id FROM suggestions WHERE id=$1 AND user_id=$2',[req.params.id,req.user.id]);
+ const row=await db.get('SELECT id,reply FROM suggestions WHERE id=$1 AND user_id=$2',[req.params.id,req.user.id]);
  if(!row)fail(404,'建议不存在或已被删除');
+ if(row.reply)fail(409,'门店已回复这条建议，不能删除');
  await db.run('DELETE FROM suggestions WHERE id=$1',[row.id]);
  res.json({ok:true});
 });
@@ -190,13 +191,14 @@ app.post('/api/feedbacks',requireLogin,async(req,res)=>{
   const r=await tx.get('SELECT * FROM registrations WHERE id=$1 AND user_id=$2 FOR UPDATE',[b.registration_id,req.user.id]);
   if(!feedbackEligibility({...r,end_time:a.end_time}).can_feedback)fail(403,r.status==='cancelled'?'已取消的报名不能填写反馈':'签到后即可填写反馈；未签到的有效报名需等活动结束');
   const scored=scoreContent(content,{rating:b.rating});
-  await tx.run('INSERT INTO feedbacks(id,user_id,activity_id,registration_id,rating,content,score,score_level,score_hits,created_at) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)',[randomUUID(),req.user.id,a.id,r.id,b.rating,content,scored.score,scored.level,scored.hits.join(' '),new Date().toISOString()]);
+  await tx.run('INSERT INTO feedbacks(id,user_id,activity_id,registration_id,rating,content,score,score_level,score_hits,score_quality,created_at) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)',[randomUUID(),req.user.id,a.id,r.id,b.rating,content,scored.score,scored.level,scored.hits.join(' '),scored.quality.tags.join(' '),new Date().toISOString()]);
  });res.status(201).json({ok:true});
 });
 // 删除本人的活动反馈（误发补救）：仅提交者可删，查不到即视为无权访问，不暴露记录是否存在。
 app.delete('/api/feedbacks/:id',requireLogin,async(req,res)=>{
- const row=await db.get('SELECT id FROM feedbacks WHERE id=$1 AND user_id=$2',[req.params.id,req.user.id]);
+ const row=await db.get('SELECT id,reply FROM feedbacks WHERE id=$1 AND user_id=$2',[req.params.id,req.user.id]);
  if(!row)fail(404,'反馈不存在或已被删除');
+ if(row.reply)fail(409,'门店已回复这条反馈，不能删除');
  await db.run('DELETE FROM feedbacks WHERE id=$1',[row.id]);
  res.json({ok:true});
 });

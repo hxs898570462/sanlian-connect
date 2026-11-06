@@ -65,6 +65,9 @@ html[data-theme="dark"] .score-badge.score-low{background:#314139;color:#c8e1cb}
 .score-hits:before{content:'命中词条'}
 .score-hits .hit{background:#f6e8e6;color:#a03a2e;border-radius:5px;padding:1px 8px;font-size:11px}
 html[data-theme="dark"] .score-hits .hit{background:#46332f;color:#f0c5b9}
+.score-hits.score-quality:before{content:'优质维度'}
+.score-hits .hit-quality{background:#e8efe6;color:#3d6b3f}
+html[data-theme="dark"] .score-hits .hit-quality{background:#2e3a2c;color:#bcd8bd}
 .entry-actions{margin-top:16px;justify-content:flex-end}
 .settings-menu{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
 .settings-menu a{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:56px;padding:10px 12px;border-bottom:1px solid var(--line);font-weight:600}

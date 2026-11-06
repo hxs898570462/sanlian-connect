@@ -10,9 +10,13 @@ const priorityOptions = {high:'高优先级',mid:'中优先级',low:'低优先�
 const levelOfRow = row => row.score_level === 'high' ? 'high' : row.total_score >= 60 ? 'high' : row.total_score >= 30 ? 'mid' : 'low';
 const scoreBadge = row => {
   const level = levelOfRow(row), bonus = row.total_score - row.score, hitCount = row.score_hits ? row.score_hits.split(' ').filter(Boolean).length : 0;
-  return `<span class="score-badge score-${level}" title="规则分 ${row.score}${bonus ? ` + 等待加成 ${bonus}` : ''} · 命中 ${hitCount} 个词条">${levelLabels[level]} · ${row.total_score} 分</span>`;
+  const qualitySum = row.score_quality ? row.score_quality.split(' ').filter(Boolean).reduce((sum,tag)=>sum+(parseInt(tag.replace(/[^\d+-]/g,''),10)||0),0) : 0;
+  return `<span class="score-badge score-${level}" title="规则分 ${row.score}${qualitySum ? ` + 优质加成 ${qualitySum}` : ''}${bonus ? ` + 等待加成 ${bonus}` : ''} · 命中 ${hitCount} 个词条">${levelLabels[level]} · ${row.total_score} 分</span>`;
 };
-const scoreHits = (row,e) => row.score_hits ? `<div class="score-hits">${row.score_hits.split(' ').filter(Boolean).map(term => `<span class="hit">${e(term)}</span>`).join('')}</div>` : '';
+const scoreHits = (row,e) => [
+  row.score_hits ? `<div class="score-hits">${row.score_hits.split(' ').filter(Boolean).map(term => `<span class="hit">${e(term)}</span>`).join('')}</div>` : '',
+  row.score_quality ? `<div class="score-hits score-quality">${row.score_quality.split(' ').filter(Boolean).map(tag => `<span class="hit hit-quality">${e(tag)}</span>`).join('')}</div>` : ''
+].join('');
 
 export async function renderAdmin(root, context) {
   const {user,escape:e,date,status,notice,refresh,isCurrent} = context;

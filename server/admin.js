@@ -96,7 +96,7 @@ export function registerAdminRoutes(app,db,h) {
   const from='FROM feedbacks f JOIN users u ON u.id=f.user_id JOIN activities a ON a.id=f.activity_id';
   const where=`($1='' OR strpos(f.content,$1)>0 OR strpos(lower(u.email),lower($1))>0 OR strpos(a.title,$1)>0) AND ($2='' OR f.status=$2) AND ${priorityWhere('f','$3')}`;
   const order=`ORDER BY ${scoreTotal('f')} DESC,f.created_at DESC,f.id`;
-  const feedbacks=await db.all(`SELECT f.id,f.registration_id,f.rating,f.content,f.status,f.reply,f.created_at,f.score,f.score_level,f.score_hits,${scoreTotal('f')} AS total_score,u.id AS user_id,u.name AS user_name,u.email,a.title ${from} WHERE ${where} ${order} LIMIT $4 OFFSET $5`,[q,state,priority,limit,offset]);
+  const feedbacks=await db.all(`SELECT f.id,f.registration_id,f.rating,f.content,f.status,f.reply,f.created_at,f.score,f.score_level,f.score_hits,f.score_quality,${scoreTotal('f')} AS total_score,u.id AS user_id,u.name AS user_name,u.email,a.title ${from} WHERE ${where} ${order} LIMIT $4 OFFSET $5`,[q,state,priority,limit,offset]);
   const total=(await db.get(`SELECT COUNT(*)::integer AS n ${from} WHERE ${where}`,[q,state,priority])).n;res.json({feedbacks,total,limit,offset});
  });
  app.patch('/api/admin/feedbacks/:id',async(req,res)=>{
@@ -117,7 +117,7 @@ app.get('/api/admin/suggestions',async(req,res)=>{
  const from='FROM suggestions s JOIN users u ON u.id=s.user_id';
  const where=`($1='' OR strpos(s.content,$1)>0 OR strpos(lower(u.email),lower($1))>0 OR strpos(u.name,$1)>0) AND ($2='' OR s.status=$2) AND ${priorityWhere('s','$3')}`;
  const order=`ORDER BY ${scoreTotal('s')} DESC,s.created_at DESC,s.id`;
- const suggestions=await db.all(`SELECT s.id,s.user_id,s.content,s.status,s.reply,s.created_at,s.score,s.score_level,s.score_hits,${scoreTotal('s')} AS total_score,u.name AS user_name,u.email ${from} WHERE ${where} ${order} LIMIT $4 OFFSET $5`,[q,state,priority,limit,offset]);
+ const suggestions=await db.all(`SELECT s.id,s.user_id,s.content,s.status,s.reply,s.created_at,s.score,s.score_level,s.score_hits,s.score_quality,${scoreTotal('s')} AS total_score,u.name AS user_name,u.email ${from} WHERE ${where} ${order} LIMIT $4 OFFSET $5`,[q,state,priority,limit,offset]);
  const total=(await db.get(`SELECT COUNT(*)::integer AS n ${from} WHERE ${where}`,[q,state,priority])).n;res.json({suggestions,total,limit,offset});
 });
 app.patch('/api/admin/suggestions/:id',async(req,res)=>{
