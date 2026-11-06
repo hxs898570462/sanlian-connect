@@ -8,6 +8,8 @@ import { hashPassword,verifyPassword,publicUser,createSession,sessionMiddleware 
 import { registerAdminRoutes } from './admin.js';
 import { activitySelect,privateRegistrations,lockActivity,enrollmentCount } from './queries.js';
 import { httpConfig } from './config.js';
+import { registerAssistantRoutes } from './assistant.js';
+import { feedbackEligibility } from './feedback-policy.js';
 
 export const fail=(status,message)=>{const error=new Error(message);error.status=status;throw error;};
 const text=(v,min,max,label)=>{
@@ -19,7 +21,7 @@ const isoDate=v=>{
 };
 const validatePhone=v=>{const phone=text(v,7,24,'联系电话');if(!/^\+?[\d ()-]{7,24}$/.test(phone)||phone.replace(/\D/g,'').length<7)fail(400,'联系电话格式不正确');return phone;};
 
-export function createApp(db,{sessionCookie='sanlian_session',http=httpConfig()}={}) {
+export function createApp(db,{sessionCookie='sanlian_session',http=httpConfig(),assistant={}}={}) {
  const app=express();app.disable('x-powered-by');
  app.set('trust proxy',http.proxyHops);
  app.use(helmet({contentSecurityPolicy:{directives:{'upgrade-insecure-requests':http.production?[]:null}},strictTransportSecurity:http.production}));
@@ -95,7 +97,10 @@ export function createApp(db,{sessionCookie='sanlian_session',http=httpConfig()}
   const activity=await db.get(`${activitySelect} WHERE a.id=$1 AND a.is_deleted=0 AND a.publish_status='published'`,[req.params.id]);
   if(!activity)fail(404,'活动不存在或尚未发布');res.json({activity});
  });
- app.get('/api/registrations',requireLogin,async(req,res)=>res.json({registrations:await db.all(privateRegistrations,[req.user.id])}));
+ app.get('/api/registrations',requireLogin,async(req,res)=>{
+  const rows=await db.all(privateRegistrations,[req.user.id]),now=Date.now();
+  res.json({registrations:rows.map(r=>({...r,...feedbackEligibility(r,now)}))});
+ });
  app.post('/api/registrations',requireLogin,async(req,res)=>{
   const b=req.body||{},name=text(b.attendee_name,1,60,'参加者姓名'),phone=validatePhone(b.phone);
   if(b.privacy_consent!==true)fail(400,'请同意将报名资料用于本次活动联系');
@@ -125,16 +130,21 @@ export function createApp(db,{sessionCookie='sanlian_session',http=httpConfig()}
   const q=typeof req.query.q==='string'?req.query.q.slice(0,100):'';
   res.json({books:await db.all("SELECT id,title,author,category,summary,isbn,price_cents FROM books WHERE $1='' OR strpos(title,$1)>0 OR strpos(author,$1)>0 ORDER BY recommendation_rank,title",[q])});
  });
+ app.get('/api/books/:id',async(req,res)=>{
+  const book=await db.get('SELECT id,title,author,category,summary,isbn,price_cents FROM books WHERE id=$1',[req.params.id]);
+  if(!book)fail(404,'书目不存在');res.json({book});
+ });
  app.post('/api/feedbacks',requireLogin,async(req,res)=>{
   const b=req.body||{},content=text(b.content,5,2000,'反馈内容');integer(b.rating,1,5,'评分');if(typeof b.registration_id!=='string')fail(400,'请选择报名记录');
   await db.transaction(async tx=>{
-   const ref=await tx.get('SELECT activity_id FROM registrations WHERE id=$1 AND user_id=$2',[b.registration_id,req.user.id]);if(!ref)fail(403,'仅可评价本人已报名且已结束的活动');
+   const ref=await tx.get('SELECT activity_id FROM registrations WHERE id=$1 AND user_id=$2',[b.registration_id,req.user.id]);if(!ref)fail(403,'仅可评价本人的有效报名');
    const a=await lockActivity(tx,ref.activity_id);
    const r=await tx.get('SELECT * FROM registrations WHERE id=$1 AND user_id=$2 FOR UPDATE',[b.registration_id,req.user.id]);
-   if(!['confirmed','checked_in'].includes(r.status)||a.end_time>new Date().toISOString())fail(403,'仅可评价本人已报名且已结束的活动');
+   if(!feedbackEligibility({...r,end_time:a.end_time}).can_feedback)fail(403,r.status==='cancelled'?'已取消的报名不能填写反馈':'签到后即可填写反馈；未签到的有效报名需等活动结束');
    await tx.run('INSERT INTO feedbacks(id,user_id,activity_id,registration_id,rating,content,created_at) VALUES($1,$2,$3,$4,$5,$6,$7)',[randomUUID(),req.user.id,a.id,r.id,b.rating,content,new Date().toISOString()]);
   });res.status(201).json({ok:true});
  });
+ registerAssistantRoutes(app,db,{...assistant,requireLogin});
  registerAdminRoutes(app,db,{requireLogin,requireManager,fail,text,integer,isoDate,validatePhone,activitySelect});
  app.use('/api',(req,res)=>res.status(404).json({error:'接口不存在'}));
  app.use(express.static(resolve(projectRoot,'public'),{index:'index.html'}));
