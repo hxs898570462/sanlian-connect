@@ -4,7 +4,7 @@ import {fixture} from './postgres-helper.js';
 const password='AdminTestPassword123!';
 test('PostgreSQL：管理员与普通用户隔离及竞争更新',async t=>{
  const f=await fixture({servers:2}),call=f.call.bind(f);
- const signup=async(email,name)=>call('/api/auth/register',{method:'POST',body:{email,name,password,role:'stuff',is_active:0}});
+ const signup=async(email,name)=>call('/api/auth/register',{method:'POST',body:{email,name,password}});
  const login=async email=>call('/api/auth/login',{method:'POST',body:{email,password}});
  let admin,alice,bob,adminCookie,aliceCookie,bobCookie,registration,feedbackId;
  const body={activity_id:'demo-reading',attendee_name:'测试参加者',phone:'13800000000',privacy_consent:true};

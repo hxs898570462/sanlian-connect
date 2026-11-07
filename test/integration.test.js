@@ -6,7 +6,7 @@ test('PostgreSQL：前后端、并发报名、隔离、持久性',async t=>{
  const f=await fixture({servers:2}),call=f.call.bind(f);
  let alice,bob,registration;
  const payload={activity_id:'demo-reading',attendee_name:'测试读者',phone:'13800000000',privacy_consent:true,user_id:'forged'};
- const signup=async(email,instance=0)=>call('/api/auth/register',{method:'POST',instance,body:{email,name:'测试读者',password,role:'stuff'}});
+ const signup=async(email,instance=0)=>call('/api/auth/register',{method:'POST',instance,body:{email,name:'测试读者',password}});
  try {
   await t.test('连接的是真实 PostgreSQL，页面与数据库健康检查可用',async()=>{
    assert.match((await f.db.get('SELECT version() AS version')).version,/PostgreSQL/);

@@ -43,6 +43,14 @@ CREATE TABLE IF NOT EXISTS feedbacks (
  reply TEXT, created_at TIMESTAMPTZ NOT NULL,
  FOREIGN KEY(registration_id,user_id,activity_id) REFERENCES registrations(id,user_id,activity_id)
 );
+CREATE TABLE IF NOT EXISTS suggestions (
+ id TEXT PRIMARY KEY,
+ user_id TEXT NOT NULL REFERENCES users(id),
+ content TEXT NOT NULL,
+ status TEXT NOT NULL DEFAULT 'pending' CHECK(status IN ('pending','processing','replied','closed')),
+ reply TEXT, created_at TIMESTAMPTZ NOT NULL
+);
+CREATE INDEX IF NOT EXISTS suggestions_user ON suggestions(user_id,created_at DESC);
 CREATE TABLE IF NOT EXISTS books (
  id TEXT PRIMARY KEY, source_id TEXT UNIQUE, title TEXT NOT NULL, author TEXT NOT NULL,
  category TEXT NOT NULL, summary TEXT NOT NULL, isbn TEXT, price_cents INTEGER CHECK(price_cents >= 0),
@@ -65,5 +73,34 @@ BEGIN
    ADD COLUMN region VARCHAR(60) NOT NULL DEFAULT '',
    ADD COLUMN signature VARCHAR(100) NOT NULL DEFAULT '';
   INSERT INTO schema_migrations(version) VALUES(2);
+ END IF;
+END $$;
+-- v3：反馈与建议接入智能打分引擎（server/feedback-scoring.js），
+-- score 为静态规则分，score_level 为静态优先级，score_hits 为命中词条（空格分隔）；
+-- 等待加成不落库，由管理端查询时按当前时间动态计算。
+DO $$
+BEGIN
+ IF NOT EXISTS (SELECT 1 FROM schema_migrations WHERE version=3) THEN
+  ALTER TABLE feedbacks
+   ADD COLUMN score INTEGER NOT NULL DEFAULT 0,
+   ADD COLUMN score_level TEXT NOT NULL DEFAULT 'low' CHECK(score_level IN ('high','mid','low')),
+   ADD COLUMN score_hits TEXT NOT NULL DEFAULT '';
+  ALTER TABLE suggestions
+   ADD COLUMN score INTEGER NOT NULL DEFAULT 0,
+   ADD COLUMN score_level TEXT NOT NULL DEFAULT 'low' CHECK(score_level IN ('high','mid','low')),
+   ADD COLUMN score_hits TEXT NOT NULL DEFAULT '';
+  INSERT INTO schema_migrations(version) VALUES(3);
+ END IF;
+END $$;
+-- v4：打分引擎叠加「优质评论」维度（长度深度、具体性、多面覆盖、情感适中、建设性、评分一致性），
+-- score_quality 记录优质加成的可解释标签（空格分隔），与 score_hits 的命中词条共同解释总分。
+DO $$
+BEGIN
+ IF NOT EXISTS (SELECT 1 FROM schema_migrations WHERE version=4) THEN
+  ALTER TABLE feedbacks
+   ADD COLUMN score_quality TEXT NOT NULL DEFAULT '';
+  ALTER TABLE suggestions
+   ADD COLUMN score_quality TEXT NOT NULL DEFAULT '';
+  INSERT INTO schema_migrations(version) VALUES(4);
  END IF;
 END $$;

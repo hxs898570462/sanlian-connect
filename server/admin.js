@@ -1,5 +1,6 @@
 import {randomUUID} from 'node:crypto';
 import {lockActivity,enrollmentCount} from './queries.js';
+import {SCORE_LEVELS} from './feedback-scoring.js';
 
 export function registerAdminRoutes(app,db,h) {
  const {requireLogin,requireManager,fail,text,integer,isoDate,validatePhone,activitySelect}=h;
@@ -19,14 +20,24 @@ export function registerAdminRoutes(app,db,h) {
  function page(req) {
   const limit=req.query.limit===undefined?25:Number(req.query.limit),offset=req.query.offset===undefined?0:Number(req.query.offset);
   integer(limit,1,100,'每页条数');integer(offset,0,10000000,'页码');
-  return {limit,offset,q:typeof req.query.q==='string'?req.query.q.trim().slice(0,100):''};
+  return {limit,offset,q:typeof req.query.q==='string'?req.query.q.trim().slice(0,100):'',priority:typeof req.query.priority==='string'?req.query.priority:''};
  }
+ // 动态总分 = 静态规则分 + SLA 等待加成（待处理超 24h +4、超 48h +8），与 server/feedback-scoring.js 一致。
+ const scoreTotal=alias=>`${alias}.score + CASE WHEN ${alias}.status='pending' AND now() >= ${alias}.created_at + interval '24 hours' THEN CASE WHEN now() >= ${alias}.created_at + interval '48 hours' THEN 8 ELSE 4 END ELSE 0 END`;
+ // 动态优先级筛选：安全硬升级优先于分数阈值。
+ const priorityWhere=(alias,param)=>`(${param}='' OR (${param}='high' AND (${scoreTotal(alias)}>=60 OR ${alias}.score_level='high')) OR (${param}='mid' AND ${scoreTotal(alias)}>=30 AND ${scoreTotal(alias)}<60 AND ${alias}.score_level<>'high') OR (${param}='low' AND ${scoreTotal(alias)}<30 AND ${alias}.score_level<>'high'))`;
+ const checkPriority=priority=>{if(priority&&!SCORE_LEVELS.includes(priority))fail(400,'优先级筛选无效');};
  app.get('/api/admin/summary',async(req,res)=>res.json({summary:await db.get(`SELECT
  (SELECT COUNT(*)::integer FROM users) AS users,
  (SELECT COUNT(*)::integer FROM users WHERE role='stuff' AND is_active=1) AS administrators,
  (SELECT COUNT(*)::integer FROM activities WHERE is_deleted=0) AS activities,
  (SELECT COUNT(*)::integer FROM registrations WHERE status IN ('confirmed','checked_in')) AS registrations,
- (SELECT COUNT(*)::integer FROM feedbacks WHERE status IN ('pending','processing')) AS pending_feedbacks`)}));
+ (SELECT COUNT(*)::integer FROM feedbacks WHERE status IN ('pending','processing')) AS pending_feedbacks,
+ (SELECT COUNT(*)::integer FROM suggestions WHERE status IN ('pending','processing')) AS pending_suggestions,
+ (SELECT COUNT(*)::integer FROM (
+   SELECT 1 FROM feedbacks f WHERE f.status IN ('pending','processing') AND (f.score_level='high' OR ${scoreTotal('f')}>=60)
+   UNION ALL SELECT 1 FROM suggestions s WHERE s.status IN ('pending','processing') AND (s.score_level='high' OR ${scoreTotal('s')}>=60)
+ ) high) AS high_priority`)}));
  app.get('/api/admin/users',async(req,res)=>{
   const {limit,offset,q}=page(req),where="($1='' OR strpos(u.name,$1)>0 OR strpos(lower(u.email),lower($1))>0)";
   const users=await db.all(`SELECT u.id,u.email,u.name,u.role,u.is_active,u.created_at,
@@ -79,12 +90,14 @@ export function registerAdminRoutes(app,db,h) {
   });res.json({ok:true});
  });
  app.get('/api/admin/feedbacks',async(req,res)=>{
-  const {limit,offset,q}=page(req),state=typeof req.query.status==='string'?req.query.status:'';
+  const {limit,offset,q,priority}=page(req),state=typeof req.query.status==='string'?req.query.status:'';
   if(state&&!['pending','processing','replied','closed'].includes(state))fail(400,'反馈状态无效');
+  checkPriority(priority);
   const from='FROM feedbacks f JOIN users u ON u.id=f.user_id JOIN activities a ON a.id=f.activity_id';
-  const where="($1='' OR strpos(f.content,$1)>0 OR strpos(lower(u.email),lower($1))>0 OR strpos(a.title,$1)>0) AND ($2='' OR f.status=$2)";
-  const feedbacks=await db.all(`SELECT f.id,f.registration_id,f.rating,f.content,f.status,f.reply,f.created_at,u.id AS user_id,u.name AS user_name,u.email,a.title ${from} WHERE ${where} ORDER BY f.created_at DESC,f.id LIMIT $3 OFFSET $4`,[q,state,limit,offset]);
-  const total=(await db.get(`SELECT COUNT(*)::integer AS n ${from} WHERE ${where}`,[q,state])).n;res.json({feedbacks,total,limit,offset});
+  const where=`($1='' OR strpos(f.content,$1)>0 OR strpos(lower(u.email),lower($1))>0 OR strpos(a.title,$1)>0) AND ($2='' OR f.status=$2) AND ${priorityWhere('f','$3')}`;
+  const order=`ORDER BY ${scoreTotal('f')} DESC,f.created_at DESC,f.id`;
+  const feedbacks=await db.all(`SELECT f.id,f.registration_id,f.rating,f.content,f.status,f.reply,f.created_at,f.score,f.score_level,f.score_hits,f.score_quality,${scoreTotal('f')} AS total_score,u.id AS user_id,u.name AS user_name,u.email,a.title ${from} WHERE ${where} ${order} LIMIT $4 OFFSET $5`,[q,state,priority,limit,offset]);
+  const total=(await db.get(`SELECT COUNT(*)::integer AS n ${from} WHERE ${where}`,[q,state,priority])).n;res.json({feedbacks,total,limit,offset});
  });
  app.patch('/api/admin/feedbacks/:id',async(req,res)=>{
   const b=allowedBody(req.body,['status','reply']);
@@ -97,7 +110,28 @@ export function registerAdminRoutes(app,db,h) {
    await tx.run('UPDATE feedbacks SET status=$1,reply=$2 WHERE id=$3',[state,reply,f.id]);await audit(tx,req.user.id,'update_feedback',f.id);
   });res.json({ok:true});
  });
- app.get('/api/admin/activities',async(req,res)=>res.json({activities:await db.all(`${activitySelect} WHERE a.is_deleted=0 ORDER BY a.created_at DESC,a.id`)}));
+app.get('/api/admin/suggestions',async(req,res)=>{
+ const {limit,offset,q,priority}=page(req),state=typeof req.query.status==='string'?req.query.status:'';
+ if(state&&!['pending','processing','replied','closed'].includes(state))fail(400,'建议状态无效');
+ checkPriority(priority);
+ const from='FROM suggestions s JOIN users u ON u.id=s.user_id';
+ const where=`($1='' OR strpos(s.content,$1)>0 OR strpos(lower(u.email),lower($1))>0 OR strpos(u.name,$1)>0) AND ($2='' OR s.status=$2) AND ${priorityWhere('s','$3')}`;
+ const order=`ORDER BY ${scoreTotal('s')} DESC,s.created_at DESC,s.id`;
+ const suggestions=await db.all(`SELECT s.id,s.user_id,s.content,s.status,s.reply,s.created_at,s.score,s.score_level,s.score_hits,s.score_quality,${scoreTotal('s')} AS total_score,u.name AS user_name,u.email ${from} WHERE ${where} ${order} LIMIT $4 OFFSET $5`,[q,state,priority,limit,offset]);
+ const total=(await db.get(`SELECT COUNT(*)::integer AS n ${from} WHERE ${where}`,[q,state,priority])).n;res.json({suggestions,total,limit,offset});
+});
+app.patch('/api/admin/suggestions/:id',async(req,res)=>{
+  const b=allowedBody(req.body,['status','reply']);
+  await adminTx(req,async tx=>{
+   const s=await tx.get('SELECT * FROM suggestions WHERE id=$1 FOR UPDATE',[req.params.id]);if(!s)fail(404,'建议不存在');
+   const state=b.status===undefined?s.status:b.status,reply=b.reply===undefined?(s.reply||''):typeof b.reply==='string'?b.reply.trim():null;
+   if(!['pending','processing','replied','closed'].includes(state))fail(400,'建议状态无效');
+   if(reply===null||reply.length>2000)fail(400,'回复不能超过 2000 个字符');
+   if(state==='replied'&&!reply)fail(400,'标记为已回复前请填写回复内容');
+   await tx.run('UPDATE suggestions SET status=$1,reply=$2 WHERE id=$3',[state,reply,s.id]);await audit(tx,req.user.id,'update_suggestion',s.id);
+  });res.json({ok:true});
+});
+app.get('/api/admin/activities',async(req,res)=>res.json({activities:await db.all(`${activitySelect} WHERE a.is_deleted=0 ORDER BY a.created_at DESC,a.id`)}));
  app.post('/api/admin/activities',async(req,res)=>{
   const b=req.body||{},title=text(b.title,2,100,'活动标题'),category=text(b.category,1,30,'分类'),description=text(b.description,5,5000,'活动说明'),location=text(b.location,2,120,'地点');
   const start=isoDate(b.start_time),end=isoDate(b.end_time);if(end<=start||start<=new Date().toISOString())fail(400,'请设置未来的开始时间，结束时间需晚于开始时间');
