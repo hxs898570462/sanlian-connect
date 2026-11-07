@@ -76,3 +76,12 @@
 - 根因：`public/js/admin.js` 切换页签时重置筛选状态的对象漏掉 `priority` 键（`searchState={tab,q:'',status:'',offset:0}`），`searchState.priority` 变为 `undefined`；`new URLSearchParams({priority:undefined})` 将其序列化为字面量字符串 `"undefined"`，服务端 `checkPriority` 校验不在 `SCORE_LEVELS` 白名单，返回 400「优先级筛选无效」。每次进入管理后台（初始页签 `''` → `feedbacks`）都会触发该重置，故整页必现。
 - 修复：查询参数构建抽为导出的纯函数 `adminListQuery(state)`，所有字段兜底为字符串（`priority:state.priority||''` 等）；页签重置对象补回 `priority:''` 键。服务端校验保持不变（非法值仍应拒绝）。
 - 验证：`npm test` 76 项（包含父测试）全部通过，原 74 项零回归。新增 `test/admin-frontend.test.js`：查询串不含 `undefined`、优先级取值落在服务端 `SCORE_LEVELS` 白名单、真实管理列表接口对页签切换后产生的查询串（feedbacks/suggestions × 全部优先级取值）均返回 200。线上服务实测：修复后 `summary`、`feedbacks`（无筛选/各优先级）、`suggestions` 全流程 200；静态文件 `Cache-Control: max-age=0` 带 ETag 重新验证，浏览器刷新即可生效。
+
+## 复审安全加固增量验收（2026-11-07 深夜，PR #3 审查意见）
+
+- 修复公开注册提权（严重）：`POST /api/auth/register` 不再接受客户端 `role` 字段，一律创建 `user`；请求体携带 `role`（`stuff`/`root`/`admin` 等任意值）返回 400 且不创建账号。`stuff` 仅能通过 `scripts/create-admin.js`（创建或 `--promote` 提权）或现有管理员在后台用户管理授予。登录/注册页移除「读者用户/管理员」身份单选（含对应 CSS），登录后按账号真实角色进入读者一隅或管理后台；注册提示改为「注册即创建读者账号；管理员账号由现有管理员在后台授予」。
+- 修复删除与回复竞态：`DELETE /api/suggestions/:id` 与 `DELETE /api/feedbacks/:id` 由「先 SELECT reply 再 DELETE」改为事务内 `SELECT ... FOR UPDATE` 行锁读取，归属与未回复状态在同一事务内原子判定。管理员回复并发落地时删除返回 409（记录保留），记录先被删除时回复返回 404，两种交错都不会出现「已回复记录被删」或「回复丢失」。
+- 新增 `test/delete-race.test.js`：用会话级顾问锁 + BEFORE UPDATE 触发器把「管理员已 FOR UPDATE 持有该行、回复提交前，用户删除同时打入」的时序固定下来，对反馈与建议两类记录做确定性并发回归。临时把删除路由回退到旧实现验证：两类竞速子测试均以「已回复的记录不允许被删除」失败（删除与回复同时 200），证明测试可捕获该缺陷；修复后通过。
+- 自动测试共 99 项（包含父测试）全部通过：新增注册提权回归（伪造 `stuff`/`root`/`admin` 均 400 且不落库、授予前会话 403、受保护提权后旧会话实时生效）与两类记录的删除竞速回归；`test/suggestions.test.js`、`test/feedback-scoring.test.js` 中「注册即选身份」的辅助写法改为注册后经数据库提权；原 95 项零回归。
+- 本地实测（起库→起服务→HTTP 全流程）：伪造 stuff/root 注册 400；正常注册 201 且角色为 user；新账号访问后台 403；经数据库提权后同一会话访问后台 200；未回复建议删除 200、已回复建议删除 409、他人/不存在记录 404、列表仅剩已回复条目；`/js/app.js` 已无身份单选且包含新注册提示。
+- 环境备注：本机 PostgreSQL 运行时 55432 端口被系统策略拦截（Node 可绑定、postgres 不可绑定，疑为按进程的网络过滤），本轮测试与实测均改用 55433 端口；演示账号 reader@sanlian.test / manager@sanlian.test 验证通过。

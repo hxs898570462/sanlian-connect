@@ -73,9 +73,10 @@ test('反馈与建议：误发删除、智能打分入库与管理端优先处�
  t.after(()=>f.close());
  const alice=await call('/api/auth/register',{method:'POST',body:{email:'score-alice@example.test',name:'打分测试甲',password}});
  const bob=await call('/api/auth/register',{method:'POST',body:{email:'score-bob@example.test',name:'打分测试乙',password}});
- const manager=await call('/api/auth/register',{method:'POST',body:{email:'score-manager@example.test',name:'打分测试管理员',password,role:'stuff'}});
+ const manager=await call('/api/auth/register',{method:'POST',body:{email:'score-manager@example.test',name:'打分测试管理员',password}});
  assert.equal(alice.status,201);assert.equal(bob.status,201);
- assert.equal(manager.status,201);assert.equal(manager.data.user.role,'stuff');
+ assert.equal(manager.status,201);assert.equal(manager.data.user.role,'user');
+ await f.db.run("UPDATE users SET role='stuff' WHERE id=$1",[manager.data.user.id]);
  await t.test('提交建议即按关键词与优质维度打分入库，用户端不暴露打分字段',async()=>{
   const created=await call('/api/suggestions',{method:'POST',cookie:alice.cookie,body:{content:'希望有孩子可以参与的阅读活动，比如亲子共读。'}});
   assert.equal(created.status,201);

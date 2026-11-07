@@ -61,12 +61,12 @@ export function createApp(db,{sessionCookie='sanlian_session',http=httpConfig(),
  };
  app.get('/api/health',async(req,res)=>{await db.get('SELECT 1');res.json({status:'ok',storage:'postgresql',mode:http.production?'hosted':'local'});});
  app.get('/api/auth/me',(req,res)=>res.json({user:publicUser(req.user)}));
- app.post('/api/auth/register',authLimit,async(req,res)=>{
-  const {email,password}=credentials(req.body||{}),name=text(req.body.name,1,60,'称呼'),hash=await hashPassword(password),id=randomUUID();
-  const role=req.body?.role===undefined?'user':req.body.role;
-  if(!['user','stuff'].includes(role))fail(400,'用户组需为 user 或 stuff');
-  const user=await db.transaction(async tx=>{
-   const u=await tx.get('INSERT INTO users(id,email,name,password_hash,role,created_at) VALUES($1,$2,$3,$4,$5,$6) RETURNING *',[id,email,name,hash,role,new Date().toISOString()]);
+app.post('/api/auth/register',authLimit,async(req,res)=>{
+ const {email,password}=credentials(req.body||{}),name=text(req.body.name,1,60,'称呼'),hash=await hashPassword(password),id=randomUUID();
+ // 公开注册只创建 user；stuff 仅能由 scripts/create-admin.js 或现有管理员在后台授予，客户端传 role 一律拒绝，杜绝伪造提权。
+ if(req.body?.role!==undefined)fail(400,'公开注册不支持选择用户组；管理员账号请由现有管理员授予');
+ const user=await db.transaction(async tx=>{
+  const u=await tx.get('INSERT INTO users(id,email,name,password_hash,role,created_at) VALUES($1,$2,$3,$4,$5,$6) RETURNING *',[id,email,name,hash,'user',new Date().toISOString()]);
    if(req.sessionHash)await tx.run('DELETE FROM sessions WHERE token_hash=$1',[req.sessionHash]);
    await createSession(tx,id,res,sessionCookie,{secure:http.production});return u;
   });
@@ -131,13 +131,19 @@ app.post('/api/suggestions',requireLogin,async(req,res)=>{
  await db.run('INSERT INTO suggestions(id,user_id,content,score,score_level,score_hits,score_quality,created_at) VALUES($1,$2,$3,$4,$5,$6,$7,$8)',[randomUUID(),req.user.id,content,scored.score,scored.level,scored.hits.join(' '),scored.quality.tags.join(' '),new Date().toISOString()]);
  res.status(201).json({ok:true});
 });
-// 删除本人的建议（误发补救）：仅提交者可删，查不到即视为无权访问，不暴露记录是否存在。
+// 删除本人的建议（误发补救）：事务内 FOR UPDATE 行锁读取，归属与未回复状态在同一事务内判定，
+// 杜绝「先查 reply 再删」的竞态——管理员在两步之间提交回复时，旧代码会删掉已回复记录。
 app.delete('/api/suggestions/:id',requireLogin,async(req,res)=>{
- const row=await db.get('SELECT id,reply FROM suggestions WHERE id=$1 AND user_id=$2',[req.params.id,req.user.id]);
- if(!row)fail(404,'建议不存在或已被删除');
- if(row.reply)fail(409,'门店已回复这条建议，不能删除');
- await db.run('DELETE FROM suggestions WHERE id=$1',[row.id]);
- res.json({ok:true});
+ const outcome=await db.transaction(async tx=>{
+  const row=await tx.get('SELECT id,reply FROM suggestions WHERE id=$1 AND user_id=$2 FOR UPDATE',[req.params.id,req.user.id]);
+  if(!row)return 'missing';
+  if(row.reply)return 'replied';
+  await tx.run('DELETE FROM suggestions WHERE id=$1',[row.id]);
+  return 'deleted';
+ });
+ if(outcome==='deleted')return res.json({ok:true});
+ if(outcome==='replied')fail(409,'门店已回复这条建议，不能删除');
+ fail(404,'建议不存在或已被删除');
 });
 app.get('/api/activities',async(req,res)=>{
   const days=req.query.days===undefined?60:Number(req.query.days);integer(days,1,366,'日期范围');
@@ -199,13 +205,18 @@ app.post('/api/feedbacks',requireLogin,async(req,res)=>{
   await tx.run('INSERT INTO feedbacks(id,user_id,activity_id,registration_id,rating,content,score,score_level,score_hits,score_quality,created_at) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)',[randomUUID(),req.user.id,a.id,r.id,b.rating,content,scored.score,scored.level,scored.hits.join(' '),scored.quality.tags.join(' '),new Date().toISOString()]);
  });res.status(201).json({ok:true});
 });
-// 删除本人的活动反馈（误发补救）：仅提交者可删，查不到即视为无权访问，不暴露记录是否存在。
+// 删除本人的活动反馈（误发补救）：与建议删除同样使用事务内行锁，归属与未回复状态原子判定。
 app.delete('/api/feedbacks/:id',requireLogin,async(req,res)=>{
- const row=await db.get('SELECT id,reply FROM feedbacks WHERE id=$1 AND user_id=$2',[req.params.id,req.user.id]);
- if(!row)fail(404,'反馈不存在或已被删除');
- if(row.reply)fail(409,'门店已回复这条反馈，不能删除');
- await db.run('DELETE FROM feedbacks WHERE id=$1',[row.id]);
- res.json({ok:true});
+ const outcome=await db.transaction(async tx=>{
+  const row=await tx.get('SELECT id,reply FROM feedbacks WHERE id=$1 AND user_id=$2 FOR UPDATE',[req.params.id,req.user.id]);
+  if(!row)return 'missing';
+  if(row.reply)return 'replied';
+  await tx.run('DELETE FROM feedbacks WHERE id=$1',[row.id]);
+  return 'deleted';
+ });
+ if(outcome==='deleted')return res.json({ok:true});
+ if(outcome==='replied')fail(409,'门店已回复这条反馈，不能删除');
+ fail(404,'反馈不存在或已被删除');
 });
  registerAssistantRoutes(app,db,{...assistant,requireLogin});
  registerAdminRoutes(app,db,{requireLogin,requireManager,fail,text,integer,isoDate,validatePhone,activitySelect});

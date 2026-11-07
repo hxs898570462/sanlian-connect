@@ -9,11 +9,18 @@ test('提出建议：提交、查看、隔离与门店回复',async t=>{
  assert.equal(alice.status,201);assert.equal(alice.data.user.role,'user');
  const bob=await call('/api/auth/register',{method:'POST',body:{email:'suggest-bob@example.test',name:'建议测试乙',password}});
  assert.equal(bob.status,201);
- await t.test('注册时可直接选择身份，非法身份被拒绝',async()=>{
-  const manager=await call('/api/auth/register',{method:'POST',body:{email:'suggest-manager@example.test',name:'建议测试丙',password,role:'stuff'}});
-  assert.equal(manager.status,201);assert.equal(manager.data.user.role,'stuff');
+ await t.test('公开注册只创建 user：伪造 stuff 被拒绝且不落库，管理员须经受保护流程授予',async()=>{
+  const manager=await call('/api/auth/register',{method:'POST',body:{email:'suggest-manager@example.test',name:'建议测试丙',password}});
+  assert.equal(manager.status,201);assert.equal(manager.data.user.role,'user');
+  // 注册会话在授予前摸不到后台。
+  assert.equal((await call('/api/admin/summary',{cookie:manager.cookie})).status,403);
+  // 伪造管理员或任意角色一律 400，且不创建账号：不能通过公开注册提权。
+  for(const role of ['stuff','root','admin'])
+   assert.equal((await call('/api/auth/register',{method:'POST',body:{email:`suggest-forged-${role}@example.test`,name:'建议测试丁',password,role}})).status,400,`伪造 ${role} 应被拒绝`);
+  assert.equal((await f.db.get('SELECT COUNT(*)::integer AS n FROM users WHERE email LIKE $1',['suggest-forged-%'])).n,0);
+  // 受保护流程授予 stuff（scripts/create-admin.js 或后台用户管理同一口径），旧会话实时生效。
+  await f.db.run("UPDATE users SET role='stuff' WHERE id=$1",[manager.data.user.id]);
   assert.equal((await call('/api/admin/summary',{cookie:manager.cookie})).status,200);
-  assert.equal((await call('/api/auth/register',{method:'POST',body:{email:'suggest-bad@example.test',name:'建议测试丁',password,role:'root'}})).status,400);
  });
  await t.test('登录用户可提交建议，匿名与过短内容被拒绝',async()=>{
   assert.equal((await call('/api/suggestions',{method:'POST',body:{content:'书店角落的阳光很好，希望周末也开放。'}})).status,401);
