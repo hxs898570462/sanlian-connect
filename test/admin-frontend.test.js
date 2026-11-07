@@ -3,6 +3,14 @@ import assert from 'node:assert/strict';
 import {adminListQuery} from '../public/js/admin.js';
 import {SCORE_LEVELS} from '../server/feedback-scoring.js';
 import {fixture} from './postgres-helper.js';
+import {readFileSync} from 'node:fs';
+
+test('main navigation contains the role-controlled admin link and reader destinations',()=>{
+ const html=readFileSync(new URL('../public/index.html',import.meta.url),'utf8');
+ assert.match(html,/<a\b[^>]*href="#admin"[^>]*id="admin-link"[^>]*\bhidden\b/);
+ assert.match(html,/<a\b[^>]*href="#mine"[^>]*>读者一隅<\/a>/);
+ assert.match(html,/<a\b[^>]*href="#books"[^>]*>书架漫游<\/a>/);
+});
 
 // 回归：「管理后台」整页无法打开。根因是页签切换重置 searchState 时漏掉 priority 键，
 // undefined 被 URLSearchParams 序列化成字面量 "undefined"，服务端校验返回 400「优先级筛选无效」。
