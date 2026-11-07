@@ -162,3 +162,19 @@ test('反馈与建议：误发删除、智能打分入库与管理端优先处�
   assert.equal((await call('/api/admin/feedbacks?q=重新提交',{cookie:managerCookie})).data.total,1);
  });
 });
+
+test('安全强制高优先级在较高分数的中优先级之前（反馈和建议）',async t=>{
+ const f=await fixture(),call=f.call.bind(f);t.after(()=>f.close());
+ const u=await call('/api/auth/register',{method:'POST',body:{email:'priority-order@example.test',name:'排序测试',password}});
+ await f.db.run("UPDATE users SET role='stuff' WHERE id=$1",[u.data.user.id]);
+ const now=new Date().toISOString();
+ for(const [id,score,level] of [['forced',1,'high'],['mid',50,'mid']]){
+  await f.db.run("INSERT INTO suggestions(id,user_id,content,score,score_level,created_at) VALUES($1,$2,$3,$4,$5,$6)",[id,u.data.user.id,'排序测试内容',score,level,now]);
+  await f.db.run("INSERT INTO registrations(id,user_id,activity_id,attendee_name,phone,ticket_code,status,privacy_consent,privacy_consent_at,created_at) VALUES($1,$2,'demo-reading','测试','13800000000',$3,'cancelled',1,$4,$4)",['reg-'+id,u.data.user.id,'ticket-'+id,now]);
+  await f.db.run("INSERT INTO feedbacks(id,user_id,activity_id,registration_id,rating,content,score,score_level,created_at) VALUES($1,$2,'demo-reading',$3,5,'排序测试内容',$4,$5,$6)",[id,u.data.user.id,'reg-'+id,score,level,now]);
+ }
+ for(const kind of ['suggestions','feedbacks']){
+  const response=await call('/api/admin/'+kind+'?limit=1',{cookie:u.cookie});
+  assert.equal(response.status,200);assert.equal(response.data[kind][0].id,'forced');
+ }
+});

@@ -63,8 +63,7 @@ export function createApp(db,{sessionCookie='sanlian_session',http=httpConfig(),
  app.get('/api/auth/me',(req,res)=>res.json({user:publicUser(req.user)}));
 app.post('/api/auth/register',authLimit,async(req,res)=>{
  const {email,password}=credentials(req.body||{}),name=text(req.body.name,1,60,'称呼'),hash=await hashPassword(password),id=randomUUID();
- // 公开注册只创建 user；stuff 仅能由 scripts/create-admin.js 或现有管理员在后台授予，客户端传 role 一律拒绝，杜绝伪造提权。
- if(req.body?.role!==undefined)fail(400,'公开注册不支持选择用户组；管理员账号请由现有管理员授予');
+ // 忽略客户端角色，公开注册始终创建普通用户。
  const user=await db.transaction(async tx=>{
   const u=await tx.get('INSERT INTO users(id,email,name,password_hash,role,created_at) VALUES($1,$2,$3,$4,$5,$6) RETURNING *',[id,email,name,hash,'user',new Date().toISOString()]);
    if(req.sessionHash)await tx.run('DELETE FROM sessions WHERE token_hash=$1',[req.sessionHash]);

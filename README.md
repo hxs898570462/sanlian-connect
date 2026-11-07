@@ -22,7 +22,7 @@ The shared test site runs on Render and stores its data in Neon. Initial event a
 - **Explore a sample bookshelf:** browse a basic demonstration of book recommendations.
 - **AI reading assistant (local implementation):** a floating DeepSeek chat panel searches live published events and sample books, opens book details, and prepares the event confirmation form. Sign-in is required for chat; the user supplies missing contact details, checks consent, and personally submits. The panel follows the reader theme and text size. Package checkout and payments are not implemented. This change has not yet been deployed to the shared site.
 
-The two application roles are `user` and `stuff`. The spelling `stuff` is intentional: it is the project's administrator role. Public registration only creates `user`: the register endpoint rejects any client-supplied `role` field so visitors cannot forge administrator access; `stuff` can only be granted through `scripts/create-admin.js` (bootstrap or promoting an existing account) or by an existing administrator in the dashboard's user management.
+The two application roles are `user` and `stuff`. The spelling `stuff` is intentional: it is the project's administrator role. Public registration only creates `user`: the register endpoint ignores any client-supplied `role` field so visitors cannot forge administrator access; `stuff` can only be granted through `scripts/create-admin.js` (bootstrap or promoting an existing account) or by an existing administrator in the dashboard's user management.
 
 ## Architecture
 

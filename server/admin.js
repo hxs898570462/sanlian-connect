@@ -26,6 +26,7 @@ export function registerAdminRoutes(app,db,h) {
  const scoreTotal=alias=>`${alias}.score + CASE WHEN ${alias}.status='pending' AND now() >= ${alias}.created_at + interval '24 hours' THEN CASE WHEN now() >= ${alias}.created_at + interval '48 hours' THEN 8 ELSE 4 END ELSE 0 END`;
  // 动态优先级筛选：安全硬升级优先于分数阈值。
  const priorityWhere=(alias,param)=>`(${param}='' OR (${param}='high' AND (${scoreTotal(alias)}>=60 OR ${alias}.score_level='high')) OR (${param}='mid' AND ${scoreTotal(alias)}>=30 AND ${scoreTotal(alias)}<60 AND ${alias}.score_level<>'high') OR (${param}='low' AND ${scoreTotal(alias)}<30 AND ${alias}.score_level<>'high'))`;
+ const priorityOrder=alias=>`CASE WHEN ${alias}.score_level='high' OR ${scoreTotal(alias)}>=60 THEN 0 WHEN ${scoreTotal(alias)}>=30 THEN 1 ELSE 2 END`;
  const checkPriority=priority=>{if(priority&&!SCORE_LEVELS.includes(priority))fail(400,'优先级筛选无效');};
  app.get('/api/admin/summary',async(req,res)=>res.json({summary:await db.get(`SELECT
  (SELECT COUNT(*)::integer FROM users) AS users,
@@ -95,7 +96,7 @@ export function registerAdminRoutes(app,db,h) {
   checkPriority(priority);
   const from='FROM feedbacks f JOIN users u ON u.id=f.user_id JOIN activities a ON a.id=f.activity_id';
   const where=`($1='' OR strpos(f.content,$1)>0 OR strpos(lower(u.email),lower($1))>0 OR strpos(a.title,$1)>0) AND ($2='' OR f.status=$2) AND ${priorityWhere('f','$3')}`;
-  const order=`ORDER BY ${scoreTotal('f')} DESC,f.created_at DESC,f.id`;
+  const order=`ORDER BY ${priorityOrder('f')} ASC,${scoreTotal('f')} DESC,f.created_at DESC,f.id`;
   const feedbacks=await db.all(`SELECT f.id,f.registration_id,f.rating,f.content,f.status,f.reply,f.created_at,f.score,f.score_level,f.score_hits,f.score_quality,${scoreTotal('f')} AS total_score,u.id AS user_id,u.name AS user_name,u.email,a.title ${from} WHERE ${where} ${order} LIMIT $4 OFFSET $5`,[q,state,priority,limit,offset]);
   const total=(await db.get(`SELECT COUNT(*)::integer AS n ${from} WHERE ${where}`,[q,state,priority])).n;res.json({feedbacks,total,limit,offset});
  });
@@ -116,7 +117,7 @@ app.get('/api/admin/suggestions',async(req,res)=>{
  checkPriority(priority);
  const from='FROM suggestions s JOIN users u ON u.id=s.user_id';
  const where=`($1='' OR strpos(s.content,$1)>0 OR strpos(lower(u.email),lower($1))>0 OR strpos(u.name,$1)>0) AND ($2='' OR s.status=$2) AND ${priorityWhere('s','$3')}`;
- const order=`ORDER BY ${scoreTotal('s')} DESC,s.created_at DESC,s.id`;
+ const order=`ORDER BY ${priorityOrder('s')} ASC,${scoreTotal('s')} DESC,s.created_at DESC,s.id`;
  const suggestions=await db.all(`SELECT s.id,s.user_id,s.content,s.status,s.reply,s.created_at,s.score,s.score_level,s.score_hits,s.score_quality,${scoreTotal('s')} AS total_score,u.name AS user_name,u.email ${from} WHERE ${where} ${order} LIMIT $4 OFFSET $5`,[q,state,priority,limit,offset]);
  const total=(await db.get(`SELECT COUNT(*)::integer AS n ${from} WHERE ${where}`,[q,state,priority])).n;res.json({suggestions,total,limit,offset});
 });
