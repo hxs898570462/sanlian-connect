@@ -100,3 +100,20 @@ html[data-theme="dark"] .score-hits .hit-quality{background:#2e3a2c;color:#bcd8b
 }
 
 .feedback-section{margin-bottom:36px}.feedback-section>h2,.feedback-panel>h2{font-size:1.625rem}.feedback-panel>h1{font-size:2.125rem}
+.header-actions{display:flex;align-items:center;justify-content:flex-end;gap:10px;min-width:0}
+#language-toggle{flex-shrink:0;padding:6px 10px;font-size:.8125rem;white-space:nowrap}
+html[lang=en] body{font-family:"Segoe UI","Microsoft YaHei",sans-serif}
+html[lang=en] :is(h1,h2,h3){font-family:Georgia,"Songti SC",serif;letter-spacing:normal}
+html[lang=en] .hero h1{font-size:clamp(2rem,3.5vw,3.25rem);line-height:1.18}
+html[lang=en] .hero-art:after{content:"BOOKS BY THE LAKE";font-family:Georgia,serif;letter-spacing:3px}
+html[lang=en] .spine{letter-spacing:1px;white-space:nowrap}
+html[lang=en] .card-cover small{writing-mode:horizontal-tb;letter-spacing:1px;max-width:50%;text-align:right}
+@media(max-width:680px){
+  .header-actions{flex:1 1 auto}
+  html[lang=en] .topbar{column-gap:8px}
+  html[lang=en] .brand{gap:8px;font-size:.9375rem;letter-spacing:1px}
+  html[lang=en] .brand small{letter-spacing:1.5px}
+  html[lang=en] .header-actions{gap:6px}
+  html[lang=en] #account .button{padding:8px 10px}
+  html[lang=en] .topbar nav{flex-wrap:wrap;gap:0 16px;overflow:visible;white-space:normal}
+}

@@ -2,6 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import packageInfo from '../package.json' with {type:'json'};
 import {profileView,settingsPage} from '../public/js/settings.js';
+import {formatDate,getLanguage,setLanguage,t} from '../public/js/i18n.js';
+import {errorMessage} from '../public/js/api-errors.js';
 import {fixture} from './postgres-helper.js';
 
 test('Settings separates profile editing from the read-only profile and category menu',()=>{
@@ -30,6 +32,23 @@ test('Settings separates profile editing from the read-only profile and category
  assert.match(render('privacy'),/报名信息用途/);
  assert.match(render('about'),/系统版本/);
  for(const section of categories)assert.ok(render(section).includes('href="#settings"'));
+});
+
+test('English settings, date formatting and validation copy respect the selected language',tctx=>{
+ tctx.after(()=>setLanguage('zh-CN'));
+ assert.equal(getLanguage(),'zh-CN');
+ setLanguage('en');
+ const view=settingsPage({section:'security',email:'reader@example.test',escape:String});
+ assert.match(view,/Account and security/);
+ assert.match(view,/Use 6–128 characters/);
+ assert.match(view,/minlength="6" maxlength="128"/);
+ assert.equal(errorMessage('邮箱或密码不正确'),'Incorrect email address or password.');
+ assert.equal(errorMessage('称呼需填写 1–60 个字符'),'Name must be 1–60 characters long.');
+ assert.match(formatDate('2026-11-12T16:00:00Z'),/November 13.*00:00/);
+ assert.equal(t('查看{title}',{title:'湖畔读书小聚'}),'View 湖畔读书小聚');
+ setLanguage('zh-CN');
+ assert.equal(errorMessage('密码长度需为 6–128 个字符'),'密码长度需为 6–128 个字符');
+ assert.match(formatDate('2026-11-12T16:00:00Z'),/11月13日.*00:00/);
 });
 
 test('Account settings preserve records and isolate private account changes',async t=>{
