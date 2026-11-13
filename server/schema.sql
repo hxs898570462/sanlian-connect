@@ -104,3 +104,11 @@ BEGIN
   INSERT INTO schema_migrations(version) VALUES(4);
  END IF;
 END $$;
+
+DO $$
+BEGIN
+ IF NOT EXISTS (SELECT 1 FROM schema_migrations WHERE version=5) THEN
+  ALTER TABLE activities ADD COLUMN registration_until_end BOOLEAN NOT NULL DEFAULT FALSE;
+  INSERT INTO schema_migrations(version) VALUES(5);
+ END IF;
+END $$;

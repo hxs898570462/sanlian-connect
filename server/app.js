@@ -6,7 +6,7 @@ import { resolve } from 'node:path';
 import { projectRoot } from './db.js';
 import { hashPassword,verifyPassword,publicUser,createSession,sessionMiddleware } from './auth.js';
 import { registerAdminRoutes } from './admin.js';
-import { activitySelect,privateRegistrations,lockActivity,enrollmentCount } from './queries.js';
+import { activitySelect,activityWindow,privateRegistrations,lockActivity,enrollmentCount } from './queries.js';
 import { feedbackEligibility } from './feedback-policy.js';
 import { scoreContent } from './feedback-scoring.js';
 import { httpConfig } from './config.js';
@@ -148,9 +148,10 @@ app.delete('/api/suggestions/:id',requireLogin,async(req,res)=>{
 app.get('/api/activities',async(req,res)=>{
   const days=req.query.days===undefined?60:Number(req.query.days);integer(days,1,366,'日期范围');
   const q=typeof req.query.q==='string'?req.query.q.trim().slice(0,100):'',category=typeof req.query.category==='string'?req.query.category:'';
+  const now=Date.now();
   const activities=await db.all(`${activitySelect} WHERE a.is_deleted=0 AND a.publish_status='published'
-  AND a.start_time>=$1 AND a.start_time<$2 AND ($3='' OR strpos(a.title,$3)>0 OR strpos(a.description,$3)>0)
-  AND ($4='' OR a.category=$4) ORDER BY a.start_time,a.id`,[new Date().toISOString(),new Date(Date.now()+days*86400000).toISOString(),q,category]);
+  AND ${activityWindow} AND ($3='' OR strpos(a.title,$3)>0 OR strpos(a.description,$3)>0)
+  AND ($4='' OR a.category=$4) ORDER BY a.start_time,a.id`,[new Date(now).toISOString(),new Date(now+days*86400000).toISOString(),q,category]);
   res.json({activities,window_days:days});
  });
  app.get('/api/activities/:id',async(req,res)=>{
@@ -169,7 +170,7 @@ app.get('/api/activities',async(req,res)=>{
   const registration=await db.transaction(async tx=>{
    const a=await lockActivity(tx,b.activity_id);
    if(!a||a.is_deleted||a.publish_status!=='published')fail(404,'活动不存在或尚未发布');
-   const now=new Date().toISOString();if(a.start_time<=now)fail(409,'活动已开始，无法报名');
+   const now=new Date().toISOString();if(a.registration_closes_at<=now)fail(409,'报名已截止');
    if(await tx.get("SELECT id FROM registrations WHERE user_id=$1 AND activity_id=$2 AND status IN ('confirmed','checked_in')",[req.user.id,a.id]))fail(409,'你已报名该活动');
    if(await enrollmentCount(tx,a.id)>=a.capacity)fail(409,'活动名额已满');
    await tx.run(`INSERT INTO registrations(id,user_id,activity_id,attendee_name,phone,ticket_code,status,privacy_consent,privacy_consent_at,created_at)

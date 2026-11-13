@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {fixture} from './postgres-helper.js';
+import {assistantTool} from '../server/assistant.js';
 const password='r8m5b2';
 test('PostgreSQL：前后端、并发报名、隔离、持久性',async t=>{
  const f=await fixture({servers:2}),call=f.call.bind(f);
@@ -75,6 +76,33 @@ test('PostgreSQL：前后端、并发报名、隔离、持久性',async t=>{
    const results=await Promise.all(Array.from({length:12},(_,i)=>call('/api/registrations',{method:'POST',body:{...payload,activity_id:'demo-literature'},cookie:alice.cookie,instance:i%2})));
    assert.equal(results.filter(r=>r.status===201).length,1);assert.equal(results.filter(r=>r.status===409).length,11);
    assert.equal((await call('/api/activities/demo-literature')).data.activity.enrolled_count,1);
+  });
+  await t.test('仅允许指定活动在开始后、结束前报名',async()=>{
+   await f.db.run(`UPDATE activities SET start_time=now()-interval '1 hour',end_time=now()+interval '1 hour',
+    registration_until_end=(id='demo-far') WHERE id IN ('demo-far','demo-family')`);
+   const find=async()=> (await call('/api/activities')).data.activities.map(a=>a.id);
+   const prepare=async id=>assistantTool(f.db,bob.data.user,'prepare_registration',{activity_id:id});
+   const register=async id=>call('/api/registrations',{method:'POST',cookie:bob.cookie,body:{...payload,activity_id:id}});
+   assert.ok((await find()).includes('demo-far'));
+   assert.ok(!(await find()).includes('demo-family'));
+   const search=await assistantTool(f.db,bob.data.user,'search_activities',{q:'下一季的阅读计划'});
+   assert.deepEqual(search.cards.map(a=>a.id),['demo-far']);
+   const activity=(await call('/api/activities/demo-far')).data.activity;
+   assert.equal(activity.registration_closes_at,activity.end_time);
+   assert.equal((await prepare('demo-far')).result.prepared,true);
+   assert.match((await prepare('demo-family')).result.error,/报名已截止/);
+   const original=await register('demo-family');
+   assert.equal(original.status,409);
+   assert.match(original.data.error,/报名已截止/);
+   const booked=await register('demo-far');
+   assert.equal(booked.status,201);
+   assert.equal((await call('/api/registrations/'+booked.data.registration.id+'/cancel',{method:'POST',cookie:bob.cookie,body:{}})).status,409);
+   await f.db.run("UPDATE activities SET end_time=now() WHERE id='demo-far'");
+   assert.ok(!(await find()).includes('demo-far'));
+   assert.match((await prepare('demo-far')).result.error,/报名已截止/);
+   const ended=await register('demo-far');
+   assert.equal(ended.status,409);
+   assert.match(ended.data.error,/报名已截止/);
   });
   await t.test('反馈资格、归属与并发去重',async()=>{
    const body={registration_id:registration.id,rating:5,content:'测试反馈：安排清晰，感谢组织。'};

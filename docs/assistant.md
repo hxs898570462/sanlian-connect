@@ -16,13 +16,13 @@ If local requests require an existing HTTP proxy, set `DEEPSEEK_PROXY_URL=http:/
 
 ## 能力与确认 / Capabilities and confirmation
 
-- 查询未来最多 180 天的已发布活动；最多返回 9 项，可按关键词或日期范围筛选。活动介绍、费用和余位来自 PostgreSQL。
+- 查询未来最多 180 天的已发布活动，以及仍开放报名的进行中活动；最多返回 9 项，可按关键词或日期范围筛选。活动介绍、费用和余位来自 PostgreSQL。
 - 按标题、作者、分类、简介查询库内书目；最多返回 6 项。当前示例库不支持购买、库存或套餐结算。
 - 用户明确选中活动后，助手可准备确认页并自动打开活动报名表，不创建报名、不占位、不付款。
 - 已登录账号的称呼由原表单预填。电话仍在网站表单填写，同意选项不自动勾选。点击确认后，原报名事务重新检查身份、活动、名额及重复报名。
 - 未登录读者先登录；从活动详情页登录时，会返回原活动。助手不提供管理员功能。
 
-The assistant searches published events up to 180 days ahead (up to 9 results), searches the actual bookshelf by title, author, category, or summary (up to 6 results), and opens book details or an event confirmation form. Preparing a form does not register, reserve, or pay. The existing form pre-fills the signed-in display name; the reader fills in their phone, checks consent, and submits. The existing registration transaction revalidates availability and duplicates. Sign-in from an event detail page returns to that event. There are no administrative tools, package checkout, stock, or payment functions.
+The assistant searches published events up to 180 days ahead and ongoing events that still accept registrations (up to 9 results), searches the actual bookshelf by title, author, category, or summary (up to 6 results), and opens book details or an event confirmation form. Preparing a form does not register, reserve, or pay. The existing form pre-fills the signed-in display name; the reader fills in their phone, checks consent, and submits. The existing registration transaction revalidates availability and duplicates. Sign-in from an event detail page returns to that event. There are no administrative tools, package checkout, stock, or payment functions.
 
 ## 隐私与运行边界 / Privacy and operating limits
 

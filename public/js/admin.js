@@ -58,6 +58,7 @@ export async function renderAdmin(root, context) {
       <label>费用（元）<input name="fee" type="number" min="0" max="100000" step="0.01" required value="${a?a.fee_cents/100:0}"></label>
       ${field('地点','location',a?.location||'太仓天镜湖店 · 阅读空间',{max:120})}
       ${select('发布状态','publish_status',a?{draft:'草稿',pending:'待审核',published:'已发布',offline:'已下线'}:{draft:'草稿',published:'发布到本地'},a?.publish_status||'draft')}
+      ${select('报名截止','registration_until_end',{start:'活动开始时',end:'活动结束时'},a?.registration_until_end?'end':'start')}
       <label class="span-two" for="activity-description-${e(key)}">活动说明<textarea id="activity-description-${e(key)}" name="description" required minlength="5" maxlength="5000">${e(a?.description||'')}</textarea></label>
     </div>`;
   };
@@ -131,6 +132,7 @@ export async function renderAdmin(root, context) {
         if(body.is_active===0&&!confirm('确认停用此账号？该用户将立即退出，且暂时无法登录。'))return;
       }
       if(kind==='activities') {
+        body.registration_until_end=body.registration_until_end==='end';
         body.start_time=new Date(body.start_time+':00+08:00').toISOString();
         body.end_time=new Date(body.end_time+':00+08:00').toISOString();
         body.capacity=Number(body.capacity);body.fee_cents=Math.round(Number(body.fee)*100);delete body.fee;
