@@ -12,6 +12,8 @@ The shared test site runs on Render and stores its data in Neon. Initial event a
 
 ## Features
 
+- **Choose your language:** use **English / 中文** in the header. The browser remembers the choice. The interface changes language; event details, book listings, and user submissions stay in the language they were written in.
+
 - **Discover events:** browse published events in the next 60 days and ongoing events that still accept registrations. Search, filter, or expand the window to 180 days.
 - **Register and manage attendance:** view availability, register with contact consent, and view personal tickets. Registration closes when the event starts unless an administrator sets it to close at the end. Readers can cancel eligible registrations before the event starts.
 - **Reader's corner ("读者一隅"):** signed-in users see their profile summary, statistics, registrations, feedback, and suggestions on one page, with their signature under the page title and a shortcut to Settings.

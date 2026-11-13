@@ -104,7 +104,10 @@ test('AI 接口：查询、确认前不写入、会话隔离和业务边界',asy
   });
   await t.test('每个账号有独立聊天限额，超过限额不调用模型',async()=>{
    const reader=await signup('rate-limit@example.test');provider=async()=>text('测试回答');
-   for(let i=0;i<10;i++)assert.equal((await chat('测试'+i,reader.cookie)).status,200);
+   const english=await f.call('/api/assistant/chat',{method:'POST',cookie:reader.cookie,
+    headers:{'Accept-Language':'en'},body:{message:'Find a book club'}});
+   assert.equal(english.status,200);assert.match(seen.at(-1)[0].content,/请用简洁自然的英文回答/);
+   for(let i=0;i<9;i++)assert.equal((await chat('测试'+i,reader.cookie)).status,200);
    const before=seen.length;assert.equal((await chat('第十一条',reader.cookie)).status,429);assert.equal(seen.length,before);
   });
  }finally{await f.close();}
