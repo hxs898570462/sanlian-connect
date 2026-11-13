@@ -17,6 +17,11 @@ export function registerAdminRoutes(app,db,h) {
  const allowedBody=(body,fields)=>{
   if(!body||typeof body!=='object'||Array.isArray(body)||!Object.keys(body).length||Object.keys(body).some(k=>!fields.includes(k)))fail(400,'修改字段不受支持');return body;
  };
+ const registrationUntilEnd=(value,current=false)=>{
+  if(value===undefined)return current;
+  if(typeof value!=='boolean')fail(400,'报名截止规则无效');
+  return value;
+ };
  function page(req) {
   const limit=req.query.limit===undefined?25:Number(req.query.limit),offset=req.query.offset===undefined?0:Number(req.query.offset);
   integer(limit,1,100,'每页条数');integer(offset,0,10000000,'页码');
@@ -137,22 +142,24 @@ app.get('/api/admin/activities',async(req,res)=>res.json({activities:await db.al
   const b=req.body||{},title=text(b.title,2,100,'活动标题'),category=text(b.category,1,30,'分类'),description=text(b.description,5,5000,'活动说明'),location=text(b.location,2,120,'地点');
   const start=isoDate(b.start_time),end=isoDate(b.end_time);if(end<=start||start<=new Date().toISOString())fail(400,'请设置未来的开始时间，结束时间需晚于开始时间');
   integer(b.capacity,1,10000,'容量');integer(b.fee_cents,0,10000000,'费用');if(!['draft','published'].includes(b.publish_status))fail(400,'发布状态不正确');
+  const untilEnd=registrationUntilEnd(b.registration_until_end);
   const id=randomUUID();await adminTx(req,async tx=>{
-   await tx.run('INSERT INTO activities(id,title,category,description,start_time,end_time,location,capacity,fee_cents,publish_status,created_by,created_at) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)',[id,title,category,description,start,end,location,b.capacity,b.fee_cents,b.publish_status,req.user.id,new Date().toISOString()]);
+   await tx.run('INSERT INTO activities(id,title,category,description,start_time,end_time,location,capacity,fee_cents,publish_status,created_by,created_at,registration_until_end) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)',[id,title,category,description,start,end,location,b.capacity,b.fee_cents,b.publish_status,req.user.id,new Date().toISOString(),untilEnd]);
    await audit(tx,req.user.id,'create_activity',id);
   });res.status(201).json({id});
  });
  app.patch('/api/admin/activities/:id',async(req,res)=>{
-  const b=allowedBody(req.body,['title','category','description','start_time','end_time','location','capacity','fee_cents','publish_status']);
+  const b=allowedBody(req.body,['title','category','description','start_time','end_time','location','capacity','fee_cents','publish_status','registration_until_end']);
   await adminTx(req,async tx=>{
    const a=await lockActivity(tx,req.params.id);if(!a||a.is_deleted)fail(404,'活动不存在');
    const title=b.title===undefined?a.title:text(b.title,2,100,'活动标题'),category=b.category===undefined?a.category:text(b.category,1,30,'分类'),description=b.description===undefined?a.description:text(b.description,5,5000,'活动说明'),location=b.location===undefined?a.location:text(b.location,2,120,'地点');
    const start=b.start_time===undefined?a.start_time:isoDate(b.start_time),end=b.end_time===undefined?a.end_time:isoDate(b.end_time);if(end<=start)fail(400,'结束时间需晚于开始时间');
    const capacity=b.capacity===undefined?a.capacity:b.capacity,fee=b.fee_cents===undefined?a.fee_cents:b.fee_cents,state=b.publish_status===undefined?a.publish_status:b.publish_status;
+   const untilEnd=registrationUntilEnd(b.registration_until_end,a.registration_until_end);
    integer(capacity,1,10000,'容量');integer(fee,0,10000000,'费用');
    if(capacity<await enrollmentCount(tx,a.id))fail(409,'容量不能少于当前有效报名人数');
    if(!['draft','pending','published','offline'].includes(state))fail(400,'活动状态无效');
-   await tx.run('UPDATE activities SET title=$1,category=$2,description=$3,location=$4,start_time=$5,end_time=$6,capacity=$7,fee_cents=$8,publish_status=$9 WHERE id=$10',[title,category,description,location,start,end,capacity,fee,state,a.id]);
+   await tx.run('UPDATE activities SET title=$1,category=$2,description=$3,location=$4,start_time=$5,end_time=$6,capacity=$7,fee_cents=$8,publish_status=$9,registration_until_end=$10 WHERE id=$11',[title,category,description,location,start,end,capacity,fee,state,untilEnd,a.id]);
    await audit(tx,req.user.id,'update_activity',a.id);
   });res.json({ok:true});
  });

@@ -1,5 +1,5 @@
 import {rateLimit} from 'express-rate-limit';
-import {activitySelect} from './queries.js';
+import {activitySelect,activityWindow} from './queries.js';
 import {proxyFetch} from './assistant-network.js';
 
 const problem=(status,message)=>Object.assign(new Error(message),{status});
@@ -48,7 +48,7 @@ export async function completeDeepseek(config,messages,tools,signal) {
 }
 
 const tools=[
- ['search_activities','查询网站已发布的未来活动，按主题关键词和日期筛选；没有结果时可用空关键词重新查询。',{
+ ['search_activities','查询网站已发布的未来活动和仍开放报名的进行中活动，按主题关键词和日期筛选；没有结果时可用空关键词重新查询。',{
   q:{type:'string',description:'简短主题关键词，如读书；空字符串返回全部'},
   days:{type:'integer',description:'未来天数，默认60，最多180'},
   start:{type:'string',description:'可选，含时区的ISO开始时间（含），默认现在'},
@@ -91,7 +91,7 @@ export async function assistantTool(db,user,name,rawArgs) {
   const start=new Date(Math.max(now,Date.parse(args.start||'')||now)).toISOString();
   const end=new Date(Math.min(max,Date.parse(args.end||'')||(now+(args.days||60)*86400000))).toISOString();
   if(start>=end)return {result:{error:'日期范围无效或已过去。'},cards:[]};
-  const rows=await db.all(`${activitySelect} WHERE a.is_deleted=0 AND a.publish_status='published' AND a.start_time>=$1 AND a.start_time<$2
+  const rows=await db.all(`${activitySelect} WHERE a.is_deleted=0 AND a.publish_status='published' AND ${activityWindow}
    AND ($3='' OR strpos(lower(a.title),lower($3))>0 OR strpos(lower(a.description),lower($3))>0 OR strpos(lower(a.category),lower($3))>0)
    ORDER BY a.start_time,a.id LIMIT 9`,[start,end,args.q?.trim()||'']);
   const cards=rows.map(activityCard);
@@ -107,7 +107,7 @@ export async function assistantTool(db,user,name,rawArgs) {
  if(!a)return {result:{error:'活动不存在或尚未发布。'},cards:[]};
  const card=activityCard(a);
  if(name==='get_activity')return {result:{...card,description:a.description.slice(0,2400)},cards:[card]};
- if(a.start_time<=new Date().toISOString())return {result:{error:'活动已经开始，无法报名。'},cards:[card]};
+ if(a.registration_closes_at<=new Date().toISOString())return {result:{error:'报名已截止。'},cards:[card]};
  const existing=await db.get("SELECT id FROM registrations WHERE user_id=$1 AND activity_id=$2 AND status IN ('confirmed','checked_in')",[user.id,a.id]);
  if(existing)return {result:{error:'你已经报名该活动，可在我的报名查看。'},cards:[card]};
  if(card.remaining<1)return {result:{error:'活动名额已满。'},cards:[card]};

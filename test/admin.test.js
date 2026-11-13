@@ -120,10 +120,23 @@ test('PostgreSQL：管理员与普通用户隔离及竞争更新',async t=>{
   });
   await t.test('活动创建与编辑、下线、操作日志',async()=>{
    const start=new Date(Date.now()+86400000).toISOString(),end=new Date(Date.now()+90000000).toISOString();
-   const created=await call('/api/admin/activities',{method:'POST',cookie:adminCookie,body:{title:'新的测试活动',category:'读书会',description:'验证 PostgreSQL 后台创建活动。',location:'本地测试',start_time:start,end_time:end,capacity:10,fee_cents:0,publish_status:'published'}});
-   assert.equal(created.status,201);assert.equal((await call('/api/activities/'+created.data.id)).status,200);
-   assert.equal((await call('/api/admin/activities/'+created.data.id,{method:'PATCH',cookie:adminCookie,body:{title:'已修改的活动',publish_status:'offline'}})).status,200);
-   assert.equal((await call('/api/activities/'+created.data.id)).status,404);
+   const body={title:'新的测试活动',category:'读书会',description:'验证 PostgreSQL 后台创建活动。',location:'本地测试',start_time:start,end_time:end,capacity:10,fee_cents:0,publish_status:'published'};
+   const create=fields=>call('/api/admin/activities',{method:'POST',cookie:adminCookie,body:{...body,...fields}});
+   const created=await create({});
+   assert.equal(created.status,201);
+   const id=created.data.id;
+   const read=async()=> (await call('/api/activities/'+id)).data.activity;
+   const patch=body=>call('/api/admin/activities/'+id,{method:'PATCH',cookie:adminCookie,body});
+   assert.equal((await read()).registration_closes_at,start);
+   assert.equal((await patch({registration_until_end:'false'})).status,400);
+   assert.equal((await patch({registration_until_end:true})).status,200);
+   assert.equal((await read()).registration_closes_at,end);
+   const optedIn=await create({registration_until_end:true});
+   assert.equal(optedIn.status,201);
+   assert.equal((await call('/api/activities/'+optedIn.data.id)).data.activity.registration_closes_at,end);
+   assert.equal((await patch({title:'已修改的活动',publish_status:'offline'})).status,200);
+   assert.equal((await call('/api/activities/'+id)).status,404);
+   assert.equal((await f.db.get('SELECT registration_until_end FROM activities WHERE id=$1',[id])).registration_until_end,true);
    const logs=(await call('/api/admin/logs',{cookie:adminCookie})).data.logs;
    for(const action of ['update_user','update_registration','update_feedback','update_activity','create_activity'])assert.ok(logs.some(l=>l.action===action));
    assert.ok(!JSON.stringify(logs).includes('password'));
