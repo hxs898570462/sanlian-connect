@@ -11,6 +11,7 @@ import { feedbackEligibility } from './feedback-policy.js';
 import { scoreContent } from './feedback-scoring.js';
 import { httpConfig } from './config.js';
 import { registerAssistantRoutes } from './assistant.js';
+import { hasValidPasswordLength,PASSWORD_LENGTH_RANGE } from '../public/js/password-policy.js';
 import packageInfo from '../package.json' with {type:'json'};
 
 export const fail=(status,message)=>{const error=new Error(message);error.status=status;throw error;};
@@ -23,7 +24,7 @@ const isoDate=v=>{
 };
 const validatePhone=v=>{const phone=text(v,7,24,'联系电话');if(!/^\+?[\d ()-]{7,24}$/.test(phone)||phone.replace(/\D/g,'').length<7)fail(400,'联系电话格式不正确');return phone;};
 const passwordValue=value=>{
- if(typeof value!=='string'||value.length<12||value.length>128)fail(400,'密码长度需为 12–128 个字符');
+ if(!hasValidPasswordLength(value))fail(400,`密码长度需为 ${PASSWORD_LENGTH_RANGE}`);
  return value;
 };
 const profileFields={name:[1,60,'昵称'],gender:[0,6,'性别'],region:[0,60,'地区'],signature:[0,100,'签名']};

@@ -2,6 +2,7 @@ import {api} from './api.js';
 import {renderAdmin} from './admin.js';
 import {createAssistant} from './assistant.js';
 import {applyPreferences,bindPreferences,profileView,settingsPage} from './settings.js';
+import {PASSWORD_MIN_LENGTH,PASSWORD_MAX_LENGTH,PASSWORD_LENGTH_RANGE} from './password-policy.js';
 const root=document.querySelector('#app');
 let user=null,renderId=0,noticeTimer,mineFocus=null;
 let bookingFocus=null;
@@ -84,7 +85,20 @@ async function render(){
       }
     }else if(page==='login'||page==='signup'){
       const signup=page==='signup';
-      if(!show(`<section class="panel auth-panel"><div class="eyebrow">WELCOME TO SANLIAN</div><h1>${signup?'开始一段阅读旅程':'欢迎回来'}</h1><p>${signup?'建立你的本地读者账号。':'登录后查看和管理自己的报名。'}</p><form id="auth-form">${signup?'<p class="small role-hint">注册即创建读者账号；管理员账号由现有管理员在后台授予。</p>':''}${signup?'<label for="name">怎么称呼你</label><input id="name" name="name" required maxlength="60" autocomplete="name">':''}<label for="email">邮箱</label><input id="email" name="email" type="email" required maxlength="254" autocomplete="email"><label for="password">密码</label><input id="password" name="password" type="password" required minlength="12" maxlength="128" autocomplete="${signup?'new-password':'current-password'}"><p class="small">12–128 个字符。此处使用独立的本地账号。</p><div class="form-error" role="alert"></div><button type="submit">${signup?'注册并登录':'登录'}</button></form><a class="text-link" href="#${signup?'login':'signup'}">${signup?'已有账号？去登录':'第一次来？创建账号'}</a></section>`))return;
+      if(!show(`<section class="panel auth-panel">
+        <div class="eyebrow">WELCOME TO SANLIAN</div>
+        <h1>${signup?'开始一段阅读旅程':'欢迎回来'}</h1>
+        <p>${signup?'建立你的读者账号。':'登录后查看和管理自己的报名。'}</p>
+        <form id="auth-form">
+          ${signup?'<p class="small role-hint">注册即创建读者账号；管理员账号由现有管理员在后台授予。</p>':''}
+          ${signup?'<label for="name">怎么称呼你</label><input id="name" name="name" required maxlength="60" autocomplete="name">':''}
+          <label for="email">邮箱</label><input id="email" name="email" type="email" required maxlength="254" autocomplete="email">
+          <label for="password">密码</label><input id="password" name="password" type="password" required minlength="${PASSWORD_MIN_LENGTH}" maxlength="${PASSWORD_MAX_LENGTH}" autocomplete="${signup?'new-password':'current-password'}" aria-describedby="password-rules">
+          <p class="small" id="password-rules">${PASSWORD_LENGTH_RANGE}。</p>
+          <div class="form-error" role="alert"></div><button type="submit">${signup?'注册并登录':'登录'}</button>
+        </form>
+        <a class="text-link" href="#${signup?'login':'signup'}">${signup?'已有账号？去登录':'第一次来？创建账号'}</a>
+      </section>`))return;
       bindForm('auth-form',async data=>{const result=await api(`/auth/${signup?'register':'login'}`,{method:'POST',body:Object.fromEntries(data)});user=result.user;account();const portal=user.role==='stuff'?'admin':'mine';const pending=storage.get();storage.clear();if(pending&&pending.length<=120){bookingFocus=pending;location.hash='activity/'+encodeURIComponent(pending);return;}notice(signup?'账号已创建。':'登录成功。');location.hash=portal;});
     }else if(page==='mine'){
       if(!user){show(`<section class="intro"><div class="eyebrow">READER'S CORNER · 读者一隅</div><h1>读者一隅</h1><p>资料、报名与反馈，都在这一页。</p></section>${empty('登录后可查看自己的资料、报名和反馈。')}<div class="actions"><a href="#login" class="button">去登录</a></div>`);return;}

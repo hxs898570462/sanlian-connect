@@ -1,12 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {fixture} from './postgres-helper.js';
-const password='TestPassword123!';
+const password='r8m5b2';
 test('PostgreSQL：前后端、并发报名、隔离、持久性',async t=>{
  const f=await fixture({servers:2}),call=f.call.bind(f);
  let alice,bob,registration;
  const payload={activity_id:'demo-reading',attendee_name:'测试读者',phone:'13800000000',privacy_consent:true,user_id:'forged'};
- const signup=async(email,instance=0)=>call('/api/auth/register',{method:'POST',instance,body:{email,name:'测试读者',password}});
+ const signup=async(email,instance=0,value=password)=>call('/api/auth/register',{method:'POST',instance,body:{email,name:'测试读者',password:value}});
  try {
   await t.test('连接的是真实 PostgreSQL，页面与数据库健康检查可用',async()=>{
    assert.match((await f.db.get('SELECT version() AS version')).version,/PostgreSQL/);
@@ -19,12 +19,19 @@ test('PostgreSQL：前后端、并发报名、隔离、持久性',async t=>{
    assert.equal((await call('/api/activities?days=invalid')).status,400);
    assert.equal((await call('/api/activities/demo-draft')).status,404);
   });
-  await t.test('注册默认user，密码哈希与跨实例会话',async()=>{
+  await t.test('6 字符密码可注册和登录，保留密码哈希与跨实例会话',async()=>{
+   for(const value of ['r8m5b','a'.repeat(129)]){
+    const invalid=await signup('alice@example.test',0,value);
+    assert.equal(invalid.status,400);
+    assert.match(invalid.data.error,/6–128/);
+   }
    alice=await signup('alice@example.test');bob=await signup('bob@example.test',1);
    assert.equal(alice.status,201);assert.equal(alice.data.user.role,'user');assert.equal(bob.status,201);
    assert.match(alice.setCookie,/HttpOnly/i);assert.match(alice.setCookie,/SameSite=Lax/i);
    assert.notEqual((await f.db.get('SELECT password_hash FROM users WHERE id=$1',[alice.data.user.id])).password_hash,password);
    assert.equal((await call('/api/auth/me',{cookie:alice.cookie,instance:1})).data.user.id,alice.data.user.id);
+   const login=await call('/api/auth/login',{method:'POST',instance:1,body:{email:'alice@example.test',password}});
+   assert.equal(login.status,200);assert.equal(login.data.user.id,alice.data.user.id);
    assert.equal((await signup('ALICE@example.test')).status,409);
    assert.equal((await call('/api/auth/login',{method:'POST',body:{email:'alice@example.test',password:'WrongPassword123!'}})).status,401);
   });
