@@ -1,3 +1,5 @@
+import {PASSWORD_MIN_LENGTH,PASSWORD_MAX_LENGTH,PASSWORD_LENGTH_RANGE} from './password-policy.js';
+
 const groups={
   theme:{label:'外观',choices:{light:'白天',dark:'黑夜'}},
   font:{label:'字体大小',choices:{standard:'标准',large:'大',extra:'特大'}}
@@ -71,10 +73,10 @@ export function settingsPage({section,profile,email,version,escape}){
       <details class="setting-row">
         <summary>修改密码</summary>
         <form id="password-form" class="settings-form">
-          <label for="current-password">当前密码</label><input id="current-password" name="current_password" type="password" autocomplete="current-password" required minlength="12" maxlength="128">
-          <label for="new-password">新密码</label><input id="new-password" name="new_password" type="password" autocomplete="new-password" required minlength="12" maxlength="128" aria-describedby="password-rules">
-          <label for="confirm-password">确认新密码</label><input id="confirm-password" name="confirm_password" type="password" autocomplete="new-password" required minlength="12" maxlength="128">
-          <p class="small" id="password-rules">密码为 12–128 个字符。修改后，所有设备都需要重新登录。</p>
+          <label for="current-password">当前密码</label><input id="current-password" name="current_password" type="password" autocomplete="current-password" required minlength="${PASSWORD_MIN_LENGTH}" maxlength="${PASSWORD_MAX_LENGTH}">
+          <label for="new-password">新密码</label><input id="new-password" name="new_password" type="password" autocomplete="new-password" required minlength="${PASSWORD_MIN_LENGTH}" maxlength="${PASSWORD_MAX_LENGTH}" aria-describedby="password-rules">
+          <label for="confirm-password">确认新密码</label><input id="confirm-password" name="confirm_password" type="password" autocomplete="new-password" required minlength="${PASSWORD_MIN_LENGTH}" maxlength="${PASSWORD_MAX_LENGTH}">
+          <p class="small" id="password-rules">新密码为 ${PASSWORD_LENGTH_RANGE}。修改后，所有设备都需要重新登录。</p>
           <div class="form-error" role="alert"></div><button type="submit">保存新密码</button>
         </form>
       </details>

@@ -21,8 +21,12 @@ test('Settings separates profile editing from the read-only profile and category
  assert.match(render('profile'),/id="profile-form"/);
  assert.doesNotMatch(render('profile'),/注册时间|用户组|登录邮箱|地区/);
  assert.match(render('display'),/type="radio"/);
- assert.match(render('security'),/登录邮箱/);
- assert.doesNotMatch(render('security'),/type="radio"|系统版本/);
+ const security=render('security');
+ assert.match(security,/登录邮箱/);
+ assert.match(security,/新密码为 6–128 个字符/);
+ for(const id of ['current-password','new-password','confirm-password'])
+  assert.match(security,new RegExp(`id="${id}"[^>]*minlength="6" maxlength="128"`));
+ assert.doesNotMatch(security,/type="radio"|系统版本/);
  assert.match(render('privacy'),/报名信息用途/);
  assert.match(render('about'),/系统版本/);
  for(const section of categories)assert.ok(render(section).includes('href="#settings"'));
@@ -80,9 +84,9 @@ test('Account settings preserve records and isolate private account changes',asy
  });
 
  await t.test('require current credentials and revoke all sessions across instances',async()=>{
-  const alternatives=['ChangedPassword123!','OtherChangedPassword123!'];
+  const alternatives=['y7G9Tm','w5x8Zf'];
   assert.equal((await change(undefined,password,alternatives[0])).status,401);
-  assert.equal((await change(alice.cookie,password,'too short')).status,400);
+  assert.equal((await change(alice.cookie,password,'r8m5b')).status,400);
   assert.equal((await change(alice.cookie,'IncorrectPassword123!',alternatives[0])).status,401);
   assert.equal((await change(alice.cookie,password,password)).status,400);
   const second=await login(password);
@@ -95,9 +99,11 @@ test('Account settings preserve records and isolate private account changes',asy
   for(const cookie of [alice.cookie,second.cookie])
    assert.equal((await call('/api/profile',{cookie,instance:1})).status,401);
   assert.equal((await login(password)).status,401);
-  const replacement=await login(alternatives[changes.findIndex(r=>r.status===200)]);
+  const currentPassword=alternatives[changes.findIndex(r=>r.status===200)];
+  const replacement=await login(currentPassword);
   assert.equal(replacement.status,200);
   assert.equal((await call('/api/registrations',{cookie:replacement.cookie})).data.registrations.length,1);
   assert.equal((await call('/api/profile',{cookie:bob.cookie})).status,200);
+  assert.equal((await change(replacement.cookie,currentPassword,password,1)).status,200);
  });
 });

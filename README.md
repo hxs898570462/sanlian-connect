@@ -97,6 +97,8 @@ Dates use PostgreSQL `TIMESTAMPTZ`. APIs return UTC ISO strings and the interfac
 
 Regular users can access public content and their own profile, registrations, feedback, and suggestions, and land on the reader's corner ("读者一隅") after signing in. Administrators land directly on the feedback list and manage business data through the dashboard. Role and account-status changes revoke the affected account's existing sessions.
 
+Account passwords must be 6–128 characters. Existing passwords continue to work.
+
 Create an administrator in the database selected by your local `.env` / `DATABASE_URL`:
 
 ```powershell

@@ -3,6 +3,7 @@ import {Writable} from 'node:stream';
 import {randomUUID} from 'node:crypto';
 import {openDatabase} from '../server/db.js';
 import {hashPassword} from '../server/auth.js';
+import {hasValidPasswordLength,PASSWORD_LENGTH_RANGE} from '../public/js/password-policy.js';
 const output=new Writable({write(chunk,encoding,callback){callback();}});
 const rl=createInterface({input:process.stdin,output,terminal:!!process.stdin.isTTY});
 async function ask(prompt){process.stdout.write(prompt);return new Promise(resolve=>rl.question('',value=>{process.stdout.write('\n');resolve(value);}));}
@@ -13,8 +14,8 @@ try {
  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))throw Error('邮箱格式不正确');
  let hash;
  if(!promote){
-  const password=await ask('设置密码，12–128 个字符（输入隐藏）: '),confirm=await ask('再次输入密码（输入隐藏）: ');
-  if(password.length<12||password.length>128||password!==confirm)throw Error('密码长度或两次输入不符合要求');
+  const password=await ask(`设置密码，${PASSWORD_LENGTH_RANGE}（输入隐藏）: `),confirm=await ask('再次输入密码（输入隐藏）: ');
+  if(!hasValidPasswordLength(password)||password!==confirm)throw Error('密码长度或两次输入不符合要求');
   hash=await hashPassword(password);
  }
  db=await openDatabase();

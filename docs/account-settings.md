@@ -14,7 +14,7 @@ Light/dark mode and standard/large/extra-large type apply to the reader interfac
 | --- | --- |
 | `GET /api/profile` | Authenticated; returns the caller's current profile, including `gender`, `region` and `signature`. The session/user summary and admin endpoints do not expose the new fields. |
 | `PATCH /api/profile` | Authenticated partial update of `name` (1-60 characters), `gender` (empty, `female`, `male`, `other`), `region` (0-60) and `signature` (0-100). Empty optional strings clear the fields. Unknown fields are rejected. |
-| `POST /api/auth/change-password` | Authenticated and rate-limited. Takes `current_password` and `new_password`, using the existing 12-128-character policy. Wrong credentials return 401 and leave the account untouched. A successful transaction changes the password and revokes every session for the caller; the response clears the current cookie. |
+| `POST /api/auth/change-password` | Authenticated and rate-limited. Takes `current_password` and `new_password` (6–128 characters each). Wrong credentials return 401 and leave the account untouched. A successful transaction changes the password and revokes every session for the caller; the response clears the current cookie. |
 | `GET /api/version` | Authenticated; returns the running application's package version. |
 
 Schema migration 2 adds three columns with empty defaults to existing users. It runs in the existing startup transaction and advisory lock. It does not rewrite account IDs, logins or business records. Version remains release-managed by `package.json`; the feature branch does not create a release.
