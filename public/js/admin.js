@@ -1,8 +1,9 @@
 import { api } from './api.js';
 import {t} from './i18n.js';
+import {seatRoster,bindSeatRoster} from './seats.js';
 
 let searchState = {tab:'',q:'',status:'',priority:'',offset:0};
-const titles = {users:'用户管理',registrations:'报名管理',feedbacks:'反馈管理',suggestions:'建议管理',activities:'活动管理',logs:'操作记录'};
+const titles = {users:'用户管理',registrations:'报名管理',feedbacks:'反馈管理',suggestions:'建议管理',activities:'活动管理','seat-reservations':'座位预约名单',logs:'操作记录'};
 const feedbackStatus = {pending:'待处理',processing:'处理中',replied:'已回复',closed:'已关闭'};
 const actionLabels = {update_user:'更新用户',update_registration:'更新报名',update_feedback:'处理反馈',update_suggestion:'处理建议',create_activity:'创建活动',update_activity:'更新活动',bootstrap_administrator:'初始化管理员'};
 const levelLabels = {high:'高优先级',mid:'中优先级',low:'低优先级'};
@@ -34,7 +35,7 @@ export async function renderAdmin(root, context) {
   const tab = Object.hasOwn(titles,context.tab) ? context.tab : 'feedbacks';
   if(searchState.tab!==tab) searchState={tab,q:'',status:'',priority:'',offset:0};
   const params=adminListQuery(searchState);
-  const [summaryData,data]=await Promise.all([api('/admin/summary'),api(`/admin/${tab}?${params}`)]);
+  const [summaryData,data]=await Promise.all([api('/admin/summary'),tab==='seat-reservations'?seatRoster(e):api(`/admin/${tab}?${params}`)]);
   if(!isCurrent())return;
   const summary=summaryData.summary;
   const options=(items,value)=>Object.entries(items).map(([key,label])=>`<option value="${e(key)}"${key===value?' selected':''}>${e(t(label))}</option>`).join('');
@@ -110,12 +111,15 @@ export async function renderAdmin(root, context) {
       `${date(a.start_time)} · ${t('{enrolled}/{capacity} 人',{enrolled:a.enrolled_count,capacity:a.capacity})}`,
       `<form class="managed-form" data-kind="activities" data-id="${e(a.id)}">${activityFields(a)}${save}</form>`
     )).join('')}</div>`;
+  } else if(tab==='seat-reservations') {
+    content=data;
   } else if(tab==='logs') {
     content=`<div class="stack">${data.logs.length?data.logs.map(l=>`<article class="panel log-row"><b>${e(t(actionLabels[l.action]||l.action))}</b><span>${e(l.actor_name)} · ${date(l.created_at)}</span><small>${t("记录编号：")}${e(l.target_id)}</small></article>`).join(''):empty(t("还没有管理操作记录。"))}</div>`+pagination();
   }
   root.innerHTML=`<section class="admin-heading"><div class="eyebrow">SANLIAN · ADMINISTRATION</div><h1>${t("管理后台")}</h1><p>${e(t('你好，{name}。',{name:user.name}))}</p></section>
     <div class="admin-stats"><div><span>${t("注册用户")}</span><strong>${summary.users}</strong></div><div><span>${t("有效报名")}</span><strong>${summary.registrations}</strong></div><div><span>${t("待处理反馈")}</span><strong>${summary.pending_feedbacks}</strong></div><div><span>${t("高优先级待办")}</span><strong>${summary.high_priority}</strong></div><div><span>${t("活动场次")}</span><strong>${summary.activities}</strong></div></div>
     <div class="admin-shell"><nav class="admin-nav" aria-label="${t("后台导航")}">${Object.entries(titles).map(([key,label])=>`<a href="#admin/${key}"${tab===key?' class="selected" aria-current="page"':''}>${t(label)}${key==='suggestions'&&summary.pending_suggestions?`<em>${summary.pending_suggestions}</em>`:''}</a>`).join('')}</nav><section class="admin-content"><h2>${t(titles[tab])}</h2>${content}</section></div>`;
+  bindSeatRoster(root.querySelector('#seat-roster-filter'),refresh);
   root.querySelector('#manage-search')?.addEventListener('submit',async event=>{
     event.preventDefault();const form=new FormData(event.currentTarget);
     searchState.q=form.get('q')||'';searchState.status=form.get('status')||'';searchState.priority=form.get('priority')||'';searchState.offset=0;await refresh();

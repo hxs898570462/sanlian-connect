@@ -112,3 +112,30 @@ BEGIN
   INSERT INTO schema_migrations(version) VALUES(5);
  END IF;
 END $$;
+
+DO $$
+BEGIN
+ IF NOT EXISTS (SELECT 1 FROM schema_migrations WHERE version=6) THEN
+  CREATE TABLE seats (
+   code TEXT PRIMARY KEY CHECK(code ~ '^(A-(0[1-9]|1[0-2])|B-(0[1-9]|1[01]))$')
+  );
+  INSERT INTO seats(code)
+   SELECT 'A-' || lpad(n::text,2,'0') FROM generate_series(1,12) AS n
+   UNION ALL
+   SELECT 'B-' || lpad(n::text,2,'0') FROM generate_series(1,11) AS n;
+  CREATE TABLE seat_reservations (
+   id TEXT PRIMARY KEY,
+   seat_code TEXT NOT NULL REFERENCES seats(code),
+   user_id TEXT NOT NULL REFERENCES users(id),
+   starts_at TIMESTAMPTZ NOT NULL,
+   ends_at TIMESTAMPTZ NOT NULL CHECK(ends_at > starts_at),
+   created_at TIMESTAMPTZ NOT NULL DEFAULT clock_timestamp(),
+   cancelled_at TIMESTAMPTZ
+  );
+  CREATE UNIQUE INDEX active_seat_slot ON seat_reservations(starts_at,seat_code) WHERE cancelled_at IS NULL;
+  CREATE UNIQUE INDEX active_reader_slot ON seat_reservations(user_id,starts_at) WHERE cancelled_at IS NULL;
+  CREATE INDEX seat_reservation_roster ON seat_reservations(starts_at,seat_code);
+  CREATE INDEX seat_reservation_history ON seat_reservations(user_id,starts_at DESC);
+  INSERT INTO schema_migrations(version) VALUES(6);
+ END IF;
+END $$;

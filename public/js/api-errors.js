@@ -1,6 +1,15 @@
 import {t,translate} from './i18n.js';
 
 const messages={
+  "预约日期无效": "Choose a valid booking date.",
+  "预约日期不在开放范围内": "Choose a date within the booking window.",
+  "预约时段无效": "Choose a valid time slot.",
+  "此座位不开放预约": "This seat cannot be booked.",
+  "该时段已开始": "This slot has already started.",
+  "该座位已被预约，请重新选座": "This seat is already booked. Choose another seat.",
+  "你在该时段已有预约": "You already have a seat for this time slot.",
+  "预约不存在": "Booking not found.",
+  "该预约当前无法取消": "This booking can no longer be cancelled.",
   "时间需包含有效的时区": "Enter a time with a valid time zone.",
   "联系电话格式不正确": "Enter a valid phone number.",
   "地区": "Region",
