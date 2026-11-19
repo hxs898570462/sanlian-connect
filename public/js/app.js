@@ -4,6 +4,7 @@ import {createAssistant} from './assistant.js';
 import {applyPreferences,bindPreferences,profileView,settingsPage} from './settings.js';
 import {PASSWORD_MIN_LENGTH,PASSWORD_MAX_LENGTH} from './password-policy.js';
 import {t,getLanguage,setLanguage,localize,formatDate as date} from './i18n.js';
+import {eventPoster,shelfCards,shelfDetail} from './reader-design.js';
 const root=document.querySelector('#app');
 let user=null,renderId=0,noticeTimer,mineFocus=null;
 let bookingFocus=null;
@@ -46,7 +47,16 @@ document.addEventListener('click',event=>{
   if(!trigger)return;
   event.preventDefault();openFeedbacks();
 });
-function cards(items){return items.length?items.map((a,i)=>`<article class="card"><a href="#activity/${encodeURIComponent(a.id)}" class="card-cover theme-${i%3}" aria-label="${escape(t('查看{title}',{title:a.title}))}"><span class="symbol">${[t("阅"),t("文"),t("遇")][i%3]}</span><small>${escape(a.category)} ${t('· 天镜湖畔')}</small></a><div class="card-body"><span class="tag">${escape(a.category)}</span><h3><a href="#activity/${encodeURIComponent(a.id)}">${escape(a.title)}</a></h3><div class="meta">${date(a.start_time)}<br>${escape(a.location)}<br>${t('余 {remaining} 席 / 共 {capacity} 席',{remaining:Math.max(0,a.capacity-a.enrolled_count),capacity:a.capacity})}</div><div class="card-foot"><span class="fee">${a.fee_cents?'¥ '+(a.fee_cents/100).toFixed(2):t("免费参与")}</span><a class="text-link" href="#activity/${encodeURIComponent(a.id)}">${t("了解活动 →")}</a></div></div></article>`).join(''):empty(t("这个时间范围内暂无活动，欢迎稍后再来。"));}
+function cards(items){
+  return items.length?items.map(a=>`<article class="card reader-event-card">
+    <a href="#activity/${encodeURIComponent(a.id)}" class="reader-card-media" aria-label="${escape(t('查看{title}',{title:a.title}))}">${eventPoster(a)}</a>
+    <div class="card-body"><span class="reader-category">${escape(a.category)}</span>
+      <h3><a href="#activity/${encodeURIComponent(a.id)}">${escape(a.title)}</a></h3>
+      <div class="meta"><time datetime="${escape(a.start_time)}">${date(a.start_time)}</time><br>${escape(a.location)}<br>${t('余 {remaining} 席 / 共 {capacity} 席',{remaining:Math.max(0,a.capacity-a.enrolled_count),capacity:a.capacity})}</div>
+      <div class="card-foot"><span class="fee">${a.fee_cents?'¥ '+(a.fee_cents/100).toFixed(2):t("免费参与")}</span><a class="text-link" href="#activity/${encodeURIComponent(a.id)}">${t("了解活动 →")}</a></div>
+    </div>
+  </article>`).join(''):empty(t("这个时间范围内暂无活动，欢迎稍后再来。"));
+}
 function formError(form,message){form.querySelector('.form-error').textContent=message;}
 function bindForm(id,submit){
   const form=document.getElementById(id); if(!form)return;
@@ -57,8 +67,9 @@ async function render({keepFocus=false}={}){
   const version=++renderId;
   const [page='home',rawId='']=(location.hash.slice(1)||'home').split('/');
   applyPreferences(page);
+  root.classList.toggle('reader-home-page',page==='home');
   let id;try{id=decodeURIComponent(rawId);}catch{id='';}
-  document.querySelectorAll('[data-nav]').forEach(a=>a.classList.toggle('active',a.dataset.nav===page||(page==='activity'&&a.dataset.nav==='activities')||(page==='book'&&a.dataset.nav==='books')||(page==='feedback'&&a.dataset.nav==='mine')));
+  document.querySelectorAll('[data-nav]').forEach(a=>a.classList.toggle('active',a.dataset.nav===page||(page==='activity'&&a.dataset.nav==='activities')||((page==='book'||page==='shelf')&&a.dataset.nav==='books')||(page==='feedback'&&a.dataset.nav==='mine')));
   root.innerHTML=`<p class="loading">${t("正在加载…")}</p>`;
   const show=html=>{if(version!==renderId)return false;root.innerHTML=html;return true;};
   try{
@@ -67,7 +78,22 @@ async function render({keepFocus=false}={}){
     account();
     if(page==='home'){
       const {activities}=await api('/activities');
-      show(`<section class="hero"><div class="hero-copy"><div class="eyebrow">SANLIAN · TIANJING LAKE</div><h1>${t("以书为邻，")}<br>${t("与美好相遇。")}</h1><p>${t("在湖畔留一点时间给阅读。")}<br>${t("一本好书，一场对话，一群有趣的人。")}</p><a class="button" href="#activities">${t("寻找下一场相遇 ↗")}</a></div><div class="hero-art" role="img" aria-label="${t("湖绿色背景前的四本书")}"><span class="spine">${t("日常与远方")}</span><span class="spine">${t("阅读的温度")}</span><span class="spine">${t("湖畔来信")}</span><span class="spine">${t("生活的另一页")}</span></div></section><section><div class="section-heading"><div><div class="eyebrow">${t("WHAT'S ON · 未来 60 天")}</div><h2>${t("让思想，在这里交汇")}</h2></div><a class="text-link" href="#activities">${t("全部活动 →")}</a></div><div class="grid">${cards(activities.slice(0,3))}</div></section>`);
+      show(`<section class="reader-hero">
+        <img class="reader-hero-image" src="/assets/reader/reading-room.jpg" alt="" fetchpriority="high">
+        <div class="reader-home-width reader-hero-copy"><p class="eyebrow">${t("三联书店")} · ${t("天镜湖店")}</p>
+          <h1>${t("以书为邻，")}<br>${t("与美好相遇。")}</h1>
+          <p>${t("在湖畔留一点时间给阅读。")}<br>${t("一本好书，一场对话，一群有趣的人。")}</p>
+          <a class="button" href="#activities">${t("寻找下一场相遇 ↗")}</a>
+        </div>
+      </section>
+      <section class="reader-home-width reader-home-section" aria-labelledby="reader-home-events"><div class="section-heading">
+        <div><div class="eyebrow">${t("WHAT'S ON · 未来 60 天")}</div><h2 id="reader-home-events">${t("让思想，在这里交汇")}</h2></div>
+        <a class="text-link" href="#activities">${t("全部活动 →")}</a></div><div class="grid">${cards(activities.slice(0,3))}</div>
+      </section>
+      <section class="reader-home-shelves" aria-labelledby="reader-home-books"><div class="reader-home-width reader-home-section"><div class="section-heading">
+        <div><div class="eyebrow">${t("字里行间")}</div><h2 id="reader-home-books">${t("从书架选一本")}</h2></div>
+        <a class="text-link" href="#books">${t("全部书架")}</a></div><div class="grid">${shelfCards(3)}</div>
+      </div></section>`);
     }else if(page==='activities'){
       if(!show(`<section class="intro"><div class="eyebrow">EVENTS & GATHERINGS</div><h1>${t("文化活动")}</h1><p>${t("为喜欢的主题，留一个位置。")}</p></section><form id="filters" class="filters"><input name="q" aria-label="${t("搜索活动")}" placeholder="${t("搜索活动或感兴趣的主题")}"><select name="days" aria-label="${t("时间范围")}"><option value="60">${t("未来 60 天")}</option><option value="180">${t("未来 180 天")}</option></select><button type="submit">${t("搜索")}</button></form><div id="results" class="grid"><p>${t("正在读取活动…")}</p></div>`))return;
       const filters=document.getElementById('filters');
@@ -82,7 +108,7 @@ async function render({keepFocus=false}={}){
         :unavailable?`<h2>${t("暂时无法报名")}</h2><p>${unavailable}</p>`
         :!user?`<h2>${t("加入这场相遇")}</h2><p>${t("登录后即可填写报名资料。")}</p><a href="#login" class="button">${t("登录 / 注册")}</a>`
         :`<h2>${t("为自己留一个位置")}</h2><p class="small">${t("每个账号可报名 1 人。资料仅用于活动联系。")}${a.registration_until_end?t("活动结束前均可报名，开始后不可自行取消。"):''}</p><form id="booking-form"><label for="attendee">${t("参加者姓名")}</label><input id="attendee" name="attendee_name" required maxlength="60" autocomplete="name" value="${escape(user.name)}"><label for="phone">${t("联系电话")}</label><input id="phone" name="phone" type="tel" required minlength="7" maxlength="24" autocomplete="tel"><label class="checkbox"><input name="privacy_consent" type="checkbox" required><span>${t("我同意将姓名和联系电话用于本次报名及活动联系。")}</span></label><div class="form-error" role="alert"></div><button type="submit">${t("确认报名")}</button></form>`;
-      if(!show(`<a class="back" href="#activities">${t("← 返回文化活动")}</a><div class="detail-grid"><article><span class="tag">${escape(a.category)}</span><h1>${escape(a.title)}</h1><div class="detail-info"><p>${t("时间 ·")} ${date(a.start_time)} — ${date(a.end_time)}</p><p>${t("地点 ·")} ${escape(a.location)}</p><p>${t('名额 · 余 {remaining} 席 / 共 {capacity} 席',{remaining:Math.max(0,a.capacity-a.enrolled_count),capacity:a.capacity})}</p><p>${t("费用 ·")} ${a.fee_cents?'¥ '+(a.fee_cents/100).toFixed(2):t("免费")}</p></div><h2>${t("关于这场活动")}</h2><div class="prose">${escape(a.description)}</div></article><aside class="panel">${form}</aside></div>`))return;
+      if(!show(`<a class="back" href="#activities">${t("← 返回文化活动")}</a><div class="detail-grid"><article>${eventPoster(a)}<span class="tag">${escape(a.category)}</span><h1>${escape(a.title)}</h1><div class="detail-info"><p>${t("时间 ·")} ${date(a.start_time)} — ${date(a.end_time)}</p><p>${t("地点 ·")} ${escape(a.location)}</p><p>${t('名额 · 余 {remaining} 席 / 共 {capacity} 席',{remaining:Math.max(0,a.capacity-a.enrolled_count),capacity:a.capacity})}</p><p>${t("费用 ·")} ${a.fee_cents?'¥ '+(a.fee_cents/100).toFixed(2):t("免费")}</p></div><h2>${t("关于这场活动")}</h2><div class="prose">${escape(a.description)}</div></article><aside class="panel">${form}</aside></div>`))return;
       bindForm('booking-form',async data=>{await api('/registrations',{method:'POST',body:{activity_id:a.id,attendee_name:data.get('attendee_name'),phone:data.get('phone'),privacy_consent:data.has('privacy_consent')}});notice(t("报名成功，期待与你相遇。"));location.hash='mine';});
       if(!user)document.querySelector('.detail-grid a[href="#login"]')?.addEventListener('click',()=>storage.set(id));
       if(bookingFocus===id){
@@ -136,7 +162,12 @@ async function render({keepFocus=false}={}){
       }));
       document.querySelectorAll('[data-cancel]').forEach(button=>button.addEventListener('click',async()=>{if(!confirm(t("确认取消这次报名？")))return;button.disabled=true;try{await api(`/registrations/${encodeURIComponent(button.dataset.cancel)}/cancel`,{method:'POST',body:{}});notice(t("报名已取消，名额已释放。"));await render();}catch(e){notice(e.message);button.disabled=false;}}));
     }else if(page==='books'){
-      const {books}=await api('/books');show(`<section class="intro"><div class="eyebrow">BETWEEN THE PAGES</div><h1>${t("书架漫游")}</h1><p>${t("让下一本书，带你走向更远的地方。")}</p></section><div class="grid">${books.length?books.map(b=>`<article class="card"><div class="book-art">${escape(b.category)}</div><div class="card-body"><h3><a href="#book/${encodeURIComponent(b.id)}">${escape(b.title)}</a></h3><p class="small">${escape(b.author)}</p><p>${escape(b.summary)}</p><a class="text-link" href="#book/${encodeURIComponent(b.id)}">${t("查看书目 →")}</a></div></article>`).join(''):empty(t("书架正在整理中。"))}</div>`);
+      const {books}=await api('/books');
+      show(`<section class="intro"><div class="eyebrow">${t("字里行间")}</div><h1>${t("书架漫游")}</h1><p>${t("让下一本书，带你走向更远的地方。")}</p></section>
+        <div class="grid">${shelfCards()}</div>
+        <section class="reader-catalogue" aria-labelledby="reader-catalogue-title"><h2 id="reader-catalogue-title">${t("门店书目")}</h2><div class="grid">${books.length?books.map(b=>`<article class="card"><div class="book-art">${escape(b.category)}</div><div class="card-body"><h3><a href="#book/${encodeURIComponent(b.id)}">${escape(b.title)}</a></h3><p class="small">${escape(b.author)}</p><p>${escape(b.summary)}</p><a class="text-link" href="#book/${encodeURIComponent(b.id)}">${t("查看书目 →")}</a></div></article>`).join(''):empty(t("书架正在整理中。"))}</div></section>`);
+    }else if(page==='shelf'){
+      show(shelfDetail(id));
     }else if(page==='book'){
       const {book:b}=await api(`/books/${encodeURIComponent(id)}`);
       show(`<a class="back" href="#books">${t("← 返回书架漫游")}</a><article class="panel book-detail"><div class="book-art">${escape(b.category)}</div><span class="tag">${escape(b.category)}</span><h1>${escape(b.title)}</h1><p>${escape(b.author)}</p><div class="prose">${escape(b.summary)}</div>${b.isbn?`<p class="small">ISBN：${escape(b.isbn)}</p>`:''}<p class="small">${t("当前为书目展示与阅读推荐，尚未开放在线购买。")}</p></article>`);
