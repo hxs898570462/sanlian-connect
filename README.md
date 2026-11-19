@@ -21,7 +21,7 @@ The shared test site runs on Render and stores its data in Neon. Initial event a
 - **Manage an account:** register, sign in, and view your private profile; public registration only creates reader accounts (`user`) — the administrator role (`stuff`) is granted by an existing administrator in the dashboard or initialised through `scripts/create-admin.js`. Edit your profile, change your password, or choose a reader theme and text size in [Settings](docs/account-settings.md); display preferences stay in the current browser.
 - **Administer the community:** manage users, events, registrations, feedback, suggestions, and operation logs from the administrator dashboard. Administrators land directly on the feedback list after signing in.
 
-- **Explore a sample bookshelf:** browse a basic demonstration of book recommendations.
+- **Explore the bookshelf:** browse six themed shelves with 18 curated recommendations and edition covers, or open the existing store catalogue. Curated picks do not indicate store inventory.
 - **AI reading assistant (local implementation):** a floating DeepSeek chat panel searches live published events and sample books, opens book details, and prepares the event confirmation form. Sign-in is required for chat; the user supplies missing contact details, checks consent, and personally submits. The panel follows the reader theme and text size. Package checkout and payments are not implemented. This change has not yet been deployed to the shared site.
 
 The two application roles are `user` and `stuff`. The spelling `stuff` is intentional: it is the project's administrator role. Public registration only creates `user`: the register endpoint ignores any client-supplied `role` field so visitors cannot forge administrator access; `stuff` can only be granted through `scripts/create-admin.js` (bootstrap or promoting an existing account) or by an existing administrator in the dashboard's user management.
@@ -137,6 +137,8 @@ Merge validation on **November 6, 2026** used Node.js **22.20.0** and an existin
 An existing test server can be supplied with `TEST_DATABASE_URL`; its account needs permission to create and drop isolated test databases. Do not use the shared or production database as the test target.
 
 ## Deployment and data migration
+
+The [reader redesign integration](docs/reader-design-integration.md) runs from `public/` with the existing API and database. No new deployment setting is required. The static design reference in `docs/reader-design-preview/` is not served by the app. The integration has not been deployed.
 
 The shared test website is deployed to **Render**, with **Neon PostgreSQL** storing persistent business data. Local records were migrated to Neon and verified field by field after reconnecting. The project owner also confirmed that the original account, administrator dashboard, and personal registrations work online. The full multi-member development workflow and the actual proxy forwarding path still need their own verification.
 
