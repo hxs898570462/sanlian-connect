@@ -1,5 +1,6 @@
 import {api} from './api.js';
 import {renderAdmin} from './admin.js';
+import {renderSeats} from './seats.js';
 import {createAssistant} from './assistant.js';
 import {applyPreferences,bindPreferences,profileView,settingsPage} from './settings.js';
 import {PASSWORD_MIN_LENGTH,PASSWORD_MAX_LENGTH} from './password-policy.js';
@@ -92,6 +93,7 @@ async function render({keepFocus=false}={}){
       }
     }else if(page==='login'||page==='signup'){
       const signup=page==='signup';
+      const seatReturn=id==='seats'?'seats':id==='seat-history'?'seats/mine':'';
       if(!show(`<section class="panel auth-panel">
         <div class="eyebrow">WELCOME TO SANLIAN</div>
         <h1>${signup?t("开始一段阅读旅程"):t("欢迎回来")}</h1>
@@ -104,9 +106,11 @@ async function render({keepFocus=false}={}){
           <p class="small" id="password-rules">${t('{min}–{max} 个字符。',{min:PASSWORD_MIN_LENGTH,max:PASSWORD_MAX_LENGTH})}</p>
           <div class="form-error" role="alert"></div><button type="submit">${signup?t("注册并登录"):t("登录")}</button>
         </form>
-        <a class="text-link" href="#${signup?'login':'signup'}">${signup?t("已有账号？去登录"):t("第一次来？创建账号")}</a>
+        <a class="text-link" href="#${signup?'login':'signup'}${seatReturn?'/'+id:''}">${signup?t("已有账号？去登录"):t("第一次来？创建账号")}</a>
       </section>`))return;
-      bindForm('auth-form',async data=>{const result=await api(`/auth/${signup?'register':'login'}`,{method:'POST',body:Object.fromEntries(data)});user=result.user;account();const portal=user.role==='stuff'?'admin':'mine';const pending=storage.get();storage.clear();if(pending&&pending.length<=120){bookingFocus=pending;location.hash='activity/'+encodeURIComponent(pending);return;}notice(signup?t("账号已创建。"):t("登录成功。"));location.hash=portal;});
+      bindForm('auth-form',async data=>{const result=await api(`/auth/${signup?'register':'login'}`,{method:'POST',body:Object.fromEntries(data)});user=result.user;account();const portal=seatReturn||(user.role==='stuff'?'admin':'mine');const pending=storage.get();storage.clear();if(!seatReturn&&pending&&pending.length<=120){bookingFocus=pending;location.hash='activity/'+encodeURIComponent(pending);return;}notice(signup?t("账号已创建。"):t("登录成功。"));location.hash=portal;});
+    }else if(page==='seats'){
+      await renderSeats({show,mine:id==='mine',user,escape,notice,refresh:render});
     }else if(page==='mine'){
       if(!user){show(`<section class="intro"><div class="eyebrow">${t("READER'S CORNER · 读者一隅")}</div><h1>${t("读者一隅")}</h1><p>${t("资料、报名与反馈，都在这一页。")}</p></section>${empty(t("登录后可查看自己的资料、报名和反馈。"))}<div class="actions"><a href="#login" class="button">${t("去登录")}</a></div>`);return;}
       const [{user:profile},{registrations},{feedbacks},{suggestions}]=await Promise.all([api('/profile'),api('/registrations'),api('/feedbacks'),api('/suggestions')]);
@@ -122,6 +126,7 @@ async function render({keepFocus=false}={}){
       <article class="panel mine-profile"><div class="mine-avatar" aria-hidden="true">${escape([...profile.name][0]||t("读"))}</div><div class="mine-profile-body"><h2 class="mine-name">${escape(profile.name)}<span class="tag">${profile.role==='stuff'?t("管理员 · stuff"):t("普通用户 · user")}</span></h2><dl class="profile-details">${details.map(([label,value])=>`<div class="setting-row setting-value"><dt>${label}</dt><dd>${escape(value)}</dd></div>`).join('')}</dl></div><div class="actions"><a class="button secondary" href="#settings">${t("设置")}</a></div></article>
       <div class="mine-stats"><div><span>${t("有效报名")}</span><strong>${active}</strong></div><div><span>${t("待开始")}</span><strong>${upcoming}</strong></div><div><span>${t("反馈与建议")}</span><strong>${entries.length}</strong></div></div>
       <section class="mine-section"><div class="section-heading"><div><div class="eyebrow">YOUR NEXT CHAPTER</div><h2>${t("我的报名")}</h2></div><a class="text-link" href="#activities">${t("发现活动 →")}</a></div><div class="stack">${bookings}</div></section>
+      <section class="mine-section"><a class="text-link" href="#seats/mine">${t('我的预约')}</a></section>
       <section class="mine-section" id="mine-suggest"><div class="section-heading"><div><div class="eyebrow">${t("SUGGEST · 提出建议")}</div><h2>${t("提出建议")}</h2></div><p class="small">${t("不限活动，随时向书店提建议")}</p></div><form id="suggest-form" class="panel suggest-form"><label for="suggest-content">${t("想对书店说点什么")}</label><textarea id="suggest-content" name="content" required minlength="5" maxlength="2000" placeholder="${t("例如：希望增加哪类活动、书目或服务")}"></textarea><div class="form-error" role="alert"></div><button type="submit">${t("提交建议")}</button></form></section>
       <section class="mine-section" id="mine-feedbacks"><div class="section-heading"><div><div class="eyebrow">YOUR VOICE</div><h2>${t("我的反馈")}</h2></div><p class="small">${t("评价、建议与门店回复仅自己可见")}</p></div><div class="stack">${replies}</div></section>`))return;
       if(mineFocus==='feedbacks'){mineFocus=null;scrollToFeedbacks();}

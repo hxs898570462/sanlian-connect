@@ -6,6 +6,7 @@ import { resolve } from 'node:path';
 import { projectRoot } from './db.js';
 import { hashPassword,verifyPassword,publicUser,createSession,sessionMiddleware } from './auth.js';
 import { registerAdminRoutes } from './admin.js';
+import { registerSeatRoutes } from './seats.js';
 import { activitySelect,activityWindow,privateRegistrations,lockActivity,enrollmentCount } from './queries.js';
 import { feedbackEligibility } from './feedback-policy.js';
 import { scoreContent } from './feedback-scoring.js';
@@ -221,6 +222,7 @@ app.delete('/api/feedbacks/:id',requireLogin,async(req,res)=>{
 });
  registerAssistantRoutes(app,db,{...assistant,requireLogin});
  registerAdminRoutes(app,db,{requireLogin,requireManager,fail,text,integer,isoDate,validatePhone,activitySelect});
+ registerSeatRoutes(app,db,{requireLogin,fail});
  app.use('/api',(req,res)=>res.status(404).json({error:'接口不存在'}));
  app.use(express.static(resolve(projectRoot,'public'),{index:'index.html'}));
  app.use((req,res)=>res.status(404).type('text').send('页面不存在'));
